@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="100%" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#3776AB" opacity="0.18"/>
+    </pattern>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1200" height="600" fill="#0F172A"/>
+  <rect width="1200" height="600" fill="url(#dots)"/>
+
+  <!-- 顶部装饰条 -->
+  <rect x="0" y="0" width="1200" height="6" fill="#3776AB"/>
+  <rect x="0" y="0" width="400" height="6" fill="#FFD43B"/>
+
+  <!-- 顶部小字 -->
+  <text x="80" y="60" font-family="'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="500" fill="#94A3B8" letter-spacing="3">NCEE PYTHON LEVEL 2 · 备考资料</text>
+
+  <!-- 主标题 -->
+  <text x="80" y="180" font-family="'PingFang SC', 'Helvetica Neue', sans-serif" font-size="76" font-weight="800" fill="#FFFFFF" letter-spacing="-1">二级 Python 上岸指南</text>
+
+  <!-- 副标题：高亮黄色 -->
+  <text x="80" y="245" font-family="'PingFang SC', 'Helvetica Neue', sans-serif" font-size="32" font-weight="500" fill="#FFD43B">90 集合集笔记 · 完全开源 · 自由取用</text>
+
+  <!-- 描述行 -->
+  <text x="80" y="305" font-family="'PingFang SC', sans-serif" font-size="22" font-weight="400" fill="#94A3B8">考点 · 代码 · 易错 · 必背 · 速记 · 真题模拟  ·  一站搞定</text>
+
+  <!-- 数据徽章 1：90 -->
+  <g transform="translate(80, 390)">
+    <rect width="200" height="110" rx="14" fill="#1E293B" stroke="#3776AB" stroke-width="2"/>
+    <text x="100" y="55" font-family="Helvetica, sans-serif" font-size="44" font-weight="800" fill="#FFFFFF" text-anchor="middle">90</text>
+    <text x="100" y="88" font-family="'PingFang SC', sans-serif" font-size="16" fill="#94A3B8" text-anchor="middle">覆盖全集分 P</text>
+  </g>
+
+  <!-- 数据徽章 2：700+ -->
+  <g transform="translate(300, 390)">
+    <rect width="200" height="110" rx="14" fill="#1E293B" stroke="#FFD43B" stroke-width="2"/>
+    <text x="100" y="55" font-family="Helvetica, sans-serif" font-size="44" font-weight="800" fill="#FFD43B" text-anchor="middle">700+</text>
+    <text x="100" y="88" font-family="'PingFang SC', sans-serif" font-size="16" fill="#94A3B8" text-anchor="middle">真实字幕段</text>
+  </g>
+
+  <!-- 数据徽章 3：180+ -->
+  <g transform="translate(520, 390)">
+    <rect width="200" height="110" rx="14" fill="#1E293B" stroke="#10B981" stroke-width="2"/>
+    <text x="100" y="55" font-family="Helvetica, sans-serif" font-size="44" font-weight="800" fill="#10B981" text-anchor="middle">180+</text>
+    <text x="100" y="88" font-family="'PingFang SC', sans-serif" font-size="16" fill="#94A3B8" text-anchor="middle">易错 / 要点</text>
+  </g>
+
+  <!-- 右侧 Python 代码装饰（挪到 x=920 避开主标题） -->
+  <g transform="translate(920, 110)" font-family="'Courier New', monospace" opacity="0.55">
+    <rect x="-15" y="-25" width="280" height="290" rx="12" fill="#1E293B"/>
+    <text x="0" y="0" font-size="14" fill="#475569"># exam.py</text>
+    <text x="0" y="30" font-size="16" fill="#3776AB"><tspan fill="#993355">def </tspan>study<tspan fill="#475569">():</tspan></text>
+    <text x="0" y="56" font-size="16" fill="#FFD43B">    print<tspan fill="#475569">(</tspan><tspan fill="#22863A">"上岸"</tspan><tspan fill="#475569">)</tspan></text>
+    <text x="0" y="82" font-size="16" fill="#FFFFFF"></text>
+    <text x="0" y="108" font-size="16" fill="#3776AB"><tspan fill="#993355">for </tspan>p <tspan fill="#993355">in</tspan> range<tspan fill="#475566">(</tspan><tspan fill="#1750BA">90</tspan><tspan fill="#475566">):</tspan></text>
+    <text x="0" y="134" font-size="16" fill="#FFD43B">    note <tspan fill="#993355">=</tspan> take_note<tspan fill="#475566">(p)</tspan></text>
+    <text x="0" y="160" font-size="16" fill="#FFFFFF">    review<tspan fill="#475566">(</tspan>note<tspan fill="#475566">)</tspan></text>
+    <text x="0" y="186" font-size="16" fill="#94A3B8"></text>
+    <text x="0" y="212" font-size="16" fill="#10B981">study<tspan fill="#475566">()</tspan>  <tspan fill="#475569"># 一次上岸</tspan></text>
+  </g>
+
+  <!-- 底部 GitHub 链接 -->
+  <g transform="translate(80, 530)">
+    <rect width="440" height="46" rx="10" fill="#3776AB"/>
+    <text x="220" y="29" font-family="'Courier New', monospace" font-size="18" font-weight="500" fill="#FFFFFF" text-anchor="middle">github.com/BUZAI946/-Python-</text>
+  </g>
+
+  <!-- 右下角版本号 -->
+  <text x="1120" y="555" font-family="Helvetica, sans-serif" font-size="13" fill="#475569" text-anchor="end">v3 · Aug 2026</text>
+</svg>
