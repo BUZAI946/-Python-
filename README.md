@@ -1,5 +1,24 @@
 # 二级 Python 上岸指南 · 90 集合集学习笔记
 
+<p align="center">
+  <img src="banner.svg" alt="banner" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/BUZAI946/-Python-/stargazers"><img src="https://img.shields.io/github/stars/BUZAI946/-Python-?style=flat-square&color=FFD43B" alt="stars"/></a>
+  <a href="https://github.com/BUZAI946/-Python-/watchers"><img src="https://img.shields.io/github/watchers/BUZAI946/-Python-?style=flat-square&color=3776AB" alt="watchers"/></a>
+  <img src="https://img.shields.io/badge/license-personal--use%20only-orange?style=flat-square" alt="license"/>
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="python"/>
+  <img src="https://img.shields.io/badge/coverage-P1--P90-10B981?style=flat-square" alt="coverage"/>
+</p>
+
+<p align="center">
+  <b>🎯 完全开源 · 自由取用</b><br>
+  <code>github.com/BUZAI946/-Python-</code>
+</p>
+
+---
+
 > B 站 90 集合集深度笔记（BV1Ys4y1D72T）配套学习资料
 
 ## 🎯 项目简介
