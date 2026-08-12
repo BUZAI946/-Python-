@@ -1,0 +1,17 @@
+# 构建产物 / 备份
+*.bak
+*.tmp
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# 系统文件
+Thumbs.db
+.DS_Store
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
