@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>第 8-10 章模块库 · 二级 Python 上岸指南</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+📖 第 8-10 章 模块/标准库/第三方库 · 二级 Python
+<style>
+  :root {
+    --py-blue: #3776AB;
+    --py-yellow: #FFD43B;
+    --py-deep: #1E3A5F;
+    --code-bg: #0F172A;
+    --code-fg: #E2E8F0;
+    --kw: #FF79C6;
+    --str: #F1FA8C;
+    --num: #BD93F9;
+    --func: #50FA7B;
+    --comment: #6272A4;
+    --warn: #FF6B6B;
+    --go: #06D6A0;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Source Code Pro", monospace; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    padding: 64px 32px 56px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(255, 212, 59, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 110% 10%, rgba(6, 214, 160, 0.25), transparent 60%),
+      linear-gradient(135deg, #1E3A5F 0%, #2563EB 50%, #3776AB 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-wrap { max-width: 1180px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 212, 59, 0.18);
+    color: var(--py-yellow);
+    border: 1px solid rgba(255, 212, 59, 0.4);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot { width: 8px; height: 8px; background: var(--py-yellow); border-radius: 50%; box-shadow: 0 0 12px var(--py-yellow); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 20px 0 16px; line-height: 1.15; font-weight: 800; letter-spacing: -1px;
+  }
+  .hero h1 .y { color: var(--py-yellow); }
+  .hero .sub {
+    font-size: 19px; max-width: 800px; opacity: 0.92;
+  }
+  .hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 36px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat .v { font-size: 30px; font-weight: 800; color: var(--py-yellow); }
+  .stat .l { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  @media (max-width: 720px) { .hero .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ===== Layout ===== */
+  main { max-width: 1180px; margin: -28px auto 0; padding: 0 32px 80px; position: relative; }
+  section { margin-top: 56px; }
+
+  /* ===== Notice ===== */
+  .notice {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #FFF7E6 0%, #FFEFC5 100%);
+    border-left: 5px solid #FAAD14;
+    color: #614700;
+    box-shadow: var(--shadow);
+    display: flex; gap: 16px;
+  }
+  .notice .ico { font-size: 28px; flex: none; }
+  .notice strong { color: #874D00; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .notice a { color: #1E3A5F; font-weight: 600; }
+
+  /* ===== Roadmap ===== */
+  .section-title {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 28px; font-weight: 800; margin: 0 0 8px; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .section-title .num {
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .section-desc { color: var(--ink-soft); margin: 0 0 24px; font-size: 15px; }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .chap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c, var(--py-blue));
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chap:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .chap h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .chap .meta { font-size: 13px; color: var(--ink-soft); }
+  .chap .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    margin-right: 4px; margin-top: 8px;
+    background: var(--tag-bg, #EFF6FF); color: var(--tag-c, var(--py-blue));
+    font-weight: 600;
+  }
+  .chap .done {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--go); color: white;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .chap .pending {
+    position: absolute; top: 14px; right: 14px;
+    background: #F1F5F9; color: #94A3B8;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* ===== Chapter blocks (深度章节) ===== */
+  .chapter {
+    background: white; border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); margin-top: 28px;
+  }
+  .chapter h2 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink);
+  }
+  .chapter h2 .id {
+    background: var(--py-yellow); color: var(--ink);
+    padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .chapter .video-link {
+    margin-top: 8px; font-size: 14px; color: var(--ink-soft);
+  }
+  .chapter .video-link a {
+    color: var(--py-blue); text-decoration: none; font-weight: 600;
+  }
+  .chapter .video-link a:hover { text-decoration: underline; }
+  .chapter h3 {
+    font-size: 20px; margin: 36px 0 12px; font-weight: 700; color: var(--py-deep);
+    border-left: 4px solid var(--py-yellow); padding-left: 12px;
+  }
+  .chapter p, .chapter li { font-size: 15px; color: #1F2937; }
+  .chapter ul, .chapter ol { padding-left: 22px; }
+  .chapter li { margin: 4px 0; }
+
+  /* ===== Callout boxes ===== */
+  .tip, .warn, .must, .rush {
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    margin: 16px 0; font-size: 14.5px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip { background: #ECFEFF; border-left: 4px solid #06B6D4; color: #155E75; }
+  .warn { background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; }
+  .must { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; }
+  .rush { background: #FFF7ED; border-left: 4px solid #F97316; color: #9A3412; }
+  .tip .ico, .warn .ico, .must .ico, .rush .ico { font-size: 20px; flex: none; }
+  .tip b, .warn b, .must b, .rush b { font-weight: 800; }
+
+  /* ===== Code cards ===== */
+
+  .code-card {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+    margin: 16px 0;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px; line-height: 1.65;
+    overflow-x: auto;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    position: relative;
+  }
+  .code-card .head {
+    display: flex; justify-content: space-between; align-items: center;
+    color: #94A3B8; font-size: 12px; font-family: inherit;
+    margin: -4px 0 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+  .code-card .head .file { color: var(--py-yellow); font-weight: 700; }
+  .code-card .copy {
+    cursor: pointer; user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .code-card .copy:hover { background: rgba(255,255,255,0.14); }
+  .code-card .copy.ok { background: var(--go); border-color: var(--go); color: #042F1E; }
+
+  /* syntax highlighter */
+  .c-kw { color: var(--kw); font-weight: 600; }
+  .c-str { color: var(--str); }
+  .c-num { color: var(--num); }
+  .c-fn { color: var(--func); }
+  .c-com { color: var(--comment); font-style: italic; }
+  .c-self { color: #FFB86C; font-style: italic; }
+  .c-op { color: #8BE9FD; }
+
+  /* ===== Tables ===== */
+  .t {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: white; border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+  }
+  .t th {
+    background: var(--py-deep); color: white;
+    padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tr:hover td { background: #F8FAFC; }
+  .t .lbl {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .lbl-b { background: #DBEAFE; color: #1E40AF; }
+  .lbl-g { background: #D1FAE5; color: #065F46; }
+  .lbl-o { background: #FED7AA; color: #9A3412; }
+  .lbl-r { background: #FECACA; color: #991B1B; }
+  .lbl-p { background: #F3E8FF; color: #6B21A8; }
+
+  /* ===== Big stat cards ===== */
+  .bigstats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 18px 0 12px;
+  }
+  .bs {
+    background: linear-gradient(135deg, var(--bsc1, #F8FAFC), var(--bsc2, #FFFFFF));
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .bs .v {
+    font-size: 40px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bs .l { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ===== Tag list ===== */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; color: var(--ink-soft); padding: 32px 16px; font-size: 13px; }
+  footer a { color: var(--py-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+      /* === 章节卡片样式（v3.1 补齐：所有章节页通用） === */
+      
+      /* === 卡片立体化（v3.2：加白底 + 边框 + 圆角） === */
+      .skel {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 14px 0;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+      }
+      .skel:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+      }
+      .skel > details > summary {
+        cursor: pointer;
+        padding: 8px 0 12px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        list-style: none;
+        user-select: none;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        margin-bottom: 10px;
+      }
+      .skel > details > summary::-webkit-details-marker { display: none; }
+      .skel > details > summary:before {
+        content: "\25B6  ";
+        color: var(--py-blue);
+        display: inline-block;
+        transition: transform .2s;
+        margin-right: 6px;
+      }
+      .skel > details[open] > summary:before { content: "\25BC  "; }
+      .skel h3 {
+        margin: 14px 0 8px;
+        font-size: 15px;
+        color: var(--py-deep);
+        padding-left: 10px;
+        border-left: 3px solid var(--py-yellow);
+        background: rgba(255, 212, 59, 0.08);
+        padding-top: 4px;
+        padding-bottom: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+      .skel ul { padding-left: 26px; margin: 4px 0 10px; }
+      .skel li { margin: 3px 0; font-size: 14.5px; }
+      .skel .code-card { margin: 8px 0; font-size: 13px; }
+      .skel .tip, .skel .warn, .skel .must, .skel .rush { margin: 8px 0; font-size: 13.5px; }
+
+      .quote {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #FFFEF7;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 0 10px 10px 0;
+        font-size: 14.5px;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
+      }
+      .quote-meta {
+        flex: none;
+        min-width: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #92400E;
+        background: rgba(245, 158, 11, 0.15);
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .quote-text { color: #1F2937; line-height: 1.7; }
+      .quote-text b { color: #B45309; }
+    
+      /* ===== 章节页导航条 ===== */
+      .chap-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 14px 32px;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+      .chap-nav .nav-row {
+        display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        max-width: 1200px; margin: 0 auto;
+      }
+      .chap-nav .nav-home {
+        color: var(--py-blue); font-weight: 700; text-decoration: none;
+        padding: 6px 14px; border: 1px solid var(--py-blue);
+        border-radius: 8px; font-size: 13px;
+      }
+      .chap-nav .nav-home:hover { background: var(--py-blue); color: white; }
+      .chap-nav .nav-link {
+        color: var(--ink-soft); text-decoration: none;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px;
+      }
+      .chap-nav .nav-link:hover { background: rgba(55, 118, 171, 0.08); color: var(--py-blue); }
+      .chap-nav .nav-current {
+        color: var(--py-blue); font-weight: 700; padding: 6px 12px;
+        background: rgba(55, 118, 171, 0.10); border-radius: 6px; font-size: 13px;
+      }
+      .bnav-row {
+        display: flex; justify-content: space-between; align-items: center;
+        gap: 16px; max-width: 1200px; margin: 40px auto 24px;
+        padding: 0 32px;
+      }
+      .bnav {
+        padding: 14px 24px; border-radius: 10px; text-decoration: none;
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        color: var(--ink); font-size: 14px; font-weight: 600;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+        transition: all 0.2s;
+      }
+      .bnav:hover:not(.disabled) {
+        background: rgba(55, 118, 171, 0.08);
+        border-color: var(--py-blue);
+        transform: translateY(-1px);
+      }
+      .bnav.disabled { opacity: 0.35; cursor: not-allowed; }
+      .bnav.next { margin-left: auto; }
+      .bnav-mid { color: var(--ink-soft); font-size: 13px; font-weight: 600; }
+      .chapter-body { max-width: 1200px; margin: 0 auto; padding: 32px; }
+      .chapter-h1 {
+        font-size: 32px; font-weight: 800; margin: 0 0 18px 0;
+        color: var(--py-deep); letter-spacing: -0.5px;
+      }
+      .chapter-body .section-desc { color: var(--ink-soft); margin-bottom: 24px; font-size: 15px; line-height: 1.7; }
+    
+      /* ===== 缺失 CSS 补齐 (v3.3 审计补) ===== */
+      .ep-h2 { font-size: 22px; font-weight: 800; color: var(--py-deep); margin: 28px 0 16px; letter-spacing: -0.3px; }
+      .ep-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 18px; }
+      .toc { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.08); border-radius: 14px; padding: 24px 28px; margin: 24px 0; box-shadow: 0 2px 8px rgba(15,23,42,0.04); }
+      .prev { color: var(--py-blue); }
+      .prev:hover { text-decoration: underline; }
+      .c-c-str { color: var(--str); }
+    </style>
+</head>
+<body>
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><span class="nav-current">📖 第 8-10 章 模块/标准库/第三方库</span><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch5-第6-7章.html">← 📖 第 6-7 章 组合类型 + 文件</a>
+    <span class="bnav-mid">第 6 / 7 章</span>
+    <a class="bnav next" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐 →</a>
+  </div>
+
+
+<section class="chapter-body">
+  
+    <h1 class="chapter-h1"><span class="num">6</span>📖 第 8-10 章：模块 / 标准库 / 第三方库 笔记（11 集）</h1>
+    <p class="section-desc">
+      这三章是<b>选择题最后 5 道 + 综合应用题 turtle</b> 的常客。重点掌握 turtle 绘图（25 分简答题）和 jieba。
+    </p>
+
+    <!-- P58 · 8-1-1 模块引用 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EF4444">P58</b> · 8-1-1 模块引用 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模块 · 09:20</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">import 模块名</code>：导入整个模块</li>
+          <li><code class="mono">from 模块 import 名字</code>：导入模块里的特定名字</li>
+          <li><code class="mono">import 模块 as 别名</code>：起别名</li>
+          <li><code class="mono">from 模块 import *</code>：导入所有（不推荐）</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 import_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> math
+<span class="c-kw">print</span>(math.<span class="c-fn">sqrt</span>(<span class="c-num">16</span>))             <span class="c-com"># 4.0</span>
+
+<span class="c-kw">from</span> math <span class="c-kw">import</span> pi, sin
+<span class="c-kw">print</span>(pi)                            <span class="c-com"># 3.1415926...</span>
+<span class="c-kw">print</span>(<span class="c-fn">sin</span>(pi/<span class="c-num">2</span>))                   <span class="c-com"># 1.0</span>
+
+<span class="c-kw">import</span> numpy <span class="c-kw">as</span> np                    <span class="c-com"># 第三方库</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：那我们知道这fv1e函数实际上是test1.py文件当中的,所以怎么样呢,来,咱们就可以用import关键字或者保留字来去告诉它,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：其实非常简单,就是了解这么两对语法或者这么两个关键字,保留字就OK了。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:42</b></div><div class="quote-text">说白了,就是在一个Python文件当中,比如说它写了很多函数,然后供我们来去使用。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:25</b></div><div class="quote-text">一个小项目,我可能写很多Python的代码,那这么多大量的Python代码都放在一个Python文件当中吗?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:39</b></div><div class="quote-text">然后上这个col里面去调用自己想要调用的内容,好,那咱们来写一下试啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:31</b></div><div class="quote-text">它说这fv1eis not defined,什么叫is not defined, not defined就是未定义啊,就是它不认识这fv1e,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:49</b></div><div class="quote-text">那我们知道这fv1e函数实际上是test1.py文件当中的,所以怎么样呢,来,咱们就可以用import关键字或者保留字来去告诉它,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:43</b></div><div class="quote-text">那如果我想实现这样一个事怎么办,来看一下面的语法,from什么,input什么,就是从哪里引入一个什么,from后面跟着模块名,input后面跟着对象名,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:06</b></div><div class="quote-text">你看来我再给你写一个,咱们可以这么来去写from test1 import fv1e,然后有多个的话,你可以写douhao,fv12,douhao,fv13,来咱试一下啊,我直接写fv1e扩号,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:44</b></div><div class="quote-text">啊,长成什么样子啊,这个col长成什么样子,下一节课啊,咱们会给大家来去讲,也就是说什么呢,就是我现在用这个import的时候,可能就是单纯从二级考试的方面来讲,我们不需要自己去引用一个自己写的,写好的这个模块,我们只需要让大家知道啊,这个与法的意义,在于引入某一个col,然后并且告诉你说啊,引入这个col之后,你该怎么去调用,你了解这个事就可以了啊,然后呢这个关于Python啊,这个他内部有一些什么样的col啊,这个col啊,这个</div></div>
+
+    <!-- P59 · 8-1-2 引用python标准库 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EF4444">P59</b> · 8-1-2 引用 Python 标准库 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模块 · 07:02</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>标准库 = Python 自带，无需下载</li>
+          <li><b>考纲点名</b>：turtle / random / time / math / string / re / os / sys / json / csv</li>
+          <li>每个库的关键函数至少记 3 个</li>
+        </ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">包括它怎么实现的这事儿,其实这代码也是能够看到的,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：词一当记住啊,什么叫Python标准库?</div></div>
+        <div class="tip"><div class="ico">💡</div><div><b>速记</b>：<code class="mono">time.sleep(s)</code> 睡 <code class="mono">s</code> 秒；<code class="mono">random.randint(a,b)</code> 取 [a,b] 整数；<code class="mono">turtle.forward(n)</code> 前进 <code class="mono">n</code> 像素。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：注意要把你的隐藏文件夹给它展出来。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:06</b></div><div class="quote-text">上一次课,我们提到在Python当中,它内部给我们提供了很多库来使用。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:05</b></div><div class="quote-text">在AP Data里面找到这个Local,然后下面有一个Programs,往下找Programs,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:15</b></div><div class="quote-text">这就是Random,在下一张的时候就会学一下Random里面,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:12</b></div><div class="quote-text">怎么往下一点,看到了吗?这个Turtle也是人家提供给我们的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:05</b></div><div class="quote-text">然后下次课我会给大家去讲,Random当中的东西怎么来去用,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:10</b></div><div class="quote-text">它里面所有的内容你都可以直接通过这种函数名的形式来去调用,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:49</b></div><div class="quote-text">那如何来去使用我们这一节以及上一节课学的这个Import啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:48</b></div><div class="quote-text">或者人家出的那个编程题的时候,你能看懂它Import的什么,</div></div>
+
+    <!-- P60 · 8-2-1 内置函数1 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EF4444">P60</b> · 8-2-1 内置函数 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">内置函数 · 10:20</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>数值</b>：<code class="mono">abs / max / min / sum / round / divmod / pow</code></li>
+          <li><b>类型</b>：<code class="mono">int / float / str / bool / list / tuple / set / dict / type</code></li>
+          <li><b>序列</b>：<code class="mono">len / sorted / reversed / enumerate / zip / range / map / filter</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 builtins.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-fn">list</span>(<span class="c-fn">range</span>(<span class="c-num">5</span>)))               <span class="c-com"># [0,1,2,3,4]</span>
+<span class="c-kw">print</span>(<span class="c-fn">list</span>(<span class="c-fn">map</span>(<span class="c-fn">str</span>, [<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>])))   <span class="c-com"># ['1','2','3']</span>
+<span class="c-kw">print</span>(<span class="c-fn">list</span>(<span class="c-fn">filter</span>(<span class="c-kw">None</span>, [<span class="c-num">0</span>, <span class="c-num">1</span>, <span class="c-str">""</span>, <span class="c-num">2</span>])))  <span class="c-com"># [1, 2]</span>
+<span class="c-kw">for</span> i, c <span class="c-kw">in</span> <span class="c-fn">enumerate</span>(<span class="c-str">"abc"</span>):
+    <span class="c-kw">print</span>(i, c)</pre>
+        </div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：比如说像Type,用来判断某一个变量,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">divmod(10, 3)</code> = <code class="mono">(3, 1)</code>（商 3 余数 1），常用同时求商和余的场景。</div></div><h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">大家好,本节课来聊一聊Python计算生态中的内置函数。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:31</b></div><div class="quote-text">这第一页呢全部都是跟数学运算相关的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:10</b></div><div class="quote-text">这里面我们得到的5.385164,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:02</b></div><div class="quote-text">好,那我们这个Print-DIV-MOD,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:17</b></div><div class="quote-text">说明吧,5.23进行45入了,对吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:36</b></div><div class="quote-text">那我如果这是一个空的列表,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:16</b></div><div class="quote-text">就反回组合数据类型R的这个逆序形式,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:08</b></div><div class="quote-text">咱们本节课就先讲这两亿人内置函数,</div></div>
+
+    <!-- P61 · 8-2-2 内置函数2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EF4444">P61</b> · 8-2-2 内置函数 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">内置函数 · 11:45</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>I/O</b>：<code class="mono">input / print / open</code></li>
+          <li><b>对象/类</b>：<code class="mono">isinstance / issubclass / id / dir / help</code></li>
+          <li><b>迭代器</b>：<code class="mono">iter / next</code></li>
+          <li><b>杂项</b>：<code class="mono">eval / exec / chr / ord / hex / bin / oct / any / all</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 helper.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-fn">all</span>([<span class="c-kw">True</span>, <span class="c-kw">True</span>, <span class="c-kw">False</span>]))   <span class="c-com"># False</span>
+<span class="c-kw">print</span>(<span class="c-fn">any</span>([<span class="c-kw">False</span>, <span class="c-kw">True</span>]))      <span class="c-com"># True</span>
+<span class="c-kw">print</span>(<span class="c-fn">bin</span>(<span class="c-num">10</span>))                 <span class="c-com"># '0b1010'</span>
+<span class="c-kw">print</span>(<span class="c-fn">hex</span>(<span class="c-num">255</span>))                <span class="c-com"># '0xff'</span>
+<span class="c-kw">print</span>(<span class="c-fn">isinstance</span>(<span class="c-num">3</span>, <span class="c-fn">int</span>))    <span class="c-com"># True</span></pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>易错</b>：<code class="mono">all([])</code> 返回 <code class="mono">True</code>（空集是真空），<code class="mono">any([])</code> 返回 <code class="mono">False</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：我们刚开始在学外国循环的时候,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：一个是Evil,一个是Range,这两个函数其实特别常用。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:26</b></div><div class="quote-text">Evil和Homer大家看到EXEC两个函数其实功能差不多,只不过你来看它这个描述。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:38</b></div><div class="quote-text">它就是能把某一个字符创左右两边的双眼号或者单眼号给它去掉了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:15</b></div><div class="quote-text">一会咱们来输出一下这个Scale,然后咱们再输出一下这个Scale的Type,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:47</b></div><div class="quote-text">咱们再来聊一聊刚才看到的那个什么ESEC这个内置函数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:18</b></div><div class="quote-text">并且能够让它形成一个Python真正认识的语句,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:17</b></div><div class="quote-text">那现在我能不能用Ful循环来实现一加到一百的盒呢?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:16</b></div><div class="quote-text">意思说它会产生从一直到一百零一之间的所有的整数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:34</b></div><div class="quote-text">不是基本的拍摄内置函数的是啥呢,</div></div>
+
+    <!-- P62 · 9-1-1 turtle库绘图1 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#14B8A6">P62</b> · 9-1-1 turtle 绘图 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">turtle · 12:26</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>turtle 必考</b>（简答题第 1 题 10 分）</li>
+          <li>基础：<code class="mono">turtle.forward(n)</code> / <code class="mono">backward(n)</code> / <code class="mono">left(deg)</code> / <code class="mono">right(deg)</code></li>
+          <li>画笔：<code class="mono">penup() / pendown() / pensize(n) / pencolor(c)</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 turtle_square.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> turtle
+
+t = turtle.<span class="c-fn">Pen</span>()
+t.<span class="c-fn">pensize</span>(<span class="c-num">3</span>)
+t.<span class="c-fn">pencolor</span>(<span class="c-str">"blue"</span>)
+
+<span class="c-kw">for</span> _ <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">4</span>):
+    t.<span class="c-fn">forward</span>(<span class="c-num">100</span>)
+    t.<span class="c-fn">left</span>(<span class="c-num">90</span>)
+
+turtle.<span class="c-fn">done</span>()              <span class="c-com"># 保持窗口</span></pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：正方形 = 4 × (forward + right 90)；三角形 = 3 × (forward + left 120)。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：更多的是说你一定要了解到每一个函数都是干嘛用的。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：所以呢,我这里面会摘抄一些特别核心的函数,给大家去讲。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:08</b></div><div class="quote-text">所以说白了那讲Turtle库咱讲的是啥?就是讲它这里面的各种各样的函数来怎么用。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:28</b></div><div class="quote-text">关于窗体函数,其实这儿我写的很清楚了,就是一个Turtle点setup。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:16</b></div><div class="quote-text">我写一个70,这是一个像素啊。单位是像素,然后我再写一个高度70建方的。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:38</b></div><div class="quote-text">它可能会这么写import turtle as t,就是给这个turtle固起来,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:00</b></div><div class="quote-text">然后这里面需要跟大家说的是什么呢,就是forward这个函数,我把这取掉了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:50</b></div><div class="quote-text">OK,这个forward咱们也再演示一下t点backward,20,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:49</b></div><div class="quote-text">然后呢接着我再t.fd,10,t.left90,t.fd,10,t.left90,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:01</b></div><div class="quote-text">OK,所以你看还是挺简单,那通过这一次课,咱们就把forward,backward,fd,pk,</div></div>
+
+    <!-- P63 · 9-1-2 turtle库绘图2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#14B8A6">P63</b> · 9-1-2 turtle 绘图 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">turtle · 12:24</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>循环角度：<code class="mono">for _ in range(n): t.left(360/n); t.forward(step)</code>（画正多边形）</li>
+          <li>画圆：<code class="mono">t.circle(r, extent=360)</code></li>
+          <li>填色：<code class="mono">t.begin_fill(); t.end_fill()</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 turtle_circle.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> turtle
+
+t = turtle.<span class="c-fn">Pen</span>()
+t.<span class="c-fn">begin_fill</span>()
+t.<span class="c-fn">circle</span>(<span class="c-num">50</span>)                <span class="c-com"># 半径 50</span>
+t.<span class="c-fn">end_fill</span>()
+
+turtle.<span class="c-fn">done</span>()</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：好 然后呢 在这个里面目前是循环了四次 然后画了这样一张图 是吧</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">turtle.circle(r, extent)</code> 画圆弧，<code class="mono">r</code> 半径，<code class="mono">extent</code> 角度（默认 360 整圆）。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">同学们 大家好 上一节课 咱们了解了Turtle当中的比如说像Fort 像Backward 像Lift Right</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:02</b></div><div class="quote-text">看一下 怎么样 更粗了是吧 好 然后接着再来说啊 关于这个画笔 我们能不能给他点颜色看的</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:11</b></div><div class="quote-text">里面放着RGB 什么叫RGB大家知道了 R表示Ride的红色 G表示Gren绿色 B表示Blue蓝色</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:49</b></div><div class="quote-text">能不能做一些甜冲颜色 那咱们再回来看这个PVT当中啊</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:15</b></div><div class="quote-text">大家来看 我现在想把它中间甜冲一些这个其他的颜色</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:16</b></div><div class="quote-text">Reset和Clear有什么区别呢</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:25</b></div><div class="quote-text">也就是相当于一个刚打开的新的话步了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:15</b></div><div class="quote-text">判断这个Turtle是不是可见的现在</div></div>
+
+    <!-- P64 · 9-1-3 turtle库绘图3 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#14B8A6">P64</b> · 9-1-3 turtle 绘图 3 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">turtle · 14:22</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>复杂图：嵌套循环 + 函数</li>
+          <li>写字：<code class="mono">t.write("hello", font=("Arial", 16, "normal"))</code></li>
+          <li>隐藏海龟：<code class="mono">t.hideturtle()</code></li>
+          <li>常用操作题：<b>同切圆、叠边正方形、五角星</b></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 star.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> turtle
+
+t = turtle.<span class="c-fn">Pen</span>()
+<span class="c-kw">for</span> _ <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">5</span>):
+    t.<span class="c-fn">forward</span>(<span class="c-num">100</span>)
+    t.<span class="c-fn">right</span>(<span class="c-num">144</span>)              <span class="c-com"># 144 = 180 - 360/5</span>
+turtle.<span class="c-fn">done</span>()</pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：正 n 边形转角 = <code class="mono">360/n</code>；五角星转角 = <code class="mono">144</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">turtle.done()</code> 必须在最后，<b>否则窗口闪退</b>看不到画的图。</div></div><h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:02</b></div><div class="quote-text">上一次课咱们在讲话比状态函数的时候其实还有两个关键的没有说到。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:19</b></div><div class="quote-text">那我先这个import turtle ST,然后t点set up,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:56</b></div><div class="quote-text">不是说这个,刚才咱们说两边这个两条平行线距离是多少,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:31</b></div><div class="quote-text">这样直接拉一条线出来,这样的话是不是两条平行线就出来了?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:04</b></div><div class="quote-text">这个PU就是PanUp的两个单词的手字母相当于,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:34</b></div><div class="quote-text">落下来之后咱们再去写的同样关于PanDown,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:08</b></div><div class="quote-text">我们就可以用这个PanUpPanDown,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:12</b></div><div class="quote-text">还有Scren Size也试了,</div></div>
+
+    <!-- P65 · 9-2 random库 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#14B8A6">P65</b> · 9-2 random 库 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">标准库 · 14:16</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">random.random()</code>：[0, 1) 浮点</li>
+          <li><code class="mono">random.randint(a, b)</code>：[a, b] 整数</li>
+          <li><code class="mono">random.uniform(a, b)</code>：[a, b] 浮点</li>
+          <li><code class="mono">random.choice(seq)</code>：随机取一个</li>
+          <li><code class="mono">random.shuffle(lst)</code>：<b>原地</b>洗牌（无返回值）</li>
+          <li><code class="mono">random.sample(seq, k)</code>：不放回取 k 个</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 random_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> random
+<span class="c-kw">print</span>(random.<span class="c-fn">randint</span>(<span class="c-num">1</span>, <span class="c-num">100</span>))    <span class="c-com"># [1,100] 整数</span>
+
+lst = [<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>, <span class="c-num">4</span>, <span class="c-num">5</span>]
+random.<span class="c-fn">shuffle</span>(lst)
+<span class="c-kw">print</span>(lst)
+
+<span class="c-kw">print</span>(random.<span class="c-fn">sample</span>(<span class="c-str">"abcdefg"</span>, <span class="c-num">3</span>))</pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：<code class="mono">shuffle</code> 没有返回值（返回 None）；要随机拷贝用 <code class="mono">random.sample</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：首先呢,你想用这个Random库当中的东西呢,它是Python给我们提供的一个标准库,那别忘了这个使用Import要给它是引路起来。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：要告诉这个程序,我们现在要用的是Random库,然后呢你可以Random点,我们不是要调用这个Random这个函数吗?是吧?</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:51</b></div><div class="quote-text">那首先呢,咱们先来看第二行的这个,第二行这个Random啊,它说,为什么不先看第一行呢?别着急啊,我先给你看一下第二行那个,然后咱们再来聊第一行那个C的。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:04</b></div><div class="quote-text">那就Random点,Random,前面这个Random是一个模块名或者叫库名,后面这个Random是一个函数或者叫方法名,我们就可以来直接执行了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:08</b></div><div class="quote-text">那这个时候你可以主动的去设定随机数种子,但是呢,如果你像刚才咱们这个最开始的程序啊,我就没有设定这个随机数种子,直接就,啊,这个输出了这么一段内容对吧,产生这样一个随机数,那这个这样的这个时候它随机数种子是多少的,哎,这个时候随机数种子其实就是默认值,，它会基于系统当前的时间,啊,以,就是说白了,就是以当前系统的时间作为随机数种子产生这个随机数,OK,所以其实大家只要作为一个了解就好了,你其实不需要去深究,哎,它到底是怎么基于这个随机数种子,按照一个什么样的算法去产生这个随机数呢,那算法可就复杂了,就是咱们这个考试,他也不考,所以你没必要去了解,OK,哎,其实这里面拍摄啊,拍摄的Random Col,我也在看,我这边,我这</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:42</b></div><div class="quote-text">那时候你不写这个不常了,你看到这不常用一个中号表这个过起来,那意思就是说这一段内容可有可无,可以有可以没有</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:55</b></div><div class="quote-text">那就是意思是10,它会生成10,12,13,14,15,16,一直到10是吧,然后在这些数里面,然后去找一个随机数,咱们来执行一下,你看</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:04</b></div><div class="quote-text">再接着看Shufle,将这个序列类型当中的元素随机这个排列返回打乱后的序列</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:19</b></div><div class="quote-text">第二题,Random库的Random Render Range</div></div>
+
+    <!-- P66 · 10-1 pip工具使用 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F97316">P66</b> · 10-1 pip 工具使用 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">pip · 15:08</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">pip install 库名</code>：安装</li>
+          <li><code class="mono">pip install 库名==版本</code>：装指定版本</li>
+          <li><code class="mono">pip uninstall 库名</code>：卸</li>
+          <li><code class="mono">pip list</code>：看已装的库</li>
+          <li>国内镜像：<code class="mono">-i https://pypi.tuna.tsinghua.edu.cn/simple</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 pip 命令</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>pip install jieba
+pip install numpy == <span class="c-num">1.21</span>.<span class="c-num">0</span>
+pip list
+pip show jieba</pre>
+        </div>
+        <div class="tip"><div class="ico">💡</div><div>考试不考 pip 操作（编程题里都已装好），但选择题会考"如何安装"。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：今天我们学的内容关键点就是在于说你怎么能把结巴这个库给人家安装的吧,安在你的自己的电脑当中。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:37</b></div><div class="quote-text">那标准库之外还有一种叫第三方库,就是说很多这个一些其他的人啊,非Python官方的人写了一些这个啊,非常实用的非常好用的一些代码,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:24</b></div><div class="quote-text">它有种文件安装,就是有个时候呢,可能你Python安装,Python本身它是一个命令,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:57</b></div><div class="quote-text">然后重点一会我会给大家去讲一讲,关于这个Python工具,它本身的一个使用和这个安装。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:56</b></div><div class="quote-text">当然你也要这个心里有一个数啊,大概对这些内容就是不同的命令做什么事的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:51</b></div><div class="quote-text">看到了吗,什么instal,download,uninstalist,show,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:28</b></div><div class="quote-text">show是说你要写明白后面那个库名,pipe list,sory,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:04</b></div><div class="quote-text">实际上就是读取时间这个超时了,安装超时了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:55</b></div><div class="quote-text">这实际上是清华大学的一个经向网站啊,</div></div>
+
+    <!-- P67 · 10-2 第三方库jieba -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F97316">P67</b> · 10-2 第三方库 jieba（中文分词） <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">第三方库 · 08:31</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>结巴分词三大模式：精确、全模式、搜索引擎</li>
+          <li><code class="mono">jieba.cut(s, cut_all=False)</code>：精确模式</li>
+          <li><code class="mono">jieba.lcut(s)</code>：返回 list</li>
+          <li><code class="mono">jieba.add_word()</code>：添加自定义词典</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 jieba_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> jieba
+
+s = <span class="c-str">"小明硕士毕业于中国科学院"</span>
+words = jieba.<span class="c-fn">lcut</span>(s)
+<span class="c-kw">print</span>(words)
+<span class="c-com"># ['小明', '硕士', '毕业', '于', '中国科学院']</span>
+
+<span class="c-com"># 添加新词</span>
+jieba.<span class="c-fn">add_word</span>(<span class="c-str">"小明硕士"</span>)
+<span class="c-kw">print</span>(jieba.<span class="c-fn">lcut</span>(s))</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：第三方库需先 <code class="mono">pip install 库名</code>，在 cmd 里装，不在 IDLE 里。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>考试不考</b>第三方库实操，但要认识常见库名：<code class="mono">jieba</code>（中文分词）、<code class="mono">requests</code>（网络请求）、<code class="mono">numpy</code>（数值计算）。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:35</b></div><div class="quote-text">今天咱们主要的内容,第一个是说给大家来做一下关于结霸的一些简介,就是它干嘛用。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:18</b></div><div class="quote-text">就是给你一句话,从这句话当中我们能提炼出来多少个中文的词,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:13</b></div><div class="quote-text">然后呢这个里面你看说精确模式返回一个列表类型,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:49</b></div><div class="quote-text">咱们看全模式和精确模式之间有什么不一样,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:03</b></div><div class="quote-text">搜索引擎类型for search,是吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:33</b></div><div class="quote-text">这词好像有点跟刚才那个有点差不多,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:47</b></div><div class="quote-text">比如我们把这个Python学科,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:21</b></div><div class="quote-text">就知道它是怎么应用到这个编程题当中了,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P68 · 10-3 其它第三方库 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F97316">P68</b> · 10-3 其它第三方库（知识点到此全部结束） <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">总结 · 06:12</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>考纲必记库名（选择题）：<b>numpy（数据处理）、matplotlib（绘图）、requests（爬虫）、pandas（数据分析）、sklearn（机器学习）</b></li>
+          <li><code class="mono">PyInstaller</code>：把 .py 打包成 .exe</li>
+          <li>"更广泛计算生态"只要求了解库名，不要求会写</li>
+        </ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 代码示意</span><span class="copy">真实片段</span></div>
+<pre><span class="c-cmt">各位同学大家好。本节课咱们来聊一下Python的一些常见的第三方库。</span>
+</pre>
+        </div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:05</b></div><div class="quote-text">Python我们知道有自己的标准库,同时也有一些第三方库,包括咱们之前学过的接八。</div></div>
+        <div class="must"><div class="ico">📌</div><div><b>必背库表</b>：<b>turtle / random / time / jieba / numpy / matplotlib / requests / pandas / sklearn / PyInstaller</b></div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错</b>：比如说他问你下列哪一个不是Python网络爬虫方向的第三方库?</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错</b>：这个一下不是Python数据分析方向第三方库</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:11</b></div><div class="quote-text">所以你记着重要的事儿,说三遍,记标题,记这个库名,记库名。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:02</b></div><div class="quote-text">接下来,下一个数据分析方向,一个叫nanpap,一个叫seipap,还有一个pandas。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:28</b></div><div class="quote-text">pyson docs,pyson docx,这个是处理world文档的beautifulsoap4,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:14</b></div><div class="quote-text">SciKDlearn,还有TensorFlow,FilNo,积极学习,人工智能,深度学习,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:22</b></div><div class="quote-text">其他的第三方顾,pil,图像处理的,synpy,数学的nltk自然语言处理,也是这个基础学习方向其实算。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:53</b></div><div class="quote-text">因为这个,它不像咱们之前讲的课程内容,比你讲个指点,然后你还能反应,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:34</b></div><div class="quote-text">这个一下不是Python数据分析方向第三方库</div></div>
+      </details>
+          
+    </article>
+
+
+  
+</section><nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><span class="nav-current">📖 第 8-10 章 模块/标准库/第三方库</span><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch5-第6-7章.html">← 📖 第 6-7 章 组合类型 + 文件</a>
+    <span class="bnav-mid">第 6 / 7 章</span>
+    <a class="bnav next" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐 →</a>
+  </div>
+
+
+<footer>
+  <p>📖 第 8-10 章 模块/标准库/第三方库 · 二级 Python 上岸笔记</p>
+  <p>原视频：<a href="https://www.bilibili.com/video/BV1Ys4y1D72T" target="_blank">B 站原视频</a> · 笔记整理：WorkBuddy</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>学习路线图 · 二级 Python 上岸指南</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+🗺️ 全集学习路线图 · 二级 Python
+<style>
+  :root {
+    --py-blue: #3776AB;
+    --py-yellow: #FFD43B;
+    --py-deep: #1E3A5F;
+    --code-bg: #0F172A;
+    --code-fg: #E2E8F0;
+    --kw: #FF79C6;
+    --str: #F1FA8C;
+    --num: #BD93F9;
+    --func: #50FA7B;
+    --comment: #6272A4;
+    --warn: #FF6B6B;
+    --go: #06D6A0;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Source Code Pro", monospace; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    padding: 64px 32px 56px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(255, 212, 59, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 110% 10%, rgba(6, 214, 160, 0.25), transparent 60%),
+      linear-gradient(135deg, #1E3A5F 0%, #2563EB 50%, #3776AB 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-wrap { max-width: 1180px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 212, 59, 0.18);
+    color: var(--py-yellow);
+    border: 1px solid rgba(255, 212, 59, 0.4);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot { width: 8px; height: 8px; background: var(--py-yellow); border-radius: 50%; box-shadow: 0 0 12px var(--py-yellow); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 20px 0 16px; line-height: 1.15; font-weight: 800; letter-spacing: -1px;
+  }
+  .hero h1 .y { color: var(--py-yellow); }
+  .hero .sub {
+    font-size: 19px; max-width: 800px; opacity: 0.92;
+  }
+  .hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 36px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat .v { font-size: 30px; font-weight: 800; color: var(--py-yellow); }
+  .stat .l { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  @media (max-width: 720px) { .hero .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ===== Layout ===== */
+  main { max-width: 1180px; margin: -28px auto 0; padding: 0 32px 80px; position: relative; }
+  section { margin-top: 56px; }
+
+  /* ===== Notice ===== */
+  .notice {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #FFF7E6 0%, #FFEFC5 100%);
+    border-left: 5px solid #FAAD14;
+    color: #614700;
+    box-shadow: var(--shadow);
+    display: flex; gap: 16px;
+  }
+  .notice .ico { font-size: 28px; flex: none; }
+  .notice strong { color: #874D00; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .notice a { color: #1E3A5F; font-weight: 600; }
+
+  /* ===== Roadmap ===== */
+  .section-title {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 28px; font-weight: 800; margin: 0 0 8px; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .section-title .num {
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .section-desc { color: var(--ink-soft); margin: 0 0 24px; font-size: 15px; }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .chap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c, var(--py-blue));
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chap:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .chap h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .chap .meta { font-size: 13px; color: var(--ink-soft); }
+  .chap .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    margin-right: 4px; margin-top: 8px;
+    background: var(--tag-bg, #EFF6FF); color: var(--tag-c, var(--py-blue));
+    font-weight: 600;
+  }
+  .chap .done {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--go); color: white;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .chap .pending {
+    position: absolute; top: 14px; right: 14px;
+    background: #F1F5F9; color: #94A3B8;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* ===== Chapter blocks (深度章节) ===== */
+  .chapter {
+    background: white; border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); margin-top: 28px;
+  }
+  .chapter h2 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink);
+  }
+  .chapter h2 .id {
+    background: var(--py-yellow); color: var(--ink);
+    padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .chapter .video-link {
+    margin-top: 8px; font-size: 14px; color: var(--ink-soft);
+  }
+  .chapter .video-link a {
+    color: var(--py-blue); text-decoration: none; font-weight: 600;
+  }
+  .chapter .video-link a:hover { text-decoration: underline; }
+  .chapter h3 {
+    font-size: 20px; margin: 36px 0 12px; font-weight: 700; color: var(--py-deep);
+    border-left: 4px solid var(--py-yellow); padding-left: 12px;
+  }
+  .chapter p, .chapter li { font-size: 15px; color: #1F2937; }
+  .chapter ul, .chapter ol { padding-left: 22px; }
+  .chapter li { margin: 4px 0; }
+
+  /* ===== Callout boxes ===== */
+  .tip, .warn, .must, .rush {
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    margin: 16px 0; font-size: 14.5px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip { background: #ECFEFF; border-left: 4px solid #06B6D4; color: #155E75; }
+  .warn { background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; }
+  .must { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; }
+  .rush { background: #FFF7ED; border-left: 4px solid #F97316; color: #9A3412; }
+  .tip .ico, .warn .ico, .must .ico, .rush .ico { font-size: 20px; flex: none; }
+  .tip b, .warn b, .must b, .rush b { font-weight: 800; }
+
+  /* ===== Code cards ===== */
+
+  .code-card {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+    margin: 16px 0;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px; line-height: 1.65;
+    overflow-x: auto;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    position: relative;
+  }
+  .code-card .head {
+    display: flex; justify-content: space-between; align-items: center;
+    color: #94A3B8; font-size: 12px; font-family: inherit;
+    margin: -4px 0 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+  .code-card .head .file { color: var(--py-yellow); font-weight: 700; }
+  .code-card .copy {
+    cursor: pointer; user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .code-card .copy:hover { background: rgba(255,255,255,0.14); }
+  .code-card .copy.ok { background: var(--go); border-color: var(--go); color: #042F1E; }
+
+  /* syntax highlighter */
+  .c-kw { color: var(--kw); font-weight: 600; }
+  .c-str { color: var(--str); }
+  .c-num { color: var(--num); }
+  .c-fn { color: var(--func); }
+  .c-com { color: var(--comment); font-style: italic; }
+  .c-self { color: #FFB86C; font-style: italic; }
+  .c-op { color: #8BE9FD; }
+
+  /* ===== Tables ===== */
+  .t {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: white; border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+  }
+  .t th {
+    background: var(--py-deep); color: white;
+    padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tr:hover td { background: #F8FAFC; }
+  .t .lbl {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .lbl-b { background: #DBEAFE; color: #1E40AF; }
+  .lbl-g { background: #D1FAE5; color: #065F46; }
+  .lbl-o { background: #FED7AA; color: #9A3412; }
+  .lbl-r { background: #FECACA; color: #991B1B; }
+  .lbl-p { background: #F3E8FF; color: #6B21A8; }
+
+  /* ===== Big stat cards ===== */
+  .bigstats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 18px 0 12px;
+  }
+  .bs {
+    background: linear-gradient(135deg, var(--bsc1, #F8FAFC), var(--bsc2, #FFFFFF));
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .bs .v {
+    font-size: 40px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bs .l { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ===== Tag list ===== */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; color: var(--ink-soft); padding: 32px 16px; font-size: 13px; }
+  footer a { color: var(--py-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+      /* === 章节卡片样式（v3.1 补齐：所有章节页通用） === */
+      
+      /* === 卡片立体化（v3.2：加白底 + 边框 + 圆角） === */
+      .skel {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 14px 0;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+      }
+      .skel:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+      }
+      .skel > details > summary {
+        cursor: pointer;
+        padding: 8px 0 12px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        list-style: none;
+        user-select: none;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        margin-bottom: 10px;
+      }
+      .skel > details > summary::-webkit-details-marker { display: none; }
+      .skel > details > summary:before {
+        content: "\25B6  ";
+        color: var(--py-blue);
+        display: inline-block;
+        transition: transform .2s;
+        margin-right: 6px;
+      }
+      .skel > details[open] > summary:before { content: "\25BC  "; }
+      .skel h3 {
+        margin: 14px 0 8px;
+        font-size: 15px;
+        color: var(--py-deep);
+        padding-left: 10px;
+        border-left: 3px solid var(--py-yellow);
+        background: rgba(255, 212, 59, 0.08);
+        padding-top: 4px;
+        padding-bottom: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+      .skel ul { padding-left: 26px; margin: 4px 0 10px; }
+      .skel li { margin: 3px 0; font-size: 14.5px; }
+      .skel .code-card { margin: 8px 0; font-size: 13px; }
+      .skel .tip, .skel .warn, .skel .must, .skel .rush { margin: 8px 0; font-size: 13.5px; }
+
+      .quote {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #FFFEF7;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 0 10px 10px 0;
+        font-size: 14.5px;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
+      }
+      .quote-meta {
+        flex: none;
+        min-width: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #92400E;
+        background: rgba(245, 158, 11, 0.15);
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .quote-text { color: #1F2937; line-height: 1.7; }
+      .quote-text b { color: #B45309; }
+    
+      /* ===== 章节页导航条 ===== */
+      .chap-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 14px 32px;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+      .chap-nav .nav-row {
+        display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        max-width: 1200px; margin: 0 auto;
+      }
+      .chap-nav .nav-home {
+        color: var(--py-blue); font-weight: 700; text-decoration: none;
+        padding: 6px 14px; border: 1px solid var(--py-blue);
+        border-radius: 8px; font-size: 13px;
+      }
+      .chap-nav .nav-home:hover { background: var(--py-blue); color: white; }
+      .chap-nav .nav-link {
+        color: var(--ink-soft); text-decoration: none;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px;
+      }
+      .chap-nav .nav-link:hover { background: rgba(55, 118, 171, 0.08); color: var(--py-blue); }
+      .chap-nav .nav-current {
+        color: var(--py-blue); font-weight: 700; padding: 6px 12px;
+        background: rgba(55, 118, 171, 0.10); border-radius: 6px; font-size: 13px;
+      }
+      .bnav-row {
+        display: flex; justify-content: space-between; align-items: center;
+        gap: 16px; max-width: 1200px; margin: 40px auto 24px;
+        padding: 0 32px;
+      }
+      .bnav {
+        padding: 14px 24px; border-radius: 10px; text-decoration: none;
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        color: var(--ink); font-size: 14px; font-weight: 600;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+        transition: all 0.2s;
+      }
+      .bnav:hover:not(.disabled) {
+        background: rgba(55, 118, 171, 0.08);
+        border-color: var(--py-blue);
+        transform: translateY(-1px);
+      }
+      .bnav.disabled { opacity: 0.35; cursor: not-allowed; }
+      .bnav.next { margin-left: auto; }
+      .bnav-mid { color: var(--ink-soft); font-size: 13px; font-weight: 600; }
+      .chapter-body { max-width: 1200px; margin: 0 auto; padding: 32px; }
+      .chapter-h1 {
+        font-size: 32px; font-weight: 800; margin: 0 0 18px 0;
+        color: var(--py-deep); letter-spacing: -0.5px;
+      }
+      .chapter-body .section-desc { color: var(--ink-soft); margin-bottom: 24px; font-size: 15px; line-height: 1.7; }
+    
+      /* ===== 缺失 CSS 补齐 (v3.3 审计补) ===== */
+      .ep-h2 { font-size: 22px; font-weight: 800; color: var(--py-deep); margin: 28px 0 16px; letter-spacing: -0.3px; }
+      .ep-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 18px; }
+      .toc { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.08); border-radius: 14px; padding: 24px 28px; margin: 24px 0; box-shadow: 0 2px 8px rgba(15,23,42,0.04); }
+      .prev { color: var(--py-blue); }
+      .prev:hover { text-decoration: underline; }
+      .c-c-str { color: var(--str); }
+    </style>
+</head>
+<body>
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <span class="nav-current">🗺️ 全集学习路线图</span><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <span class="bnav prev disabled">已是第一章</span>
+    <span class="bnav-mid">第 1 / 7 章</span>
+    <a class="bnav next" href="ch2-深度章节.html">🎯 重头戏深度笔记 →</a>
+  </div>
+
+
+<section class="chapter-body">
+  
+    <h1 class="chapter-h1"><span class="num">1</span>🗺️ 全集学习路线图</h1>
+    <p class="section-desc">
+      90 集按"基础 → 控制流 → 函数 → 字符串 → 组合类型 → 文件 → 模块 → 标准库 → 第三方库 → 真题"推进。
+      <span style="color: var(--warn); font-weight: 700;">绿色徽章</span>= 含 Whisper 真实听写，<span style="color: #94A3B8; font-weight: 700;">灰色徽章</span>= 仅章节骨架（无单独听写，仅在章节索引听写节选中）。
+    </p>
+    <div class="roadmap">
+
+      <!-- 第 1 章 -->
+      <div class="chap" style="--c:#06D6A0;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 1 章 · 考试认知与环境</h4>
+        <div class="meta">P1 整体考试认知 · P2 环境搭建</div>
+        <div class="tag-row">
+          <span class="tag" style="--tag-bg:#D1FAE5;--tag-c:#065F46;">考试时长 120min</span>
+          <span class="tag" style="--tag-bg:#D1FAE5;--tag-c:#065F46;">合格线 60 分</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#06D6A0;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 2 章 · 基础语法</h4>
+        <div class="meta">2-1 基础语法入门 · 2-2 数据类型 · 2-3 运算符</div>
+        <div class="tag-row">
+          <span class="tag" style="--tag-bg:#D1FAE5;--tag-c:#065F46;">变量</span>
+          <span class="tag" style="--tag-bg:#D1FAE5;--tag-c:#065F46;">缩进</span>
+          <span class="tag" style="--tag-bg:#D1FAE5;--tag-c:#065F46;">输入输出</span>
+        </div>
+      </div>
+
+      <div class="chap" style="--c:#3776AB;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 3 章 · 流程控制</h4>
+        <div class="meta">if / if-else / if-elif-else · while · continue/break · 异常</div>
+        <div class="tag-row">
+          <span class="tag">if</span><span class="tag">while</span><span class="tag">for</span><span class="tag">try</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#3776AB;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 4 章 · 函数</h4>
+        <div class="meta">函数定义 · 参数与返回值 · 作用域 · print 不换行</div>
+        <div class="tag-row">
+          <span class="tag">def</span><span class="tag">return</span><span class="tag">作用域</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#F59E0B;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 5 章 · 字符串</h4>
+        <div class="meta">索引切片 · for 循环 · 字符串方法 · format</div>
+        <div class="tag-row">
+          <span class="tag">索引</span><span class="tag">切片</span><span class="tag">format</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#8B5CF6;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 6 章 · 组合数据类型</h4>
+        <div class="meta">集合 · 列表 · 元组 · 字典</div>
+        <div class="tag-row">
+          <span class="tag">list</span><span class="tag">tuple</span><span class="tag">set</span><span class="tag">dict</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#EC4899;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 7 章 · 文件和数据</h4>
+        <div class="meta">路径 · open() · 读写 · 一维/二维数据 · CSV</div>
+        <div class="tag-row">
+          <span class="tag">open()</span><span class="tag">read</span><span class="tag">write</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#EF4444;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 8 章 · 模块与内置函数</h4>
+        <div class="meta">import · 标准库 · 内置函数</div>
+        <div class="tag-row">
+          <span class="tag">import</span><span class="tag">内置函数</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#14B8A6;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 9 章 · 标准库（turtle / random）</h4>
+        <div class="meta">turtle 绘图 · random 随机</div>
+        <div class="tag-row">
+          <span class="tag">turtle</span><span class="tag">random</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#F97316;">
+        <span class="done">✓ 含听写</span>
+        <h4>第 10 章 · pip 与第三方库</h4>
+        <div class="meta">pip 安装 · jieba · 其他热门库</div>
+        <div class="tag-row">
+          <span class="tag">pip</span><span class="tag">jieba</span>
+        </div>
+      </div>
+      <div class="chap" style="--c:#DC2626;">
+        <span class="pending">真题</span>
+        <h4>模拟题 × 2 + 真题 × 2 + 收尾</h4>
+        <div class="meta">22 集真题讲解，把考点串一遍</div>
+        <div class="tag-row">
+          <span class="tag">模拟 1</span><span class="tag">模拟 2</span><span class="tag">真题 1</span><span class="tag">真题 2</span>
+        </div>
+      </div>
+
+    </div>
+  
+</section>
+
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <span class="nav-current">🗺️ 全集学习路线图</span><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <span class="bnav prev disabled">已是第一章</span>
+    <span class="bnav-mid">第 1 / 7 章</span>
+    <a class="bnav next" href="ch2-深度章节.html">🎯 重头戏深度笔记 →</a>
+  </div>
+
+
+<footer>
+  <p>🗺️ 全集学习路线图 · 二级 Python 上岸笔记</p>
+  <p>原视频：<a href="https://www.bilibili.com/video/BV1Ys4y1D72T" target="_blank">B 站原视频</a> · 笔记整理：WorkBuddy</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>模拟题+真题 · 二级 Python 上岸指南</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+📝 模拟题 + 真题 + 收尾 + 加餐 · 二级 Python
+<style>
+  :root {
+    --py-blue: #3776AB;
+    --py-yellow: #FFD43B;
+    --py-deep: #1E3A5F;
+    --code-bg: #0F172A;
+    --code-fg: #E2E8F0;
+    --kw: #FF79C6;
+    --str: #F1FA8C;
+    --num: #BD93F9;
+    --func: #50FA7B;
+    --comment: #6272A4;
+    --warn: #FF6B6B;
+    --go: #06D6A0;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Source Code Pro", monospace; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    padding: 64px 32px 56px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(255, 212, 59, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 110% 10%, rgba(6, 214, 160, 0.25), transparent 60%),
+      linear-gradient(135deg, #1E3A5F 0%, #2563EB 50%, #3776AB 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-wrap { max-width: 1180px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 212, 59, 0.18);
+    color: var(--py-yellow);
+    border: 1px solid rgba(255, 212, 59, 0.4);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot { width: 8px; height: 8px; background: var(--py-yellow); border-radius: 50%; box-shadow: 0 0 12px var(--py-yellow); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 20px 0 16px; line-height: 1.15; font-weight: 800; letter-spacing: -1px;
+  }
+  .hero h1 .y { color: var(--py-yellow); }
+  .hero .sub {
+    font-size: 19px; max-width: 800px; opacity: 0.92;
+  }
+  .hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 36px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat .v { font-size: 30px; font-weight: 800; color: var(--py-yellow); }
+  .stat .l { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  @media (max-width: 720px) { .hero .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ===== Layout ===== */
+  main { max-width: 1180px; margin: -28px auto 0; padding: 0 32px 80px; position: relative; }
+  section { margin-top: 56px; }
+
+  /* ===== Notice ===== */
+  .notice {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #FFF7E6 0%, #FFEFC5 100%);
+    border-left: 5px solid #FAAD14;
+    color: #614700;
+    box-shadow: var(--shadow);
+    display: flex; gap: 16px;
+  }
+  .notice .ico { font-size: 28px; flex: none; }
+  .notice strong { color: #874D00; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .notice a { color: #1E3A5F; font-weight: 600; }
+
+  /* ===== Roadmap ===== */
+  .section-title {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 28px; font-weight: 800; margin: 0 0 8px; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .section-title .num {
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .section-desc { color: var(--ink-soft); margin: 0 0 24px; font-size: 15px; }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .chap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c, var(--py-blue));
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chap:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .chap h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .chap .meta { font-size: 13px; color: var(--ink-soft); }
+  .chap .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    margin-right: 4px; margin-top: 8px;
+    background: var(--tag-bg, #EFF6FF); color: var(--tag-c, var(--py-blue));
+    font-weight: 600;
+  }
+  .chap .done {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--go); color: white;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .chap .pending {
+    position: absolute; top: 14px; right: 14px;
+    background: #F1F5F9; color: #94A3B8;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* ===== Chapter blocks (深度章节) ===== */
+  .chapter {
+    background: white; border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); margin-top: 28px;
+  }
+  .chapter h2 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink);
+  }
+  .chapter h2 .id {
+    background: var(--py-yellow); color: var(--ink);
+    padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .chapter .video-link {
+    margin-top: 8px; font-size: 14px; color: var(--ink-soft);
+  }
+  .chapter .video-link a {
+    color: var(--py-blue); text-decoration: none; font-weight: 600;
+  }
+  .chapter .video-link a:hover { text-decoration: underline; }
+  .chapter h3 {
+    font-size: 20px; margin: 36px 0 12px; font-weight: 700; color: var(--py-deep);
+    border-left: 4px solid var(--py-yellow); padding-left: 12px;
+  }
+  .chapter p, .chapter li { font-size: 15px; color: #1F2937; }
+  .chapter ul, .chapter ol { padding-left: 22px; }
+  .chapter li { margin: 4px 0; }
+
+  /* ===== Callout boxes ===== */
+  .tip, .warn, .must, .rush {
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    margin: 16px 0; font-size: 14.5px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip { background: #ECFEFF; border-left: 4px solid #06B6D4; color: #155E75; }
+  .warn { background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; }
+  .must { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; }
+  .rush { background: #FFF7ED; border-left: 4px solid #F97316; color: #9A3412; }
+  .tip .ico, .warn .ico, .must .ico, .rush .ico { font-size: 20px; flex: none; }
+  .tip b, .warn b, .must b, .rush b { font-weight: 800; }
+
+  /* ===== Code cards ===== */
+
+  .code-card {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+    margin: 16px 0;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px; line-height: 1.65;
+    overflow-x: auto;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    position: relative;
+  }
+  .code-card .head {
+    display: flex; justify-content: space-between; align-items: center;
+    color: #94A3B8; font-size: 12px; font-family: inherit;
+    margin: -4px 0 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+  .code-card .head .file { color: var(--py-yellow); font-weight: 700; }
+  .code-card .copy {
+    cursor: pointer; user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .code-card .copy:hover { background: rgba(255,255,255,0.14); }
+  .code-card .copy.ok { background: var(--go); border-color: var(--go); color: #042F1E; }
+
+  /* syntax highlighter */
+  .c-kw { color: var(--kw); font-weight: 600; }
+  .c-str { color: var(--str); }
+  .c-num { color: var(--num); }
+  .c-fn { color: var(--func); }
+  .c-com { color: var(--comment); font-style: italic; }
+  .c-self { color: #FFB86C; font-style: italic; }
+  .c-op { color: #8BE9FD; }
+
+  /* ===== Tables ===== */
+  .t {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: white; border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+  }
+  .t th {
+    background: var(--py-deep); color: white;
+    padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tr:hover td { background: #F8FAFC; }
+  .t .lbl {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .lbl-b { background: #DBEAFE; color: #1E40AF; }
+  .lbl-g { background: #D1FAE5; color: #065F46; }
+  .lbl-o { background: #FED7AA; color: #9A3412; }
+  .lbl-r { background: #FECACA; color: #991B1B; }
+  .lbl-p { background: #F3E8FF; color: #6B21A8; }
+
+  /* ===== Big stat cards ===== */
+  .bigstats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 18px 0 12px;
+  }
+  .bs {
+    background: linear-gradient(135deg, var(--bsc1, #F8FAFC), var(--bsc2, #FFFFFF));
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .bs .v {
+    font-size: 40px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bs .l { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ===== Tag list ===== */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; color: var(--ink-soft); padding: 32px 16px; font-size: 13px; }
+  footer a { color: var(--py-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+      /* === 章节卡片样式（v3.1 补齐：所有章节页通用） === */
+      
+      /* === 卡片立体化（v3.2：加白底 + 边框 + 圆角） === */
+      .skel {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 14px 0;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+      }
+      .skel:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+      }
+      .skel > details > summary {
+        cursor: pointer;
+        padding: 8px 0 12px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        list-style: none;
+        user-select: none;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        margin-bottom: 10px;
+      }
+      .skel > details > summary::-webkit-details-marker { display: none; }
+      .skel > details > summary:before {
+        content: "\25B6  ";
+        color: var(--py-blue);
+        display: inline-block;
+        transition: transform .2s;
+        margin-right: 6px;
+      }
+      .skel > details[open] > summary:before { content: "\25BC  "; }
+      .skel h3 {
+        margin: 14px 0 8px;
+        font-size: 15px;
+        color: var(--py-deep);
+        padding-left: 10px;
+        border-left: 3px solid var(--py-yellow);
+        background: rgba(255, 212, 59, 0.08);
+        padding-top: 4px;
+        padding-bottom: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+      .skel ul { padding-left: 26px; margin: 4px 0 10px; }
+      .skel li { margin: 3px 0; font-size: 14.5px; }
+      .skel .code-card { margin: 8px 0; font-size: 13px; }
+      .skel .tip, .skel .warn, .skel .must, .skel .rush { margin: 8px 0; font-size: 13.5px; }
+
+      .quote {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #FFFEF7;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 0 10px 10px 0;
+        font-size: 14.5px;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
+      }
+      .quote-meta {
+        flex: none;
+        min-width: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #92400E;
+        background: rgba(245, 158, 11, 0.15);
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .quote-text { color: #1F2937; line-height: 1.7; }
+      .quote-text b { color: #B45309; }
+    
+      /* ===== 章节页导航条 ===== */
+      .chap-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 14px 32px;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+      .chap-nav .nav-row {
+        display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        max-width: 1200px; margin: 0 auto;
+      }
+      .chap-nav .nav-home {
+        color: var(--py-blue); font-weight: 700; text-decoration: none;
+        padding: 6px 14px; border: 1px solid var(--py-blue);
+        border-radius: 8px; font-size: 13px;
+      }
+      .chap-nav .nav-home:hover { background: var(--py-blue); color: white; }
+      .chap-nav .nav-link {
+        color: var(--ink-soft); text-decoration: none;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px;
+      }
+      .chap-nav .nav-link:hover { background: rgba(55, 118, 171, 0.08); color: var(--py-blue); }
+      .chap-nav .nav-current {
+        color: var(--py-blue); font-weight: 700; padding: 6px 12px;
+        background: rgba(55, 118, 171, 0.10); border-radius: 6px; font-size: 13px;
+      }
+      .bnav-row {
+        display: flex; justify-content: space-between; align-items: center;
+        gap: 16px; max-width: 1200px; margin: 40px auto 24px;
+        padding: 0 32px;
+      }
+      .bnav {
+        padding: 14px 24px; border-radius: 10px; text-decoration: none;
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        color: var(--ink); font-size: 14px; font-weight: 600;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+        transition: all 0.2s;
+      }
+      .bnav:hover:not(.disabled) {
+        background: rgba(55, 118, 171, 0.08);
+        border-color: var(--py-blue);
+        transform: translateY(-1px);
+      }
+      .bnav.disabled { opacity: 0.35; cursor: not-allowed; }
+      .bnav.next { margin-left: auto; }
+      .bnav-mid { color: var(--ink-soft); font-size: 13px; font-weight: 600; }
+      .chapter-body { max-width: 1200px; margin: 0 auto; padding: 32px; }
+      .chapter-h1 {
+        font-size: 32px; font-weight: 800; margin: 0 0 18px 0;
+        color: var(--py-deep); letter-spacing: -0.5px;
+      }
+      .chapter-body .section-desc { color: var(--ink-soft); margin-bottom: 24px; font-size: 15px; line-height: 1.7; }
+    
+      /* ===== 缺失 CSS 补齐 (v3.3 审计补) ===== */
+      .ep-h2 { font-size: 22px; font-weight: 800; color: var(--py-deep); margin: 28px 0 16px; letter-spacing: -0.3px; }
+      .ep-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 18px; }
+      .toc { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.08); border-radius: 14px; padding: 24px 28px; margin: 24px 0; box-shadow: 0 2px 8px rgba(15,23,42,0.04); }
+      .prev { color: var(--py-blue); }
+      .prev:hover { text-decoration: underline; }
+      .c-c-str { color: var(--str); }
+    </style>
+</head>
+<body>
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><span class="nav-current">📝 模拟题 + 真题 + 收尾 + 加餐</span>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch6-第8-10章.html">← 📖 第 8-10 章 模块/标准库/第三方库</a>
+    <span class="bnav-mid">第 7 / 7 章</span>
+    <span class="bnav next disabled">已是最后一章</span>
+  </div>
+
+
+<section class="chapter-body">
+  
+    <h1 class="chapter-h1"><span class="num">7</span>📖 模拟题 × 2 + 真题 × 2 + 收尾 + 加餐 笔记（22 集）</h1>
+    <p class="section-desc">
+      这 22 集 = <b>4 套完整试卷 + 老师叮嘱 + 加餐</b>。每套试卷 5 个分集（公共基础 / Python 综合 / 基本编程 / 简单应用 / 综合应用）。
+      操作题建议<b>逐套写真题（不要跳），每套写 2 遍</b>，这是通过考试最稳的路径。
+    </p>
+
+    <!-- P69 · 模拟题 1-1 公共基础知识 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P69</b> · 模拟题 1-1 公共基础知识 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 05:34</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>10 道选择 × 1 分 = 10 分</li><li>考：数据结构 / 程序设计基础 / 软件工程 / 数据库</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 代码示意</span><span class="copy">真实片段</span></div>
+<pre><span class="c-cmt">这个其实大家应该知道了吧,这个很明显这题应该选D,顺与结构,然后循环结构选择结构,这个咱们去Python也都懂,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：说存守空间不一定是连续且各元素的顺序都是任意的,对,这很明显,这就是线性链表,</div></div>
+        <div class="tip"><div class="ico">💡</div><div><b>冲刺</b>：栈和队列的区别（先进后出 vs 先进先出）、二叉树遍历、算法复杂度、内聚与耦合、关系模型这 5 个点几乎年年考到。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:23</b></div><div class="quote-text">因为里面会设计到大量的软件工程、数据结构、数据故国等这一系列的东西。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:57</b></div><div class="quote-text">以下选项中描述正确的是什么存守在外存中所占存守空间量数据的计算机中的顺序存守方式等,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:02</b></div><div class="quote-text">二的7减1四方就是二的6四方多少啊,就是64,所以这个满二叉数它的这个叶子节点总数应该是64,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:32</b></div><div class="quote-text">接着再来第五题说关于面向对象的继承以下选项中描述正确得是,继承是指一个对象就另一个对象的性质不可能,然后继承是指一组对象所具有的相似性质,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:55</b></div><div class="quote-text">面向对象,软件开发的,这个只不过Python其实也是面向对象的远,但是咱们Python这个国二不考,所以这个就没讲面向对象的内容。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:56</b></div><div class="quote-text">好,咱们继续,第九题说设有学生选课的三张表,学生表S叫学号性名性别年龄生存分证号,课程表有课程号,课程名,还有一个选课表SE,学号课程号成绩,然后说这个选课这个表的关键字或者键,或者码是什么,很明显,那就是一个学号和课程号,你懂数据库就很明显,看出来不能数据库,那没招。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:45</b></div><div class="quote-text">你看一下吧,你看他们互相之间谁有谁没有的,好吧,R有12,R23,S呢,R23和R23也有,然后他们俩之间的T里面有12,其实你感觉上应该是什么,应该是用R减去S等于T的这种感觉,对不对,或者说S加上T正好是一个R的这些数据,，这个题啊,你不会计算机其实也无所谓啊,为什么呢,你回忆一下,Python当中咱们讲集合的时候就是类似的事儿,对不对,集合当时咱们说讲一个交集并集补集插集,对吧,这其实就是那里面属于这里面的一个插集的事儿,OK,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P70 · 模拟题 1-2 python综合知识 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P70</b> · 模拟题 1-2 Python 综合知识 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 13:27</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>15 道选择 × 2 分 = 30 分</li><li>考：语法 / 数据类型 / 控制流 / 函数 / 组合类型 / 文件 / 库</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 典型判断题</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>Q: <span class="c-kw">print</span>(<span class="c-fn">list</span>(<span class="c-fn">map</span>(<span class="c-fn">str</span>, <span class="c-fn">range</span>(<span class="c-num">3</span>)))) 输出是什么？
+A: [<span class="c-str">'0'</span>, <span class="c-str">'1'</span>, <span class="c-str">'2'</span>]
+
+Q: <code class="mono">[1,2] is [1,2]</code> 为 True 还是 False？
+A: <span class="c-kw">False</span>（两个不同对象的 is 比较 = <span class="c-kw">False</span>）</pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>高频考点</b>：<code class="mono">is</code> vs <code class="mono">==</code>、字符串编码、列表引用、闭包变量作用域、字典 key 是否可哈希。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：说关于Python程序格式框架的描述以下选项错误的事。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：以下关于Python字符刹的描述中错误的事沉默。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:40</b></div><div class="quote-text">所以Import true,然后这个引入,呃,Import這個turtle吧,应该是,我感觉这里面应该是这个字敲错了。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:41</b></div><div class="quote-text">呃,首先说复数类型表示数为中的复数,没错啊,复数的虚数部分通过后对这一会儿这一来表示没错,对于复数在,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:43</b></div><div class="quote-text">说pyson通过track acept,没错,程序常发生经过团然处理,可以继续实行对。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:36</b></div><div class="quote-text">如果s是s的元素,那么s应该是反回错误,没错,如果s不是s,对,没错,然后c如果s是一个序列,那么s等于这个s3反回哪有3的,012的这个,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:43</b></div><div class="quote-text">数据组织存在维度,字典类型用于表示一维和二维数据,字典哪有这个一维二维,字典一般是用表示高维数据啊,这说清楚啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:44</b></div><div class="quote-text">下面代码输出结果是什么,for循环Helo World,然后这个s,如果s等于w,那么就continue,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:12</b></div><div class="quote-text">这个地大地,那大地是啥,黑色呗,然后地点guide的是大地和这个黄色,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:16</b></div><div class="quote-text">好了,那到这的话,咱们整个这个关于pysin综合知识部分的题就算是讲完了,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P71 · 模拟题 1-3 基本编程题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P71</b> · 模拟题 1-3 基本编程题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 09:40</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>3 道 × 5 分 = 15 分</li><li>都是<b>填空式代码补全</b>：在 PY101.py / PY102.py / PY103.py 里填横线</li><li>不修改模板代码，只在空白处写</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 PY101.py 模板</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># 题目：输入一个整数 n，计算 1+2+...+n 输出 "result=xx"</span>
+n = <span class="c-fn">eval</span>(<span class="c-fn">input</span>())
+s, i = <span class="c-num">0</span>, <span class="c-num">1</span>
+<span class="c-kw">while</span> i &lt;= n:
+    <span class="c-c-str">填空 1</span>
+    i += <span class="c-num">1</span>
+<span class="c-kw">print</span>(<span class="c-str">"result="</span> + <span class="c-fn">str</span>(s))   <span class="c-com"># 填空 2：把 s 转字符串再拼</span></pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背 4 模板</b>：① 累加模板 ② 列表操作 ③ 字符串 split ④ 字典统计（cnt[c] = cnt.get(c, 0) + 1）。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：这里面说了有一个限定,不能使用任何其他的模块。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：基本编程题<b>解题套路</b>：① 读题画流程图 ② 列出输入/输出 ③ 写伪代码 ④ 转 Python ⑤ 边界值测试（0、空、最大、最小）。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:04</b></div><div class="quote-text">第一题,说仅适用Python基本语法,既不使用任何模块编写Python程序,计算下列数学表达式的结果并输出,小点后保留三位。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:29</b></div><div class="quote-text">其实很简单,X等于开根号,其实开根号咱们不太知道该怎么办,其实很简单。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:22</b></div><div class="quote-text">下一题,说这个以中国工人的第19次全国代表大会报告中</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:00</b></div><div class="quote-text">这个其实还是比较简单的,比较容易去进行统计的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:49</b></div><div class="quote-text">然后这里面这鞋杠实际上是为了换行方便,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:10</b></div><div class="quote-text">不就知道这列表当中有多少个词了吗?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:48</b></div><div class="quote-text">这咱们当时讲format的时候都讲过,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:18</b></div><div class="quote-text">考察的就是你对format的这个,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P72 · 模拟题 1-4 简单应用题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P72</b> · 模拟题 1-4 简单应用题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 09:46</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>第 1 题：10 分（必考 <b>turtle 绘图</b>）</li><li>第 2 题：15 分（考<b>组合类型综合</b>：list/tuple/set/dict 自由运用）</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 PY201.py 经典题型</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-c-str">题目：打印等腰三角形（五角星、五瓣花）</span>
+<span class="c-kw">import</span> turtle
+t = turtle.<span class="c-fn">Pen</span>()
+t.<span class="c-fn">pensize</span>(<span class="c-num">2</span>)
+<span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">3</span>):
+    t.<span class="c-fn">forward</span>(<span class="c-num">100</span>)
+    t.<span class="c-fn">left</span>(<span class="c-num">120</span>)
+turtle.<span class="c-fn">done</span>()</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>简单应用题</b>（15 分）通常考文件 I/O：读 CSV、按行处理、统计、写入新文件。背熟 <code class="mono">open()</code> + <code class="mono">for line in f:</code> + <code class="mono">f.write()</code> 三件套。</div></div>
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：用 <code class="mono">with open(...) as f:</code> 自动关文件，<b>不要</b>忘 <code class="mono">f.close()</code> 造成数据丢失。</div></div><h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:13</b></div><div class="quote-text">函数和Turtle点 SETH SETH是什么 SET heading吗</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:13</b></div><div class="quote-text">好 那无非就是要怎么填写这里面的内容是吧</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:47</b></div><div class="quote-text">然后Turtle.fd20d 等于D加90</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:11</b></div><div class="quote-text">我首先把这个LS给它复制过来</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:46</b></div><div class="quote-text">一个word就拿到列表当中的一个元素</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:38</b></div><div class="quote-text">我这字点当中有没有相对应的key</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:19</b></div><div class="quote-text">d这个然后key综合是1了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:12</b></div><div class="quote-text">给他这个v强转成字幕块儿</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P73 · 模拟题 1-5 综合应用题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P73</b> · 模拟题 1-5 综合应用题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 25:18</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>1 大题 = 3 小问 = 20 分</li><li>完整流程：<b>读 txt 文件 → 字典/列表处理 → 写回文件</b></li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 综合应用模板</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">def</span> <span class="c-fn">read_data</span>(path):
+    <span class="c-kw">with</span> <span class="c-fn">open</span>(path, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+        <span class="c-kw">return</span> [line.<span class="c-fn">strip</span>() <span class="c-kw">for</span> line <span class="c-kw">in</span> f]
+
+<span class="c-kw">def</span> <span class="c-fn">analyze</span>(lines):
+    cnt = {}
+    <span class="c-kw">for</span> line <span class="c-kw">in</span> lines:
+        <span class="c-kw">for</span> c <span class="c-kw">in</span> line:
+            cnt[c] = cnt.<span class="c-fn">get</span>(c, <span class="c-num">0</span>) + <span class="c-num">1</span>
+    <span class="c-kw">return</span> <span class="c-fn">sorted</span>(cnt.<span class="c-fn">items</span>(),
+                  key=<span class="c-kw">lambda</span> x: x[<span class="c-num">1</span>], reverse=<span class="c-kw">True</span>)
+
+<span class="c-kw">def</span> <span class="c-fn">write_result</span>(path, data):
+    <span class="c-kw">with</span> <span class="c-fn">open</span>(path, <span class="c-str">"w"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+        <span class="c-kw">for</span> k, v <span class="c-kw">in</span> data:
+            f.<span class="c-fn">write</span>(<span class="c-str">f"{k}: {v}\n"</span>)
+
+lines = <span class="c-fn">read_data</span>(<span class="c-str">"data.txt"</span>)
+stats = <span class="c-fn">analyze</span>(lines)
+<span class="c-fn">write_result</span>(<span class="c-str">"result.txt"</span>, stats)</pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>模板价值</b>：写 3 个函数封装三步操作 = 满分 20 的"工程化解法"，先做模板再用题填充就轻松。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：他要提的是arpa001啊注意,这里面还有这个判断了。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：来看问题一,说在py301-1.pi文件当中修改代码,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:24</b></div><div class="quote-text">然后这里面第一列是传感器获取数据的时间,也就是这一部分,指的是时间。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:19</b></div><div class="quote-text">放到这个叫arpa01.txt当中去,是吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:00</b></div><div class="quote-text">如果说这个earp01要是这个inls这个列表当中</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:25</b></div><div class="quote-text">统计ARPA 01对应的职员在各个楼层和区域出现的次数</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:17</b></div><div class="quote-text">然后他通过items就把里面这个key和Value</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:18:57</b></div><div class="quote-text">上字典里面看有没有这s的这样的一个key啊</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:21:51</b></div><div class="quote-text">这样的话就把这内容都写到那文件当中去</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:24:52</b></div><div class="quote-text">反正咱也不知道人家考试中心是怎么想的</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P74 · 模拟题 2-1 公共基础知识 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P74</b> · 模拟题 2-1 公共基础知识 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 05:27</span></summary>
+        <h3>📌 与模拟 1 差异</h3>
+        <ul><li>题型和难度一致，题号重排</li><li>侧重点可能略偏（比如软件生命周期更多题）</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 代码示意</span><span class="copy">真实片段</span></div>
+<pre><span class="c-cmt">因为这里面包含计算机专业的很多门课,数据结构、数据库、数据测试、软件开发等等的好多内容。</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：然后要么就通过你的逻辑推理能力,去除几个错误它,再不行的,就说难听点儿,懵吧。</div></div>        <div class="tip"><div class="ico">💡</div><div>不要在 2 套模拟题之间犹豫——做 1 套就够，做 2 套太亏；做完直接做真题。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：说关于算法的描述以下选项中描述错误的是什么。看A说算法是指解题方案的准确完整的描述,看着没问题啊。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:04</b></div><div class="quote-text">第一部分,公共基础知识部分,还是再说一次,如果是非计算机专业的同学,这一部分你也不用想着说你怎么能通过努力学习,能学明白。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:48</b></div><div class="quote-text">说关于算法的描述以下选项中描述错误的是什么。看A说算法是指解题方案的准确完整的描述,看着没问题啊。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:31</b></div><div class="quote-text">再来看,说关于数据结构的描述以下选项中正确得是,A说数据结构指相互有关联的数据元素的集合,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:37</b></div><div class="quote-text">这和咱们之前做过的一个二差数的提出的事是不一样的,这是满二差数,不是普通二差数吧。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:47</b></div><div class="quote-text">所以二的7次方是128-1就是127,这才是我们证据的一个答案。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:45</b></div><div class="quote-text">接下来关于软件工程的描述以下选项中描述正确的事实</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:08</b></div><div class="quote-text">所以软件工程工具是完成软件工程项目的技术手段</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:20</b></div><div class="quote-text">咱们再开始来pyson的一些综合知识部门将军</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P75 · 模拟题 2-2 python综合知识 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P75</b> · 模拟题 2-2 Python 综合知识 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 16:12</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>15 道 × 2 分 = 30 分</li><li>新增可能涉及：高阶函数用法、列表生成式、map/filter 用法</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 选择典型题</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>Q: 以下哪个是<b>可哈希</b>对象？
+A. <span class="c-fn">list</span>  B. <span class="c-fn">dict</span>  C. <span class="c-fn">tuple</span>  D. <span class="c-fn">set</span>
+答：C（<span class="c-kw">tuple</span> 可作 dict key，list/dict/set 不可）
+
+Q: <code class="mono">lst = [1, 2, 3]; a, b, c = lst</code> 后 a, b, c 分别是什么？
+A: <span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：接着再来,14题,说这个关于Evo函数以下选项中描述错误的时候,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：Evo函数定义为Evo,这个sauce,是没问题,反正里面参数写啥都行,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:07</b></div><div class="quote-text">第一题,以下选项中Python用于异常处理结构中,用来补货特定类型异常保留字式神模。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:10</b></div><div class="quote-text">就是个有参数的对吧,然后Evo函数的作用是将输入的字符创转为Python语句,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:08</b></div><div class="quote-text">然后每个continuous语句有能力跳出当前层次的循环,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:48</b></div><div class="quote-text">二十六,以下选项中不是Python对文件的打开模式的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:18</b></div><div class="quote-text">Python数据分析方向的第三方库是什么,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:04</b></div><div class="quote-text">在Python Turtle Graphic中,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:56</b></div><div class="quote-text">说能实现将一维数据写入CSV文件中的是什么,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:47</b></div><div class="quote-text">你这数据根本就不是用Douhal格开,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P76 · 模拟题 2-3 基本编程题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P76</b> · 模拟题 2-3 基本编程题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 10:04</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>3 × 5 分 = 15 分</li><li>模板代码完全一样，<b>只换题目</b></li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">首先来看第一题,说编写、程序、输出一具有如下风格效果的文本,用作文本进度调样式,部分代码如下,添写控制处。</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：其实这里面主要考察的是什么,考察的是你的format输出。</div></div>
+        <div class="must"><div class="ico">📌</div><div><b>必背骨架</b>：<br>
+        ① 列表操作：<code class="mono">lst.sort() / lst.append() / len() / sum()</code><br>
+        ② 字符串：<code class="mono">s.split() / "".join() / s.replace() / sorted(s)</code><br>
+        ③ 字典：<code class="mono">cnt[k] = cnt.get(k, 0) + 1</code></div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：那是抱错了,哦,这估计是有一个看不到的什么中文的控车啊,换行啊之类的,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:04</b></div><div class="quote-text">首先来看第一题,说编写、程序、输出一具有如下风格效果的文本,用作文本进度调样式,部分代码如下,添写控制处。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:09</b></div><div class="quote-text">然后它说N这个等号是多少个等号呢?不一定多少个等号,要根据你计算的一个情况,它输出多少个呢?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:15</b></div><div class="quote-text">那就是大于号,然后整体宽度是3,所以这里面说了三个字符,然后右侧这儿呢,要求20个字符,左对起,所以那这儿帽号小于号20是不是就可以了,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:53</b></div><div class="quote-text">好,大概是这意思,然后就是说在这补充一个代码,这代码可以是单行也可以是多行的。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:05</b></div><div class="quote-text">那汉字的个数咱们就用N,这个标点符号的个数就用M,这是它给咱们准备好的代码,咱们就只要填中间这一段内容就行了。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:16</b></div><div class="quote-text">这里面这库号是中文的还是英文,M没错啊,M format再来一库号,好,再执行一下,那肯定是有这种有格式这种问题啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:38</b></div><div class="quote-text">它是一个整数的,那所以咱们得这么来做,把这字符创清一下吧,对吧,之前说过,Input接收到的内容全部都是字符创,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:57</b></div><div class="quote-text">意思就是说,从N一直循环到N加10,取到里面所有的整数,然后呢,我们是不是就是每一次能拿到一个数啊,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P77 ·模拟题 2-4 简单应用题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P77</b> · 模拟题 2-4 简单应用题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 09:49</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>10 + 15 = 25 分</li><li>第 1 题 turtle：必考 <b>同切圆</b> 或 <b>叠边正方形</b></li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 同切圆模板</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> turtle
+t = turtle.<span class="c-fn">Pen</span>()
+<span class="c-kw">for</span> r <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">20</span>, <span class="c-num">100</span>, <span class="c-num">20</span>):  <span class="c-com"># 半径递增</span>
+    t.<span class="c-fn">circle</span>(r)
+    t.<span class="c-fn">penup</span>()
+    <span class="c-com"># 调整下一圆的位置...</span>
+turtle.<span class="c-fn">done</span>()</pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>turtle 必背</b>：考试如果画图位置不对，立刻检查是不是 <code class="mono">penup() / pendown()</code> 用错。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：循环六次,每次都是往前走,然后转角度。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：否则的话,如果用户输入的不是整数,则要求用户重新输入,直至用户输入整数为止。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:04</b></div><div class="quote-text">简单应用题的话,这里面说使用Turtle Col的Turtle FD和函数Jetzer Live,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:15</b></div><div class="quote-text">否则的话,如果用户输入的不是整数,则要求用户重新输入,直至用户输入整数为止。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:56</b></div><div class="quote-text">好,那这样咱这么写,就是说假设这代码一点问题都没有,咱就是输出的是整数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:43</b></div><div class="quote-text">GuardInput is not defined.GuardInput,oh, hi,GuardInput,再来。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:51</b></div><div class="quote-text">想象一下啊,如果我输入一个123,那么eval123和int123,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:24</b></div><div class="quote-text">同学们,也就是说这个是可以用来帮助我们去判断它输入的到底是整数还是小数,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:25</b></div><div class="quote-text">确实这里面是有这样的一个问题,就是这段视频我就不节,大家也引以为见,有这样的一个问题</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:52</b></div><div class="quote-text">我把return不包围,except里面写什么呢?里面才是return, guide, input,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P78 · 模拟题 2-5 综合应用题 -->
+    <article class="skel">
+      <details>
+ <summary><b style="color:#DC2626">P78</b> · 模拟题 2-5 综合应用题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">模拟卷 · 17:48</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>20 分 = 3 小问</li><li>题型基本与模拟 1 一致：读→处理→写</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">for mat</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：然后看问题一样,在Py301-1.pi文件中修改代码,</div></div>  <div class="tip"><div class="ico">💡</div><div>这一集解题思路复用了 P73 的模板，做过第一套，第二套应该 30 分钟内完成。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:06</b></div><div class="quote-text">所以伦语是儒家学派经典筑则之一,主要记录了孔子及其弟子的原型。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:01</b></div><div class="quote-text">有这么一段代码让你写然后folowing iwi</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:26</b></div><div class="quote-text">我现在这个line现在一行的读取这里面内容如果我发现这一行里面原文这么两字</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:41</b></div><div class="quote-text">一堆换行服大家能看到或者一个换行服啊你看这里面很多地方都是有都是换行服的看到了吗</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:06</b></div><div class="quote-text">没有你不要觉得说老师你咋知道我咋不知道你别着急你见得多了你也就知道了ok好接着咱们再来继续啊那执行一下看吧</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:11</b></div><div class="quote-text">第二题又是十分了啊说这个在这个文件当中修改代码对轮语原文点tsc或者是轮语点tsc文件进一步提出</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:15:29</b></div><div class="quote-text">而且这个爱还得sdr再进行一个强转换当然了是有点麻烦所以怎么办呢咱们还可以做格式化输出的</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:15:51</b></div><div class="quote-text">然后爱放进去不就得了吗啊爱就是12345678啊90一直到2然后就在这个位置去替换这个过号嘛对吧</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P79 · 真题 1-1 公共基础知识 --><article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P79</b> · 真题 1-1 公共基础知识 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 05:33</span></summary>
+        <h3>📌 真题特点</h3>
+        <ul><li>出题更活，套话少了</li><li>公共基础 8-10 题里 6-7 题是上面 4 块（数据结构/程序设计/软件工程/数据库）的常见考点</li></ul>
+        <div class="rush"><div class="ico">⚡</div><div><b>考试冷门</b>：算法的<span style="color:var(--warn);">时间复杂度</span>出现频率近年升高，记住 O(1)/O(log n)/O(n)/O(n²)/O(n log n) 对应场景。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>选择题</b>共 40 题 × 1 分，单选+部分多选。基础概念、语法细节、库函数用法是高频考点。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>操作题</b>共 3 大题：基本编程（15 分）、简单应用（15 分）、综合应用（20 分）。重点是函数定义、文件 I/O、综合算法。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:26</b></div><div class="quote-text">就是你如果不是一个计算机背景的同学,你就不要奢望说这十道题你能得完本。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:41</b></div><div class="quote-text">那个教材里面专门有一本特别厚的书啊,就讲公共基础知识的。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:26</b></div><div class="quote-text">一个对象请求另一个对象为其服务的方式是通过发送沉默,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:32</b></div><div class="quote-text">说结构化成一种下面对勾兔语句实用证学的事,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:50</b></div><div class="quote-text">然后第五个,数据库应用系统当中核心问题是沈默,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:32</b></div><div class="quote-text">将ER图转换为关系数据模型的过程,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:28</b></div><div class="quote-text">他先说的12345abcd,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:04</b></div><div class="quote-text">其实你就是应该在站和对列当中去懵,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P80 · 真题 1-2 python综合知识 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P80</b> · 真题 1-2 Python 综合知识 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 23:36</span></summary>
+        <h3>📌 真题特点</h3>
+        <ul><li>15 道选择，每题 2 分 = 30 分</li><li>套话分析：前 5 题偏基础语法，中 5 题偏组合类型，后 5 题偏库与函数</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">它是from random import a string,然后rand,然后random do or,也就是说产生了一个随机数,是不是?</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：说这个以下,对这个Python程序设计风格描述错误的选项是什么?</div></div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：<br>① <code class="mono">"x".join([...])</code> 用法（必考）<br>② 列表引用 vs 拷贝（必考）<br>③ 字典遍历顺序（Python 3.7+ 保留插入顺序）</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:19</b></div><div class="quote-text">然后Python可以将一条长语句分成多行显示使用续航服这个反鞋槓,这个是没问题的啊,就是大家如果在写代码的时候有很多行,有特别长,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:39</b></div><div class="quote-text">这个题是PyInstaler干嘛的?我介绍一下这个Coup是一个第三方Coup,它用来做什么事,用来可以把我们写好的pd文件打包成Windows操作系统识别的这种.exe文件,就是可执行文件。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:18</b></div><div class="quote-text">这就是考你这个random对这个random韩数了不了解,random韩数它取的是0到1之间的随机小数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:00</b></div><div class="quote-text">A是Watermelon,B是Strawbery,草莓,C是Teri,银桃,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:28</b></div><div class="quote-text">CSR实际上是将一个数值进行强力软换,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:17:34</b></div><div class="quote-text">然后具体这个比较的一个规则,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:20:20</b></div><div class="quote-text">说这个以下程序的输出结果是什么,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:23:27</b></div><div class="quote-text">咱们这个公共基础师是Python的这个综合知识部分,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P81 · 真题 1-3 基本编程题 -->
+    <article class="skel">
+      <details>      <summary><b style="color:#16A34A">P81</b> · 真题 1-3 基本编程题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 05:28</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>3 × 5 分 = 15 分</li><li>5 分钟讲完说明这题超简单，<b>主要是字符串/数字格式化</b></li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 经典模板</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-c-str">格式化输出：把输入的数字保留 2 位小数，输出 "result=xx.xx"</span>
+n = <span class="c-fn">eval</span>(<span class="c-fn">input</span>())
+result = <span class="c-fn">round</span>(n, <span class="c-num">2</span>)
+<span class="c-kw">print</span>(<span class="c-str">f"result={result:.2f}"</span>)</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：所以其实考查的是什么?不就是那个format格式画输出吗?</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>选择题</b>共 40 题 × 1 分，单选+部分多选。基础概念、语法细节、库函数用法是高频考点。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:38</b></div><div class="quote-text">所以其实考查的是什么?不就是那个format格式画输出吗?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:52</b></div><div class="quote-text">打开文程,这儿这么一个chrome给咱留着呢,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:37</b></div><div class="quote-text">考生文件下存在一个文件,Py101.pry,请写代码提换红线,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:16</b></div><div class="quote-text">看一下它线程给的代码,A是369,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:48</b></div><div class="quote-text">因为你这里面这个一共就三元素嘛,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:44</b></div><div class="quote-text">随机生成10个1到9之间的随机数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:36</b></div><div class="quote-text">然后再来看这Range里面,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:20</b></div><div class="quote-text">咱们再来继续这个基本的简单的用题,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P82 · 真题 1-4 简单应用题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P82</b> · 真题 1-4 简单应用题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 11:09</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>turtle 10 分 + 组合类型 15 分</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 turtle 历年真题</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-c-str">题目：画一个五角星，半径 100，填充红色</span>
+<span class="c-kw">import</span> turtle
+t = turtle.<span class="c-fn">Pen</span>()
+t.<span class="c-fn">pencolor</span>(<span class="c-str">"red"</span>)
+t.<span class="c-fn">fillcolor</span>(<span class="c-str">"red"</span>)
+t.<span class="c-fn">begin_fill</span>()
+<span class="c-kw">for</span> _ <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">5</span>):
+    t.<span class="c-fn">forward</span>(<span class="c-num">100</span>)
+    t.<span class="c-fn">right</span>(<span class="c-num">144</span>)
+t.<span class="c-fn">end_fill</span>()
+turtle.<span class="c-fn">done</span>()</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：那先来看第四题,考生文件下有这么一文件,不能修改要做Turtle,注意啊。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：Turtle 文件操作题：<b>路径</b>要注意是相对还是绝对，<code class="mono">.py</code> 同目录可直接写文件名。</div></div><h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:05</b></div><div class="quote-text">那先来看第四题,考生文件下有这么一文件,不能修改要做Turtle,注意啊。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:05</b></div><div class="quote-text">好,又FD20,好,那到这儿了,到这儿之后,咱应该再向右转头了吧,对不对,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:39</b></div><div class="quote-text">然后它要求你最终计算出来这组人的平均年龄,小点后保留两位,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:25</b></div><div class="quote-text">所以用空格split我能接到一个什么的,我能接到一个人员这些信息的一个列表,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:39</b></div><div class="quote-text">这列表里面的这个不同的内容,我就都能拿过,拿到里面当中什么内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:10</b></div><div class="quote-text">咱是不是还得怎么算,用man countotalH除以这个i,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:52</b></div><div class="quote-text">你在看这个data还是input,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:05</b></div><div class="quote-text">哦,在进行加的过程当中出了点问题,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P83 · 真题 1-5 综合应用题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P83</b> · 真题 1-5 综合应用题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 20:20</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>20 分 = 3 小问</li><li>必考"统计 + 排序 + 写文件"</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 真题套路</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-c-str">小问 1：读文件，统计每个字符出现次数</span>
+<span class="c-c-str">小问 2：按次数从大到小排序</span>
+<span class="c-c-str">小问 3：把结果写入 out.txt，每行 "字符:次数"</span>
+
+<span class="c-c-str">提示：用 lambda 当 key 排序</span>
+<span class="c-kw">return</span> <span class="c-fn">sorted</span>(cnt.<span class="c-fn">items</span>(),
+              key=<span class="c-kw">lambda</span> x: x[<span class="c-num">1</span>],
+              reverse=<span class="c-kw">True</span>)</pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背 lambda 排序</b>：<code class="mono">sorted(items, key=lambda x: x[1], reverse=True)</code> = 按字典值从大到小排。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：然后在里面我再去进一步的这种判断,判断什么的,别忘了,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：但是这次符号呢,它不能是标的符号,对不对,所以那我是不是就可以在这里面进行判断,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:39</b></div><div class="quote-text">把它里面的每一顿能拿出来kick value,然后又转换成了一个列表。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:03</b></div><div class="quote-text">然后按照词评的数量去进行排序,然后reverse当一处,那意思就是由高到低排,默认是由低到高排。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:55</b></div><div class="quote-text">想还有帽号吧,还得有单引号,还得有双引号,我就都写上了啊,除了这些呢,再想顿号,把这复制一下,再来几个,好,看还能有什么,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:51</b></div><div class="quote-text">然后呢,这里面有一个中文的全角空格,反正我以防万一啊,我就写上了,反性让N,30,这就是中文全角空格,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:43</b></div><div class="quote-text">其实感觉就是在刚才基础之上,刚才只输出一个,这回咱输出十个这事不就搞定了吗,对吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:43</b></div><div class="quote-text">然后所有自服按照屏次从高到低排序,还是咱们刚才做的,自服包括中文标点,英文等符号,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:17:42</b></div><div class="quote-text">接着我们就可以往static tic tic里面去进行write,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:18:45</b></div><div class="quote-text">然后前面这儿写上static tic tic.write lines,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P84 · 真题 2-1 公共基础知识 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P84</b> · 真题 2-1 公共基础知识<span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 09:13</span></summary>
+        <h3>📌 真题特点</h3>
+        <ul><li>稍微难一些，题量大</li><li>软件工程的<b>测试方法</b>（黑盒白盒）经常出</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 代码示意</span><span class="copy">真实片段</span></div>
+<pre><span class="c-cmt">比如说你要学习数据库,你要学习数据结构,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：这些二维表,网状结构,网结构说的实际上是数据库的类型,</div></div>        <div class="tip"><div class="ico">💡</div><div>黑盒测功能 vs 白盒测结构 —— 记住这条就行。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">同学们大家好,本节课开始我们来讲一套国家计算机二级考试Python的真题。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:04</b></div><div class="quote-text">在关系数据库当中,用来表示实体之间联系的是什么,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:37</b></div><div class="quote-text">只有这二维表是关系数据库当中用来表示实体之间联系的。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:30</b></div><div class="quote-text">这个工作表实际上就是为了让公司表和职员表建立一个联系,，然后同时还能看出来员工的工资,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:41</b></div><div class="quote-text">他们顺序这个存储结构之间的一些,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:02</b></div><div class="quote-text">这个学过软件工程的都知道这句话,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:06</b></div><div class="quote-text">下节课咱们再来继续看Python相关的综合知识的一些选择题。</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P85 · 真题 2-2 python综合知识 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P85</b> · 真题 2-2 Python 综合知识 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 39:08</span></summary>
+        <h3>📌 真题最详细</h3>
+        <ul><li>15 × 2 = 30 分，最接近真实考试难度</li><li><b>逐题精讲</b>39 分钟，每道题扩展到关联知识点</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 高频陷阱</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>Q: <code class="mono">a = (1, 2, [3])</code> 能改吗？
+A: 不能改 a 的元素，但 a[2].append(4) 可以！因为可哈希只判断第一层，<span class="c-kw">tuple</span> 套 <span class="c-fn">list</span> 是不可哈希。</pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>真题常见问法</b>：判断代码输出。读代码时一定先标出变量的<b>类型</b>，再标值。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>选择题</b>共 40 题 × 1 分，单选+部分多选。基础概念、语法细节、库函数用法是高频考点。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>操作题</b>共 3 大题：基本编程（15 分）、简单应用（15 分）、综合应用（20 分）。重点是函数定义、文件 I/O、综合算法。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:03:07</b></div><div class="quote-text">其实这里面主要考察的是你对这个PriceNumFoMate这个函数的一个理解,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:41</b></div><div class="quote-text">这个密运算其实它的优先级相对来说是会高一些的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:14</b></div><div class="quote-text">Random库里提供的不同类型的随机数函数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:15:19</b></div><div class="quote-text">它只能break停止一层否讯环,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:22:07</b></div><div class="quote-text">pyson函数里引用一个组合类型的一个变量,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:26:39</b></div><div class="quote-text">这个主要考察的是你对平时输出一个字点的一个结果的这个熟悉程度啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:30:58</b></div><div class="quote-text">然后做了一个排序Reverse等于True,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:36:58</b></div><div class="quote-text">说以下属于Python html和xml解析的第三方库是什么,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P86 · 真题 2-3 基本编程题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P86</b> · 真题 2-3 基本编程题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 19:41</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>3 × 5 分 = 15 分</li><li>题目最长最复杂</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 真题实战</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-c-str">题目：输入英文句子，每个单词反转，并保持单词顺序</span>
+s = <span class="c-fn">input</span>()
+words = s.<span class="c-fn">split</span>()
+result = <span class="c-str">" "</span>.<span class="c-fn">join</span>(w[::<span class="c-num">-1</span>] <span class="c-kw">for</span> w <span class="c-kw">in</span> words)
+<span class="c-kw">print</span>(result)
+<span class="c-c-str">输入："hello world"   输出："olleh dlrow"</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>选择题</b>共 40 题 × 1 分，单选+部分多选。基础概念、语法细节、库函数用法是高频考点。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>操作题</b>共 3 大题：基本编程（15 分）、简单应用（15 分）、综合应用（20 分）。重点是函数定义、文件 I/O、综合算法。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:02:01</b></div><div class="quote-text">当然这个Turtle的题除外啊,就是那些Turtle会图的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:07</b></div><div class="quote-text">有一个split,还是说过叫split的方法,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:10</b></div><div class="quote-text">输出这个10进制的8进制形式了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:45</b></div><div class="quote-text">但是如果按照我现在代码来写的一个方式来看的话,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:04</b></div><div class="quote-text">假设说有这么一个data.txt文件,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:15</b></div><div class="quote-text">你看是不是你这个你想要的那个东西的那个样子,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:15:09</b></div><div class="quote-text">那我就可以对应这个C,再进行进一步的Split,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:18:11</b></div><div class="quote-text">那你如果想去计算课程的数量,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P87 · 真题 2-4 简单应用题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P87</b> · 真题 2-4 简单应用题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 22:34</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>turtle 10 分 + 综合 15 分</li><li>真题 2 综合题考的是<b>数值计算 + 排序</b>的组合</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 简单应用 2 综合模板</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-c-str">题目：读入一组学生成绩，输出平均分、最高分、最低分</span>
+scores = <span class="c-fn">list</span>(<span class="c-fn">map</span>(<span class="c-fn">int</span>, <span class="c-fn">input</span>().split()))
+<span class="c-kw">print</span>(<span class="c-str">f"平均 {sum(scores)/len(scores):.2f}"</span>)
+<span class="c-kw">print</span>(<span class="c-str">f"最高 {max(scores)}"</span>)
+<span class="c-kw">print</span>(<span class="c-str">f"最低 {min(scores)}"</span>)</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：咱们接着往下看。首先循环,循环做什么事?</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>选择题</b>共 40 题 × 1 分，单选+部分多选。基础概念、语法细节、库函数用法是高频考点。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:35</b></div><div class="quote-text">那么不同圆圈之间的半径差是四十相数,就是它们之间的一个差值是四十相数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:11</b></div><div class="quote-text">应该是把笔抬起来,所以应该是pan upan down,pan up,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:46</b></div><div class="quote-text">展示输出每个词汇出现的次数,以及出现次数最多的词汇,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:33</b></div><div class="quote-text">我就先别这个每次验证代码的时候都输入一次,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:30</b></div><div class="quote-text">我把这个符号全部都给它进行一家替换,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:15:28</b></div><div class="quote-text">要用guide函数或者叫guide方法来去做,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:18:12</b></div><div class="quote-text">也就是这个highwards用来去存取,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:20:26</b></div><div class="quote-text">要是等于你的这个arwards key,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P88 · 真题 2-5 综合编程题 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#16A34A">P88</b> · 真题 2-5 综合编程题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">真题卷 · 23:55</span></summary>
+        <h3>📌 题型分布</h3>
+        <ul><li>20 分 + 难度顶峰</li><li>三步：读入 txt → 用字典聚合 → 按某个 key 排序输出</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">没有人说一下能把所有的代码</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：使用这个字点和列表形变量进行数据分析最终获取实际参加测试的</div></div>
+        <div class="must"><div class="ico">📌</div><div><b>必背题型</b>：成绩排序、词频统计、字典查表、JSON 读写（Python 3 中较少）。<br>
+        完整三段式：① 读数据 → ② 处理（聚合/统计/转换） → ③ 输出（文件/打印）</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>选择题</b>共 40 题 × 1 分，单选+部分多选。基础概念、语法细节、库函数用法是高频考点。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:14</b></div><div class="quote-text">它将测试结果与被测试者的现场照片组合成文件名写到了一个文件,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:04</b></div><div class="quote-text">也就是后面这个1716151273,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:53</b></div><div class="quote-text">然后咱们再来输出一下这个number,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:37</b></div><div class="quote-text">我们还得去掉零的这个字圈,对不对,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:32</b></div><div class="quote-text">直接就format格式话输出就可以了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:17:25</b></div><div class="quote-text">就是咱们还是要便利一下这个data,对不对,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:18:46</b></div><div class="quote-text">info i等于info.guide i.tol 0,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:21:20</b></div><div class="quote-text">我们是不是就可以Print什么,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P89 · 讲在最后的话 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#1E3A5F">P89</b> · 讲在最后的话 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">收尾 · 15:59</span></summary>
+        <h3>📌 老师叮嘱</h3>
+        <ul>
+          <li>题库随机抽题，<b>别赌押题</b></li>
+          <li>做题顺序：<b>先操作题（60 分）再选择题（40 分）</b>，操作题容易拿满</li>
+          <li>遇到读不懂的代码，<b>先 print 变量再读程序</b></li>
+          <li>选择题答完就锁定，<b>不要反复改</b></li>
+          <li>考试时间 120 分钟：操作题 80 分钟 + 选择题 35 分钟 + 检查 5 分钟</li>
+        </ul>
+
+        <div class="code-card">
+          <div class="head"><span class="file">📂 代码示意</span><span class="copy">真实片段</span></div>
+<pre><span class="c-cmt">老师那个Time这个库,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>考前心态</b>：90 集 18 小时课程不是让你全背，是让你<strong>知道考什么 + 练熟手感</strong>。</div></div>
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>考前 1 周冲刺</b>：① 近 3 年真题各做 2 遍 ② 二级公共基础 10 分单独刷 ③ IDLE 操作练 10 题。</div></div><h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:14</b></div><div class="quote-text">所以如果您是在Python二级系列的这个课程当中看到了我这个视频,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:07</b></div><div class="quote-text">所以这就解释了我为什么在课程内容上面去做一些遮掩,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:27</b></div><div class="quote-text">那你自己自学Time这个库的难度应该是非常低的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:44</b></div><div class="quote-text">然后我通过用了两年的时间把自己的身体恢复到现在这个样子了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:20</b></div><div class="quote-text">但是我发现在我在b站这个平台上真的找到了这个做老师的这种快乐啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:24</b></div><div class="quote-text">有一部分人他不一定是说想要学习我的课程通过Python二级的考试,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:00</b></div><div class="quote-text">基本上现在大家用到了和2019年用到的Python一些语法,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:04</b></div><div class="quote-text">这个都去聊数据在不同地方不同点的一些应用,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P90 · 加餐1 lambda表达式 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#DC2626">P90</b> · 加餐 1：以前录的 lambda 表达式 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">加餐 · 48:55</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>lambda</b>：匿名函数，<code class="mono">lambda 参数列表: 表达式</code></li>
+          <li>常用于 <code class="mono">sorted()</code> / <code class="mono">map()</code> / <code class="mono">filter()</code> 的 key 参数</li>
+          <li>只能写<b>单条表达式</b>，不能用 if/while/return</li>
+          <li><b>闭包陷阱</b>：lambda 引用循环变量</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 lambda 实战</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># 排序：按字典值从大到小</span>
+<span class="c-fn">sorted</span>(cnt.<span class="c-fn">items</span>(), key=<span class="c-kw">lambda</span> x: x[<span class="c-num">1</span>], reverse=<span class="c-kw">True</span>)
+
+<span class="c-com"># map：每个元素乘 2</span>
+<span class="c-fn">list</span>(<span class="c-fn">map</span>(<span class="c-kw">lambda</span> x: x*<span class="c-num">2</span>, [<span class="c-num">1</span>,<span class="c-num">2</span>,<span class="c-num">3</span>]))                <span class="c-com"># [2,4,6]</span>
+
+<span class="c-com"># filter：保留奇数</span>
+<span class="c-fn">list</span>(<span class="c-fn">filter</span>(<span class="c-kw">lambda</span> x: x % <span class="c-num">2</span> == <span class="c-num">1</span>, <span class="c-fn">range</span>(<span class="c-num">10</span>)))       <span class="c-com"># [1,3,5,7,9]</span>
+
+<span class="c-com"># 闭包陷阱：循环变量</span>
+funcs = [<span class="c-kw">lambda</span> i=i: i <span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">3</span>)]
+<span class="c-kw">print</span>([f() <span class="c-kw">for</span> f <span class="c-kw">in</span> funcs])                  <span class="c-com"># [0, 1, 2]（用 i=i 快照）</span></pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：<code class="mono">funcs = [lambda: i for i in range(3)]</code> 不加 <code class="mono">i=i</code>，所有 lambda 都返回最后那个 <code class="mono">2</code>。</div></div>
+        <div class="must"><div class="ico">📌</div><div><b>考试价值</b>：lambda + sorted 是真题综合题压轴第 3 问的常客，<b>记住 key=lambda x: x[1]</b> 模板就稳了。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：前两三次课吧,咱们这个应该是把字不错列表,字典,原组全部都讲完了是吧?</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：这里面的列表参数其实他说的那个列表和咱们学的那个数据类型的列表还不</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:05:17</b></div><div class="quote-text">你看一下啊咱们调用之后你看它输出内容对不对我输我传的是729你看但是它还是按照</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:30</b></div><div class="quote-text">这样行吗这样不行你看都明显抱错了那怎么样行啊你还可以这样啊比如说这个5都好6啊都好z等于9</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:11</b></div><div class="quote-text">当然很多时候比如说你可能就要获取这个6或者获取这个7 8 9</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:20:34</b></div><div class="quote-text">Lambdor是其实跟他的使用的场景很类似</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:28:28</b></div><div class="quote-text">我顺便这个再让大家去体会一下Lambder Belars</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:34:28</b></div><div class="quote-text">那最后我们是不是可以直接就return一下这个Temp了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:40:43</b></div><div class="quote-text">你看这也是f1c接了这么一个lambda表达式</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:48:15</b></div><div class="quote-text">那今天咱们其实讲的这个内容还是挺有意思的</div></div>
+      </details>
+          
+    </article>
+
+
+  
+</section>
+
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><span class="nav-current">📝 模拟题 + 真题 + 收尾 + 加餐</span>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch6-第8-10章.html">← 📖 第 8-10 章 模块/标准库/第三方库</a>
+    <span class="bnav-mid">第 7 / 7 章</span>
+    <span class="bnav next disabled">已是最后一章</span>
+  </div>
+
+
+<footer>
+  <p>📝 模拟题 + 真题 + 收尾 + 加餐 · 二级 Python 上岸笔记</p>
+  <p>原视频：<a href="https://www.bilibili.com/video/BV1Ys4y1D72T" target="_blank">B 站原视频</a> · 笔记整理：WorkBuddy</p>
+</footer>
+</body>
+</html>

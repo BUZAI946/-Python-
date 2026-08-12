@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>二级 Python 上岸指南 · 90 集完整笔记</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+二级 Python 上岸指南 · 90 集完整笔记
+<style>
+  :root {
+    --py-blue: #3776AB;
+    --py-yellow: #FFD43B;
+    --py-deep: #1E3A5F;
+    --code-bg: #0F172A;
+    --code-fg: #E2E8F0;
+    --kw: #FF79C6;
+    --str: #F1FA8C;
+    --num: #BD93F9;
+    --func: #50FA7B;
+    --comment: #6272A4;
+    --warn: #FF6B6B;
+    --go: #06D6A0;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Source Code Pro", monospace; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    padding: 64px 32px 56px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(255, 212, 59, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 110% 10%, rgba(6, 214, 160, 0.25), transparent 60%),
+      linear-gradient(135deg, #1E3A5F 0%, #2563EB 50%, #3776AB 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-wrap { max-width: 1180px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 212, 59, 0.18);
+    color: var(--py-yellow);
+    border: 1px solid rgba(255, 212, 59, 0.4);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot { width: 8px; height: 8px; background: var(--py-yellow); border-radius: 50%; box-shadow: 0 0 12px var(--py-yellow); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 20px 0 16px; line-height: 1.15; font-weight: 800; letter-spacing: -1px;
+  }
+  .hero h1 .y { color: var(--py-yellow); }
+  .hero .sub {
+    font-size: 19px; max-width: 800px; opacity: 0.92;
+  }
+  .hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 36px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat .v { font-size: 30px; font-weight: 800; color: var(--py-yellow); }
+  .stat .l { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  @media (max-width: 720px) { .hero .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ===== Layout ===== */
+  main { max-width: 1180px; margin: -28px auto 0; padding: 0 32px 80px; position: relative; }
+  section { margin-top: 56px; }
+
+  /* ===== Notice ===== */
+  .notice {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #FFF7E6 0%, #FFEFC5 100%);
+    border-left: 5px solid #FAAD14;
+    color: #614700;
+    box-shadow: var(--shadow);
+    display: flex; gap: 16px;
+  }
+  .notice .ico { font-size: 28px; flex: none; }
+  .notice strong { color: #874D00; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .notice a { color: #1E3A5F; font-weight: 600; }
+
+  /* ===== Roadmap ===== */
+  .section-title {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 28px; font-weight: 800; margin: 0 0 8px; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .section-title .num {
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .section-desc { color: var(--ink-soft); margin: 0 0 24px; font-size: 15px; }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .chap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c, var(--py-blue));
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chap:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .chap h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .chap .meta { font-size: 13px; color: var(--ink-soft); }
+  .chap .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    margin-right: 4px; margin-top: 8px;
+    background: var(--tag-bg, #EFF6FF); color: var(--tag-c, var(--py-blue));
+    font-weight: 600;
+  }
+  .chap .done {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--go); color: white;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .chap .pending {
+    position: absolute; top: 14px; right: 14px;
+    background: #F1F5F9; color: #94A3B8;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* ===== Chapter blocks (深度章节) ===== */
+  .chapter {
+    background: white; border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); margin-top: 28px;
+  }
+  .chapter h2 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink);
+  }
+  .chapter h2 .id {
+    background: var(--py-yellow); color: var(--ink);
+    padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .chapter .video-link {
+    margin-top: 8px; font-size: 14px; color: var(--ink-soft);
+  }
+  .chapter .video-link a {
+    color: var(--py-blue); text-decoration: none; font-weight: 600;
+  }
+  .chapter .video-link a:hover { text-decoration: underline; }
+  .chapter h3 {
+    font-size: 20px; margin: 36px 0 12px; font-weight: 700; color: var(--py-deep);
+    border-left: 4px solid var(--py-yellow); padding-left: 12px;
+  }
+  .chapter p, .chapter li { font-size: 15px; color: #1F2937; }
+  .chapter ul, .chapter ol { padding-left: 22px; }
+  .chapter li { margin: 4px 0; }
+
+  /* ===== Callout boxes ===== */
+  .tip, .warn, .must, .rush {
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    margin: 16px 0; font-size: 14.5px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip { background: #ECFEFF; border-left: 4px solid #06B6D4; color: #155E75; }
+  .warn { background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; }
+  .must { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; }
+  .rush { background: #FFF7ED; border-left: 4px solid #F97316; color: #9A3412; }
+  .tip .ico, .warn .ico, .must .ico, .rush .ico { font-size: 20px; flex: none; }
+  .tip b, .warn b, .must b, .rush b { font-weight: 800; }
+
+  /* ===== Code cards ===== */
+
+  .code-card {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+    margin: 16px 0;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px; line-height: 1.65;
+    overflow-x: auto;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    position: relative;
+  }
+  .code-card .head {
+    display: flex; justify-content: space-between; align-items: center;
+    color: #94A3B8; font-size: 12px; font-family: inherit;
+    margin: -4px 0 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+  .code-card .head .file { color: var(--py-yellow); font-weight: 700; }
+  .code-card .copy {
+    cursor: pointer; user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .code-card .copy:hover { background: rgba(255,255,255,0.14); }
+  .code-card .copy.ok { background: var(--go); border-color: var(--go); color: #042F1E; }
+
+  /* syntax highlighter */
+  .c-kw { color: var(--kw); font-weight: 600; }
+  .c-str { color: var(--str); }
+  .c-num { color: var(--num); }
+  .c-fn { color: var(--func); }
+  .c-com { color: var(--comment); font-style: italic; }
+  .c-self { color: #FFB86C; font-style: italic; }
+  .c-op { color: #8BE9FD; }
+
+  /* ===== Tables ===== */
+  .t {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: white; border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+  }
+  .t th {
+    background: var(--py-deep); color: white;
+    padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tr:hover td { background: #F8FAFC; }
+  .t .lbl {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .lbl-b { background: #DBEAFE; color: #1E40AF; }
+  .lbl-g { background: #D1FAE5; color: #065F46; }
+  .lbl-o { background: #FED7AA; color: #9A3412; }
+  .lbl-r { background: #FECACA; color: #991B1B; }
+  .lbl-p { background: #F3E8FF; color: #6B21A8; }
+
+  /* ===== Big stat cards ===== */
+  .bigstats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 18px 0 12px;
+  }
+  .bs {
+    background: linear-gradient(135deg, var(--bsc1, #F8FAFC), var(--bsc2, #FFFFFF));
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .bs .v {
+    font-size: 40px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bs .l { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ===== Tag list ===== */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; color: var(--ink-soft); padding: 32px 16px; font-size: 13px; }
+  footer a { color: var(--py-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+      /* === 章节卡片样式（v3.1 补齐：所有章节页通用） === */
+      
+      /* === 卡片立体化（v3.2：加白底 + 边框 + 圆角） === */
+      .skel {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 14px 0;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+      }
+      .skel:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+      }
+      .skel > details > summary {
+        cursor: pointer;
+        padding: 8px 0 12px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        list-style: none;
+        user-select: none;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        margin-bottom: 10px;
+      }
+      .skel > details > summary::-webkit-details-marker { display: none; }
+      .skel > details > summary:before {
+        content: "\25B6  ";
+        color: var(--py-blue);
+        display: inline-block;
+        transition: transform .2s;
+        margin-right: 6px;
+      }
+      .skel > details[open] > summary:before { content: "\25BC  "; }
+      .skel h3 {
+        margin: 14px 0 8px;
+        font-size: 15px;
+        color: var(--py-deep);
+        padding-left: 10px;
+        border-left: 3px solid var(--py-yellow);
+        background: rgba(255, 212, 59, 0.08);
+        padding-top: 4px;
+        padding-bottom: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+      .skel ul { padding-left: 26px; margin: 4px 0 10px; }
+      .skel li { margin: 3px 0; font-size: 14.5px; }
+      .skel .code-card { margin: 8px 0; font-size: 13px; }
+      .skel .tip, .skel .warn, .skel .must, .skel .rush { margin: 8px 0; font-size: 13.5px; }
+
+      .quote {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #FFFEF7;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 0 10px 10px 0;
+        font-size: 14.5px;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
+      }
+      .quote-meta {
+        flex: none;
+        min-width: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #92400E;
+        background: rgba(245, 158, 11, 0.15);
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .quote-text { color: #1F2937; line-height: 1.7; }
+      .quote-text b { color: #B45309; }
+
+      /* ===== 主页：7 章节大卡片 ===== */
+      .ch-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin: 32px 0;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 32px;
+      }
+      .ch-card {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        border-radius: 16px;
+        padding: 24px 26px;
+        color: var(--ink);
+        text-decoration: none;
+        display: flex;
+        gap: 18px;
+        align-items: flex-start;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .ch-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--py-blue);
+        box-shadow: 0 14px 28px rgba(55, 118, 171, 0.15), 0 4px 10px rgba(15, 23, 42, 0.08);
+      }
+      .ch-card-num {
+        font-size: 42px;
+        font-weight: 900;
+        color: var(--py-blue);
+        flex-shrink: 0;
+        line-height: 1;
+        letter-spacing: -1.5px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .ch-card-body { flex: 1; min-width: 0; }
+      .ch-card-body h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+        color: var(--py-deep);
+        font-weight: 700;
+      }
+      .ch-card-body p {
+        margin: 0 0 14px 0;
+        color: var(--ink-soft);
+        font-size: 13.5px;
+        line-height: 1.6;
+      }
+      .ch-arrow {
+        font-size: 14px;
+        color: var(--py-blue);
+        font-weight: 700;
+      }
+    
+      /* ===== 缺失 CSS 补齐 (v3.3 审计补) ===== */
+      .ep-h2 {
+        font-size: 28px; font-weight: 800; color: var(--ink);
+        margin: 0 0 8px; display: flex; align-items: baseline; gap: 12px;
+        letter-spacing: -0.5px;
+      }
+      .ep-h2 .num {
+        background: linear-gradient(135deg, var(--py-blue), #2563EB);
+        color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+        font-weight: 700;
+      }
+      .ep-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 18px; }
+      .toc { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.08); border-radius: 14px; padding: 24px 28px; margin: 24px 0; box-shadow: 0 2px 8px rgba(15,23,42,0.04); }
+      .prev { color: var(--py-blue); }
+      .prev:hover { text-decoration: underline; }
+      .c-c-str { color: var(--str); }
+    </style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-wrap">
+    <span class="badge"><span class="dot"></span>完整版 · 90/90 集含 Whisper 真实听写</span>
+    <h1>二级 <span class="y">Python</span> · 上岸指南</h1>
+    <p class="sub">基于公开国家计算机二级 Python 考试大纲 + B 站 90 集合集 · 把 18.5 小时课程压成一日一集的硬核笔记</p>
+    <div class="stats">
+      <div class="stat"><div class="v">90</div><div class="l">集完整听写</div></div>
+      <div class="stat"><div class="v">252</div><div class="l">段 Whisper 真实引用</div></div>
+      <div class="stat"><div class="v">18.5h</div><div class="l">视频总时长</div></div>
+      <div class="stat"><div class="v">120min</div><div class="l">考场时长</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="toc">
+  <h2 class="section-title"><span class="num">1</span>📚 章节导航</h2>
+  <p class="section-desc">点击任意章节卡片进入该章详情页。</p>
+  <div class="ch-grid">
+
+    <a class="ch-card" href="ch1-路线图.html">
+      <div class="ch-card-num">01</div>
+      <div class="ch-card-body">
+        <h3>🗺️ 全集学习路线图</h3>
+        <p>一眼看全 90 集怎么走</p>
+        <span class="ch-arrow">查看 →</span>
+      </div>
+    </a>
+    <a class="ch-card" href="ch2-深度章节.html">
+      <div class="ch-card-num">02</div>
+      <div class="ch-card-body">
+        <h3>🎯 重头戏深度笔记</h3>
+        <p>P1 + P3 完整详细讲解</p>
+        <span class="ch-arrow">查看 →</span>
+      </div>
+    </a>
+    <a class="ch-card" href="ch3-第1-4章.html">
+      <div class="ch-card-num">03</div>
+      <div class="ch-card-body">
+        <h3>📖 第 1-4 章 完整笔记</h3>
+        <p>P3-P28 · 基础语法 + 控制流 + 函数</p>
+        <span class="ch-arrow">查看 →</span>
+      </div>
+    </a>
+    <a class="ch-card" href="ch4-第5章.html">
+      <div class="ch-card-num">04</div>
+      <div class="ch-card-body">
+        <h3>📖 第 5 章 字符串</h3>
+        <p>P50-P59 · 字符串操作</p>
+        <span class="ch-arrow">查看 →</span>
+      </div>
+    </a>
+    <a class="ch-card" href="ch5-第6-7章.html">
+      <div class="ch-card-num">05</div>
+      <div class="ch-card-body">
+        <h3>📖 第 6-7 章 组合类型 + 文件</h3>
+        <p>P60-P78 · list/tuple/dict + 文件读写</p>
+        <span class="ch-arrow">查看 →</span>
+      </div>
+    </a>
+    <a class="ch-card" href="ch6-第8-10章.html">
+      <div class="ch-card-num">06</div>
+      <div class="ch-card-body">
+        <h3>📖 第 8-10 章 模块/标准库/第三方库</h3>
+        <p>P79-P84</p>
+        <span class="ch-arrow">查看 →</span>
+      </div>
+    </a>
+    <a class="ch-card" href="ch7-真题模拟.html">
+      <div class="ch-card-num">07</div>
+      <div class="ch-card-body">
+        <h3>📝 模拟题 + 真题 + 收尾 + 加餐</h3>
+        <p>P85-P90 · 冲刺真题</p>
+        <span class="ch-arrow">查看 →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="toc">
+  
+    <h2 class="ep-h2"><span class="num">2</span>📚 完整 90 集目录索引</h2>
+    <p class="ep-desc">下面这份目录是按老师原标题抓出来的，<b>点击跳转</b>B站原视频。每集都含 Whisper 真实听写 + 时间戳。</p>
+
+    <table class="t">
+      <thead>
+        <tr>
+          <th style="width:8%;">分P</th>
+          <th>标题</th>
+          <th style="width:14%;">时长</th>
+          <th style="width:14%;">笔记状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#ECFDF5;"><td><b>1</b></td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=1" target="_blank">1-1 整体考试认知</a></td><td>08:51</td><td><span class="lbl lbl-g">✅ 已做</span></td></tr>
+        <tr><td>2</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=2" target="_blank">1-2 环境搭建</a></td><td>12:34</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr style="background:#ECFDF5;"><td><b>3</b></td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=3" target="_blank">2-1-1 基础语法入门</a></td><td>11:28</td><td><span class="lbl lbl-g">✅ 已做</span></td></tr>
+        <tr><td>4</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=4" target="_blank">2-1-2 练习题</a></td><td>04:36</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>5</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=5" target="_blank">2-2-1 整数类型</a></td><td>12:53</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>6</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=6" target="_blank">2-2-2 浮点字符串布尔</a></td><td>12:03</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>7</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=7" target="_blank">2-2-3 type_类型转换</a></td><td>14:10</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>8</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=8" target="_blank">2-2-4 练习题</a></td><td>07:08</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>9</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=9" target="_blank">2-3-1 算术运算符_字符串连接符</a></td><td>13:30</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>10</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=10" target="_blank">2-3-2 赋值运算符</a></td><td>08:59</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>11</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=11" target="_blank">2-3-3 关系运算符_逻辑运算符</a></td><td>12:27</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>12</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=12" target="_blank">2-3-4 input函数_练习题</a></td><td>13:08</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>13</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=13" target="_blank">更新补充：py文件双击闪屏(2024.2.6)</a></td><td>05:20</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>14-20</td><td><b>第 3 章 流程控制</b> · if / while / 异常处理</td><td>≈ 80min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>21-28</td><td><b>第 4 章 函数</b> · 参数 / 作用域 / print 不换行</td><td>≈ 60min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>29-38</td><td><b>第 5 章 字符串</b> · 索引切片 / for / 常用方法 / format</td><td>≈ 110min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>39-48</td><td><b>第 6 章 组合数据类型</b> · 集合/列表/元组/字典</td><td>≈ 110min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>49-57</td><td><b>第 7 章 文件和数据</b> · 路径 / open / 读写 / CSV</td><td>≈ 120min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>58-61</td><td><b>第 8 章 模块与内置函数</b></td><td>≈ 35min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>62-65</td><td><b>第 9 章 标准库</b> · turtle / random</td><td>≈ 55min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>66-68</td><td><b>第 10 章 pip + 第三方库</b> · jieba</td><td>≈ 30min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>69-78</td><td><b>模拟题 × 2</b> · 公共基础 + Python 综合 + 基本编程 + 简单应用 + 综合应用</td><td>≈ 150min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>79-88</td><td><b>真题 × 2</b> · 同上结构</td><td>≈ 195min</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>89</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=89" target="_blank">讲在最后的话</a></td><td>15:59</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+        <tr><td>90</td><td><a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=90" target="_blank">加餐1：以前录的lambda表达式（20分钟位置）</a></td><td>48:55</td><td><span class="lbl lbl-b">✅ 已做</span></td></tr>
+      </tbody>
+    </table>
+  
+</section>
+
+
+
+<footer>
+  <p>学习笔记 v3 完整版 · 90 集合集含 Whisper 听写 · 基于国家计算机二级 Python 考试大纲</p>
+  <p>原视频：<a href="https://www.bilibili.com/video/BV1Ys4y1D72T" target="_blank">B 站原视频</a> · 老师：<a href="https://space.bilibili.com/454637713" target="_blank">逊哥带你学计算机</a></p>
+  <p style="opacity:.6;font-size:12px;margin-top:12px;">本笔记仅用于个人备考学习，请勿传播、商业使用。如有侵权请联系删除。</p>
+</footer>
+</body>
+</html>

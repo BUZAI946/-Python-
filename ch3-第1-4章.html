@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>第 1-4 章完整笔记 · 二级 Python 上岸指南</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+📖 第 1-4 章 完整笔记 · 二级 Python
+<style>
+  :root {
+    --py-blue: #3776AB;
+    --py-yellow: #FFD43B;
+    --py-deep: #1E3A5F;
+    --code-bg: #0F172A;
+    --code-fg: #E2E8F0;
+    --kw: #FF79C6;
+    --str: #F1FA8C;
+    --num: #BD93F9;
+    --func: #50FA7B;
+    --comment: #6272A4;
+    --warn: #FF6B6B;
+    --go: #06D6A0;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Source Code Pro", monospace; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    padding: 64px 32px 56px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(255, 212, 59, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 110% 10%, rgba(6, 214, 160, 0.25), transparent 60%),
+      linear-gradient(135deg, #1E3A5F 0%, #2563EB 50%, #3776AB 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-wrap { max-width: 1180px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 212, 59, 0.18);
+    color: var(--py-yellow);
+    border: 1px solid rgba(255, 212, 59, 0.4);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot { width: 8px; height: 8px; background: var(--py-yellow); border-radius: 50%; box-shadow: 0 0 12px var(--py-yellow); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 20px 0 16px; line-height: 1.15; font-weight: 800; letter-spacing: -1px;
+  }
+  .hero h1 .y { color: var(--py-yellow); }
+  .hero .sub {
+    font-size: 19px; max-width: 800px; opacity: 0.92;
+  }
+  .hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 36px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat .v { font-size: 30px; font-weight: 800; color: var(--py-yellow); }
+  .stat .l { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  @media (max-width: 720px) { .hero .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ===== Layout ===== */
+  main { max-width: 1180px; margin: -28px auto 0; padding: 0 32px 80px; position: relative; }
+  section { margin-top: 56px; }
+
+  /* ===== Notice ===== */
+  .notice {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #FFF7E6 0%, #FFEFC5 100%);
+    border-left: 5px solid #FAAD14;
+    color: #614700;
+    box-shadow: var(--shadow);
+    display: flex; gap: 16px;
+  }
+  .notice .ico { font-size: 28px; flex: none; }
+  .notice strong { color: #874D00; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .notice a { color: #1E3A5F; font-weight: 600; }
+
+  /* ===== Roadmap ===== */
+  .section-title {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 28px; font-weight: 800; margin: 0 0 8px; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .section-title .num {
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .section-desc { color: var(--ink-soft); margin: 0 0 24px; font-size: 15px; }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .chap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c, var(--py-blue));
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chap:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .chap h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .chap .meta { font-size: 13px; color: var(--ink-soft); }
+  .chap .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    margin-right: 4px; margin-top: 8px;
+    background: var(--tag-bg, #EFF6FF); color: var(--tag-c, var(--py-blue));
+    font-weight: 600;
+  }
+  .chap .done {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--go); color: white;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .chap .pending {
+    position: absolute; top: 14px; right: 14px;
+    background: #F1F5F9; color: #94A3B8;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* ===== Chapter blocks (深度章节) ===== */
+  .chapter {
+    background: white; border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); margin-top: 28px;
+  }
+  .chapter h2 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink);
+  }
+  .chapter h2 .id {
+    background: var(--py-yellow); color: var(--ink);
+    padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .chapter .video-link {
+    margin-top: 8px; font-size: 14px; color: var(--ink-soft);
+  }
+  .chapter .video-link a {
+    color: var(--py-blue); text-decoration: none; font-weight: 600;
+  }
+  .chapter .video-link a:hover { text-decoration: underline; }
+  .chapter h3 {
+    font-size: 20px; margin: 36px 0 12px; font-weight: 700; color: var(--py-deep);
+    border-left: 4px solid var(--py-yellow); padding-left: 12px;
+  }
+  .chapter p, .chapter li { font-size: 15px; color: #1F2937; }
+  .chapter ul, .chapter ol { padding-left: 22px; }
+  .chapter li { margin: 4px 0; }
+
+  /* ===== Callout boxes ===== */
+  .tip, .warn, .must, .rush {
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    margin: 16px 0; font-size: 14.5px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip { background: #ECFEFF; border-left: 4px solid #06B6D4; color: #155E75; }
+  .warn { background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; }
+  .must { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; }
+  .rush { background: #FFF7ED; border-left: 4px solid #F97316; color: #9A3412; }
+  .tip .ico, .warn .ico, .must .ico, .rush .ico { font-size: 20px; flex: none; }
+  .tip b, .warn b, .must b, .rush b { font-weight: 800; }
+
+  /* ===== Code cards ===== */
+
+  .code-card {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+    margin: 16px 0;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px; line-height: 1.65;
+    overflow-x: auto;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    position: relative;
+  }
+  .code-card .head {
+    display: flex; justify-content: space-between; align-items: center;
+    color: #94A3B8; font-size: 12px; font-family: inherit;
+    margin: -4px 0 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+  .code-card .head .file { color: var(--py-yellow); font-weight: 700; }
+  .code-card .copy {
+    cursor: pointer; user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .code-card .copy:hover { background: rgba(255,255,255,0.14); }
+  .code-card .copy.ok { background: var(--go); border-color: var(--go); color: #042F1E; }
+
+  /* syntax highlighter */
+  .c-kw { color: var(--kw); font-weight: 600; }
+  .c-str { color: var(--str); }
+  .c-num { color: var(--num); }
+  .c-fn { color: var(--func); }
+  .c-com { color: var(--comment); font-style: italic; }
+  .c-self { color: #FFB86C; font-style: italic; }
+  .c-op { color: #8BE9FD; }
+
+  /* ===== Tables ===== */
+  .t {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: white; border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+  }
+  .t th {
+    background: var(--py-deep); color: white;
+    padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tr:hover td { background: #F8FAFC; }
+  .t .lbl {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .lbl-b { background: #DBEAFE; color: #1E40AF; }
+  .lbl-g { background: #D1FAE5; color: #065F46; }
+  .lbl-o { background: #FED7AA; color: #9A3412; }
+  .lbl-r { background: #FECACA; color: #991B1B; }
+  .lbl-p { background: #F3E8FF; color: #6B21A8; }
+
+  /* ===== Big stat cards ===== */
+  .bigstats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 18px 0 12px;
+  }
+  .bs {
+    background: linear-gradient(135deg, var(--bsc1, #F8FAFC), var(--bsc2, #FFFFFF));
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .bs .v {
+    font-size: 40px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bs .l { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ===== Tag list ===== */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; color: var(--ink-soft); padding: 32px 16px; font-size: 13px; }
+  footer a { color: var(--py-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+      
+      /* === 卡片立体化（v3.2：加白底 + 边框 + 圆角） === */
+      .skel {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 14px 0;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+      }
+      .skel:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+      }
+      .skel > details > summary {
+        cursor: pointer;
+        padding: 8px 0 12px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        list-style: none;
+        user-select: none;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        margin-bottom: 10px;
+      }
+      .skel > details > summary::-webkit-details-marker { display: none; }
+      .skel > details > summary:before {
+        content: "\25B6  ";
+        color: var(--py-blue);
+        display: inline-block;
+        transition: transform .2s;
+        margin-right: 6px;
+      }
+      .skel > details[open] > summary:before { content: "\25BC  "; }
+      .skel h3 {
+        margin: 14px 0 8px;
+        font-size: 15px;
+        color: var(--py-deep);
+        padding-left: 10px;
+        border-left: 3px solid var(--py-yellow);
+        background: rgba(255, 212, 59, 0.08);
+        padding-top: 4px;
+        padding-bottom: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+      .skel ul { padding-left: 26px; margin: 4px 0 10px; }
+      .skel li { margin: 3px 0; font-size: 14.5px; }
+      .skel .code-card { margin: 8px 0; font-size: 13px; }
+      .skel .tip, .skel .warn, .skel .must, .skel .rush { margin: 8px 0; font-size: 13.5px; }
+
+      .quote {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #FFFEF7;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 0 10px 10px 0;
+        font-size: 14.5px;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
+      }
+      .quote-meta {
+        flex: none;
+        min-width: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #92400E;
+        background: rgba(245, 158, 11, 0.15);
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .quote-text { color: #1F2937; line-height: 1.7; }
+      .quote-text b { color: #B45309; }
+
+      /* ===== 章节页导航条 ===== */
+      .chap-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 14px 32px;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+      .chap-nav .nav-row {
+        display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        max-width: 1200px; margin: 0 auto;
+      }
+      .chap-nav .nav-home {
+        color: var(--py-blue); font-weight: 700; text-decoration: none;
+        padding: 6px 14px; border: 1px solid var(--py-blue);
+        border-radius: 8px; font-size: 13px;
+      }
+      .chap-nav .nav-home:hover { background: var(--py-blue); color: white; }
+      .chap-nav .nav-link {
+        color: var(--ink-soft); text-decoration: none;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px;
+      }
+      .chap-nav .nav-link:hover { background: rgba(55, 118, 171, 0.08); color: var(--py-blue); }
+      .chap-nav .nav-current {
+        color: var(--py-blue); font-weight: 700; padding: 6px 12px;
+        background: rgba(55, 118, 171, 0.10); border-radius: 6px; font-size: 13px;
+      }
+
+      /* ===== 章节页：上下章跳转 ===== */
+      .bnav-row {
+        display: flex; justify-content: space-between; align-items: center;
+        gap: 16px; max-width: 1200px; margin: 40px auto 24px;
+        padding: 0 32px;
+      }
+      .bnav {
+        padding: 14px 24px; border-radius: 10px; text-decoration: none;
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        color: var(--ink); font-size: 14px; font-weight: 600;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+        transition: all 0.2s;
+      }
+      .bnav:hover:not(.disabled) {
+        background: rgba(55, 118, 171, 0.08);
+        border-color: var(--py-blue);
+        transform: translateY(-1px);
+      }
+      .bnav.disabled { opacity: 0.35; cursor: not-allowed; }
+      .bnav.next { margin-left: auto; }
+      .bnav-mid { color: var(--ink-soft); font-size: 13px; font-weight: 600; }
+
+      /* ===== 章节页正文容器 ===== */
+      .chapter-body { max-width: 1200px; margin: 0 auto; padding: 32px; }
+      .chapter-h1 {
+        font-size: 32px; font-weight: 800; margin: 0 0 18px 0;
+        color: var(--py-deep); letter-spacing: -0.5px;
+      }
+      .chapter-body .section-desc { color: var(--ink-soft); margin-bottom: 24px; font-size: 15px; line-height: 1.7; }
+    
+      /* ===== 缺失 CSS 补齐 (v3.3 审计补) ===== */
+      .ep-h2 { font-size: 22px; font-weight: 800; color: var(--py-deep); margin: 28px 0 16px; letter-spacing: -0.3px; }
+      .ep-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 18px; }
+      .toc { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.08); border-radius: 14px; padding: 24px 28px; margin: 24px 0; box-shadow: 0 2px 8px rgba(15,23,42,0.04); }
+      .prev { color: var(--py-blue); }
+      .prev:hover { text-decoration: underline; }
+      .c-c-str { color: var(--str); }
+    </style>
+</head>
+<body>
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><span class="nav-current">📖 第 1-4 章 完整笔记</span><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch2-深度章节.html">← 🎯 重头戏深度笔记</a>
+    <span class="bnav-mid">第 3 / 7 章</span>
+    <a class="bnav next" href="ch4-第5章.html">📖 第 5 章 字符串 →</a>
+  </div>
+
+
+<section class="chapter-body">
+  
+    <h1 class="chapter-h1"><span class="num">3</span>📖 第 1-4 章完整笔记（25 集）</h1>
+    <p class="section-desc">
+      基于「B 站 90 集合集目录 + 国家计算机机二级 Python 公开考纲」还原的章节笔记，覆盖每个视频的考点、典型代码、易错点。
+      <b>点击任意集数标题展开</b>查看详情；P1 / P3 在上面用深度版单独写过，下方是补充的更详细版本。
+      每一集都附 <b>Whisper 真实听写节选</b>（含时间戳），讲什么一搜即得。
+    </p>
+<!-- P2 · 1-2 环境搭建 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#06D6A0">P2</b> · 1-2 环境搭建 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">基础准备 · 12:34</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>Python 版本：<b>3.5.3 — 3.9.10</b>（考试环境约定）</li>
+          <li>IDLE 启动：开始菜单 → IDLE (Python 3.x)</li>
+          <li>第一个 .py：<code class="mono">print("hello world")</code>，F5 运行</li>
+          <li>文件命名：英文 + 下划线 + .py 后缀，路径别带中文/空格</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 hello.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-str">"hello, world!"</span>)
+<span class="c-kw">print</span>(<span class="c-num">1</span> + <span class="c-num">2</span>)
+<span class="c-fn">input</span>(<span class="c-str">"按回车结束"</span>)</pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：双击 .py 闪屏而过（P13 加餐专门讲）。三种解法：① IDLE 打开后 F5 ② 文件末加 <code class="mono">input()</code> ③ cmd 里跑 <code class="mono">python hello.py</code>。</div></div>
+        <div class="tip"><div class="ico">💡</div><div><b>速记</b>：Win+R → cmd → <code class="mono">python</code> 进 REPL；<code class="mono">exit()</code> 退。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：第二道的话,是教大家写第一个Python的小程序,叫做Hero World,也是学任何一门变成一个必精之路,一定要先写成一个Hero World.</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:22</b></div><div class="quote-text">我们来说,开发环境,其实就相当于你做饭的厨房,你现在想炒菜想做饭,你的有一个厨房,我们现在想写Python代码,我们想运行Python代码,我们需要有一个开发环境,开发工具,我可以用你炒菜做饭的工具来说,平点过,它是一个工具,能够炒菜做饭,大少,中国,它都是不同形式的工具,我们再去做Python开发,其实也是有不同工具。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:51</b></div><div class="quote-text">Python官方已经说了,不再支持2.2级版本的一个更新,也就是说它整体的一个趋势是3.2级版本,我们该如何去安装开发环境,或者我上来去找这个开发环境,就是两种办法,第一种办法大家可以去Python的官方,Python点O.2级,上这儿来找,另外一个,咱们这个不是为了通过国家计算机计算计考试,国家计算机计划,国家计算机...计划�，你上这官方然后去找到规定你的Python的安装的版本。所以大家绝对应该去哪更方便,我觉得应该是去那个官方 periods,干净去找更方便,是国家计算机计划,我们就认定,全成他们把我拿回去来看,我们就绝说,这两个很快,我们</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:30</b></div><div class="quote-text">然后点那个Custom-wise instalation</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:11</b></div><div class="quote-text">我有一个什么pring车和握一下在这</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:16</b></div><div class="quote-text">当一个自复创放到了这个pring车</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:01</b></div><div class="quote-text">也就是说我们如果只是执行很简单的这么一行代</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:26</b></div><div class="quote-text">这个后期我们去厌证这些试点的时候</div></div>
+
+    <!-- P4 · 2-1-2 练习题 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P4</b> · 2-1-2 基础语法练习题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">练习 · 04:36</span></summary>
+        <h3>📌 考点回顾</h3>
+        <ul><li>缩进、注释、变量命名的实操应用</li><li>print 输出格式化（end / sep 参数）</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 代码示意</span><span class="copy">真实片段</span></div>
+<pre><span class="c-cmt">然后另外,也在进一步的比较来展示一下关于大消息,名感这件事,咱们还是打开这个IDO。</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：好,第二题,说以下选项中不是Python原保留字的事什么?</div></div>
+        <div class="tip"><div class="ico">💡</div><div>刷一遍 = 检验 P3 掌握程度。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:12</b></div><div class="quote-text">虽然看第一题,说Python3.5级以上版本的保留字种数式多少,还记得吗,刚才咱们看5黄七列,所以这道题应该是选择,一共是35个,对不对。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:08</b></div><div class="quote-text">选项C,3下划现一,辨量名的命名规则当中是说大消息字母加数字,加下划现加汗字是可以,但是有这么一个要求说,不能够以数字开头。，所以这个C选项应该就有问题。地选项有没有问题的,下开头,当然没问题了。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:00</b></div><div class="quote-text">然后咱们再来看BCD有什么问题,首先看得好,B選项,看得好,然后一个有问题,当然有问题了。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:44</b></div><div class="quote-text">然后另外,也在进一步的比较来展示一下关于大消息,名感这件事,咱们还是打开这个IDO。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:11</b></div><div class="quote-text">那我用一个什么样的例子,跟他来讲大消息,名感这件事,比如说,你生名一个叫做NAME的辩量,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:31</b></div><div class="quote-text">第四,大家会发现说这两个叫做NAME的辩量,第一个M是小企的,第二个M是大写的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:10</b></div><div class="quote-text">来看到了,输出一个张三,一个李四,所以机帐的一个NAME,来到大家拍森时,这个大消息名感到底是怎么回事。</div></div>
+
+    <!-- P5 · 2-2-1 整数类型 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P5</b> · 2-2-1 整数类型 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">基础语法 · 12:53</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>4 种进制表示：<code class="mono">0b</code> 二进制 / <code class="mono">0o</code> 八进制 / <code class="mono">0x</code> 十六进制 / 十进制</li>
+          <li>任意精度整数（没有 <code class="mono">long</code>）</li>
+          <li>数值运算函数：<code class="mono">abs / divmod / pow / round / max / min / sum</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 int_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-num">0b1010</span>)      <span class="c-com"># 10</span>
+<span class="c-kw">print</span>(<span class="c-num">0o17</span>)        <span class="c-com"># 15</span>
+<span class="c-kw">print</span>(<span class="c-num">0xff</span>)        <span class="c-com"># 255</span>
+<span class="c-kw">print</span>(<span class="c-fn">divmod</span>(<span class="c-num">10</span>, <span class="c-num">3</span>))   <span class="c-com"># (3, 1) —— 商、余</span>
+<span class="c-kw">print</span>(<span class="c-fn">pow</span>(<span class="c-num">2</span>, <span class="c-num">10</span>))       <span class="c-com"># 1024</span></pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：选择 16 进制 <code class="mono">0xff</code> 别漏 <code class="mono">0x</code>，不然 <code class="mono">ff</code> 不合法导致 <code class="mono">SyntaxError</code>。</div></div>
+        <div class="tip"><div class="ico">💡</div><div><b>速记</b>：进制转换 <code class="mono">bin/oct/hex</code> 函数返回字符串；想拿数用 <code class="mono">int('ff', 16)</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：同学们,大家好,本节课我们来学习,你必须要懂得数据类型。其实谈到数据类型,各种学义应该不陌生,在上一次课当中,我们学到了变量,那么说到变量有它的名字,有它的值,还有它的数据类型。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:07</b></div><div class="quote-text">那举一个最简单的例子,可能各位同学能加里面放完方块子需要一种空间,方冰箱,方电视可能还需要一种空间,那冰箱块子和这个冰箱和玩块,其实它们所战的空间肯定是不一样的对不对,那同样的,你在这个内存当中要执行一块字不出来,它要存一块字不出来,还有存这一块数字,它们所战的空间其实也是不一样的,那这种空间的不同用什么来去区分的,实际上就是用数据类型这个东西来区分。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:06</b></div><div class="quote-text">二级纸八级纸十六级纸,也就是平时用给最多的一个实际纸,但是你说你要通过国家级纸二级拍子的考试,那在拍子的考试,刚中,就会涉及到一些选择体别说,问题说这个数二级纸,它变成实际纸是什么样子,所以你需要对这些纸也有所了解和熟悉,那这里面给大家来介绍一下,分别的来去介绍,首先实际纸,就我们平时这个读的一些数字嘛,都是用实际纸的形式来读的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:06</b></div><div class="quote-text">那二级纸你记着是勇力啊,跟数字来组成的,就是零可以零一之后,然后就要再进一位了,比如说,你要用二级纸数,那就是什么?零一,然后就是在进一位一零一,然后是一零,就是这样来就数了,接着你再来看这个八级纸,那八级纸呢,那八线纸呢,那八线�</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:06</b></div><div class="quote-text">然后二零二一二,懂这一三了,就是从零,这个从零到期啊,只能有这么几个数字,来许表示八线纸的数,然后从八线纸,二进纸,从二进纸,这里面,二和八所纸,是这个数字的各数,零换三四五七,不是八个数嘛,对不对,那十六进纸呢,那肯定你想到了红十六进一了,那同样,十六进纸在前面,有两个钱质啊,一个是零来X,还有一个是零大鞋的X,那十六进纸的数纸有点特殊了,它的特殊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:45</b></div><div class="quote-text">重猪�数出,四十二,同兴,二……,这是啊,还是十静质的掿杀,然后我今天再来柱出林,然后这个B,钓零,钓。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:07</b></div><div class="quote-text">这个以后是一定要跟大家讲的为什么因为在这个派三二几当中经常会有一些选择体来去问你</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:50</b></div><div class="quote-text">所以你就是几进质就成一几我这里面就成一八的什么呢同样的自由向左</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:32</b></div><div class="quote-text">OK那以上就是讲咱们讲这个整数类型啊这个数值类型当中的第一个整数类型</div></div>
+
+    <!-- P6 · 2-2-2 浮点字符串布尔 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P6</b> · 2-2-2 浮点 / 字符串 / 布尔 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">基础语法 · 12:03</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>float 精度</b>：<code class="mono">0.1 + 0.2 = 0.30000000000000004</code>，永远别直接 <code class="mono">==</code></li>
+          <li>科学计数法：<code class="mono">1.5e3 = 1500.0</code></li>
+          <li><b>字符串引号</b>：单/双/三引号可嵌套；<code class="mono">'''</code> 或 <code class="mono">"""</code> 可跨行</li>
+          <li>转义字符：<code class="mono">\n \t \\ \' \"</code></li>
+          <li><b>bool</b>：<code class="mono">True / False</code> 首字母大写！和 <code class="mono">None</code> 不一样</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 types_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-num">0.1</span> + <span class="c-num">0.2</span>)            <span class="c-com"># 0.30000000000000004</span>
+<span class="c-kw">print</span>(<span class="c-fn">abs</span>(<span class="c-num">0.1</span> + <span class="c-num">0.2</span> - <span class="c-num">0.3</span>) &lt; <span class="c-num">1e-9</span>)   <span class="c-com"># True —— 正确判等</span>
+<span class="c-kw">print</span>(<span class="c-kw">True</span>, <span class="c-kw">False</span>, <span class="c-kw">None</span>)
+s = <span class="c-str">'他说：&#92;&#92;"hello&#92;&#92;"'</span>
+<span class="c-kw">print</span>(s)</pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：浮点判等一律用 <code class="mono">abs(a-b) &lt; 1e-9</code>，考试会考。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：浮点数有<b>精度问题</b>：<code class="mono">0.1 + 0.2 == 0.3</code> 结果为 <code class="mono">False</code>，要用 <code class="mono">abs(a-b) < 1e-9</code> 比较。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：科学计数法：<code class="mono">1e-5</code> = 0.00001，<code class="mono">1.5e3</code> = 1500。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:55</b></div><div class="quote-text">好,那加来,我们还是,鞋子,带马来试一下,赶紧点,我充电一个新的,并且把它保存,还是到周面的,它是2,轻子,好,那看来鞋子,简单的,比如说,我生明一个变量,生明变量叫F1,上面变量叫F1,我们上一个,是直接书的,这我有给它复职一下,复一个变量,干好了,这相当于不叫F1等,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:20</b></div><div class="quote-text">写成这个样子的原样的输出iF1</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:10</b></div><div class="quote-text">肯定是随时要提换的一部分内容</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:55</b></div><div class="quote-text">再输出一下Number</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:41</b></div><div class="quote-text">在边程当中完全不是一回事</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:37</b></div><div class="quote-text">一个HELO World</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:09</b></div><div class="quote-text">那它怎么用来表示这个自付创</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:21</b></div><div class="quote-text">我也就别创建一个新的那个文件了</div></div>
+
+    <!-- P7 · 2-2-3 type_类型转换 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P7</b> · 2-2-3 type() 与类型转换 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">基础语法 · 14:10</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">type(x)</code> → 返回类型（<code class="mono">&lt;class 'int'&gt;</code>）</li>
+          <li>显式转换：<code class="mono">int() / float() / str() / bool()</code></li>
+          <li><b>str → int</b>：<code class="mono">int("123") = 123</code>；<code class="mono">int("3.14")</code> 会报错，要先 <code class="mono">float()</code></li>
+          <li>隐式转换：整数 + 浮点 = 浮点（<code class="mono">3 + 0.1 = 3.1</code>）</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 convert.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>x = <span class="c-fn">input</span>(<span class="c-str">"请输入一个数字："</span>)   <span class="c-com"># 返回字符串</span>
+<span class="c-fn">print</span>(<span class="c-fn">type</span>(x))                <span class="c-com"># &lt;class 'str'&gt;</span>
+
+n = <span class="c-fn">int</span>(x)                     <span class="c-com"># 显式转换</span>
+<span class="c-fn">print</span>(n * <span class="c-num">2</span>)                  <span class="c-com"># 数字倍</span>
+
+<span class="c-fn">print</span>(<span class="c-fn">bool</span>(<span class="c-num">0</span>), <span class="c-fn">bool</span>(<span class="c-str">""</span>), <span class="c-fn">bool</span>(<span class="c-str">"x"</span>))   <span class="c-com"># False False True</span></pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>高频陷阱</b>：<code class="mono">int("3.14")</code> 直接抛 <code class="mono">ValueError</code>，正确做法 <code class="mono">int(float("3.14"))</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：大家好,再来一个比较量,这个不耳累详了,这些处,还有这处计划一定是大写的题,那些小写的题,这就不多,记得是写,大写的题...（后段循环，省略）</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：也就是这些不同书居类型之间他们实际上是可以进行转换的</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:00</b></div><div class="quote-text">其实这个时候我们就可以用Type这个喊数来进行的验证,Type这个喊数,我一说的喊数,可能大家就有点不太理解,尤其是第一节课的时候,咱就讲过一个print的喊数,对吧,这次咱应该讲的第二个喊数,那喊数到底是什么意思的,其实在变成当中,喊数就是能够用来完成具体某一个功能的这么一个东西,当然因为这些课咱们重点并不是讲喊数,所以我只是简单的来,让大家了解一下,会到底啥是喊数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:04</b></div><div class="quote-text">了各位同学,当然对了,为什么对的,你记着这个太帮喊数,它只是会反回A变量的数据类型,但是反回给谁呢,哪里掉用就反回到哪里,那其实就相当于我这一段代碼,掉用了这个太帮数,那就是反回到这了,反回到这,但是可能同学会想为什么没输出呢,你记着你不用那个朋友的喊数去进行输出的,当然没有输出了,就是你的写一个朋友,所以那相当于是什么呢,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:33</b></div><div class="quote-text">NT来进行描述的,同样其他数据类型的一些内容,我都已经在这里给大家列成了,就是说你实在是这个,不理一些,或者不太明白,那你就记住就行了,你把这几种内容都记得了,当然其实好像也没什么不理解的,无非就是你能不能把它背下来的,就是这有问题了,对不对,那接着咱们这样,我把这几种内容都给它写全一点,好吧,比如说我在声明一个B,叫做什么,三点意思,C便呢,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:05</b></div><div class="quote-text">第一,多写而已,删出掉,好咱们来執行一下看,執行,没错了,MG,FLOW,Constacks,STR,B,O,M,可我们这里面写的,完全一样,对吧,OK。所以,几个以上的这样历大就了解了,太棒,很符是干什么用的,然后,他使用的时候应该是一个什么样效果,以及该如何去使用。那加来咱们在聊另外一个话题是数据。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:10</b></div><div class="quote-text">也就是这些不同书居类型之间他们实际上是可以进行转换的</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:05</b></div><div class="quote-text">所以通过这种形式就可以来实现一个数捉类型的一个转捉</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:09</b></div><div class="quote-text">同学还是这个里面咱们写一个随便写一个</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:41</b></div><div class="quote-text">老师是不是45045还是直接切呢</div></div>
+
+    <!-- P8 · 2-2-4 练习题 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P8</b> · 2-2-4 数据类型练习题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">练习 · 07:08</span></summary>
+        <h3>📌 考点回顾</h3>
+        <ul><li>数字型 + 字符串型 + bool 三类判等操作</li><li>类型转换的边界条件</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">然后接着看最后一道题说下面代码的输出结果是什么的</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>二级的练习题</b>通常考察定义、辨析、代码阅读，要仔细看每个选项的描述差异。</div></div>        <div class="tip"><div class="ico">💡</div><div>这一节刷过 = P5/P6/P7 稳了。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:37</b></div><div class="quote-text">打怕他还带个点,只要有小2点,他就是一个浮点处,所以他就不是这种处,那看Py,浮点处也有实际上,二斤之八斤之和十六斤之等调尔方式,这个大家要注意浮点处,他只有十斤制的表示形式,没有其他斤制的表示形式,所以这到底是有问题的,这个选项是有问题的,所以描述透的应该是Python,当然你也可以看一下后面的对不对,整数这行的数据一定不会出现小数据,这跟刚才是什么地方的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:37</b></div><div class="quote-text">所以为什么C是浮点类型,那么对不对,当然前提是一点记着,浮点类型是用这个浮透出来表示的,当然你说老师,我也记不太行怎么办的,行,再买睡示呗,对不对,好来次等于12.34,然后,咱们输出一下太子,直醒,看到了吗,说没问题,好,咱们再来继续,这三体下面带买的数据,我试什么,零比10.10,，一成一二的3次房价值0成二的平房价值1成一,二的1次房价值0成二的0次房,最终得到一个值对不对,他应该得多少,应该等于10,应该选,但是大家可能算得没有坏,就是你想,就是8加2,等于8421,就是这个B,就是你看上2的3次房价值0,8,2的平房的2的1次房2的0次房价值0,5,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:29</b></div><div class="quote-text">对不对 你要知道它里面的计算原理</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:08</b></div><div class="quote-text">可以用这点热来获得它的实数部分没错</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:53</b></div><div class="quote-text">我们Print贼点热 来 出现12点 12 乡没错</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:57</b></div><div class="quote-text">然后又会把副一家二质负给了外然后i4外进入一个相加运算</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:51</b></div><div class="quote-text">如果这几道题你能斗作对说明你对整个这一大节的可能内容说对了行啊转</div></div>
+
+    <!-- P9 · 2-3-1 算术与字符串连接符 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P9</b> · 2-3-1 算术运算符 & 字符串连接符 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">运算符 · 13:30</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>数值运算符：<code class="mono">+  -  *  /  //  %  **</code></li>
+          <li><b>/ 与 //</b>：<code class="mono">5/2 = 2.5</code>；<code class="mono">5//2 = 2</code></li>
+          <li><b>%</b>：取余，正负号与除数一致</li>
+          <li><b>字符串连接符</b>：<code class="mono">+</code> 拼接、<code class="mono">*</code> 重复：<code class="mono">"ab"*3 = "ababab"</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 op.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-num">7</span> % <span class="c-num">3</span>)         <span class="c-com"># 1</span>
+<span class="c-kw">print</span>(-<span class="c-num">7</span> % <span class="c-num">3</span>)        <span class="c-com"># 2（注意，正负号跟除数走）</span>
+<span class="c-kw">print</span>(<span class="c-num">2</span> ** <span class="c-num">10</span>)       <span class="c-com"># 1024</span>
+
+s = <span class="c-str">"hello "</span> * <span class="c-num">3</span>
+<span class="c-kw">print</span>(s + <span class="c-str">"world"</span>)  <span class="c-com"># "hello hello hello world"</span></pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：<code class="mono">"1" + "2"</code> = <code class="mono">"12"</code>（字符串拼接），<b>不是</b> <code class="mono">3</code>。做数字计算必须先 <code class="mono">int()</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：字符串是<b>不可变对象</b>，<code class="mono">s[0]="x"</code> 会报错，必须用 <code class="mono">s = s[:i]+"x"+s[i+1:]</code> 或 <code class="mono">replace()</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：字符串拼接用 <code class="mono">+</code> 或 <code class="mono">join()</code>，<b>不要</b>在循环里反复 <code class="mono">+</code>（性能差）。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">同于们大家好,本节课我们来学习一些必须熟练掌握的基础操作。这里面所说的基础操作其实指的是一些运算符,以及本节课我们将重点来讲解在Python当中经常会在各种各样的处理亚运算当中用到一些运算符。这些运算符可能有一些已经在前面几节课我们讲的一些例子当中被大家使用过了,当然本节课是要更详细的来讲解呼吸一下这些运算符,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:59</b></div><div class="quote-text">这个例子来看一下,那这两个形容是什么意思,一个形容表示成号,这两个形容啊,他表示的是一个秘语算,什么叫秘语算,X的Y此秘或者我们在直白一点X的Y此方,OK,然后在下面这两个,一个是正号,一个是富号,这里面的就不是加剪号的意思,其实就是这个数学当中的政府的意思,当然那个其实我们平时真的在编成当中,不是很常用,问了人家考当里面呢,例出来了,说,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:42</b></div><div class="quote-text">正好,首先,我这个x,咱们就把加俭成熟中都写了,好,这加和节我也写,刚才不说不写,别了,这个都写了,都给大家来验证一下,x在怎么要再成一个外,再来一个,来词,除以外,再来一个x正,除以外,再来一个,我这样,我这里面再来一个z吧,等语3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,，刚才,不说有一个取语数语3,我让x跟y取语,大家来看一下,然后同时呢,我再用x和z取语,咱们再来看一下,好,加俭成熟,整出取语,还有一些什么样的语作,咱们来看一下,还有一个命运算这个,咱们再写一个,别x,y,x,y的话这,不太容易去,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:44</b></div><div class="quote-text">好,那看,这个就变成整数了,它只管这个整数部分,它不管那小数部分,所以这个整数就是两个写杂,这一定要去分开整数和厨物,它不是一位事,在拍子当中,然后接着在来看这百分二要取语售这取了什么语售啊,X和Y这个出一外,X出一外,10出一次,等于2,5,正常来讲,如果我只要整数部分的应该是什么,等于2,5</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:44</b></div><div class="quote-text">继续这样的一个例子,给大家讲了一下,算数元算符,该怎么来去,是用,好,那接着咱们再来继续讲,今天的下一个,这个是自符,2,1,4,2,1,4,5,这么一看,各位同学,你看着好像,这老师这不是刚才,算数元算符能中的加号和成号对没错,但是你记得这一点,如果这个加号的左右,两边都是自符,2,5</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:20</b></div><div class="quote-text">所以这里面你记着左右两边任意一个只要出现了这个只要加号的左右两边都是自付货</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:05</b></div><div class="quote-text">应该表示的是4个i41相加的</div></div>
+
+    <!-- P10 · 2-3-2 赋值运算符 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P10</b> · 2-3-2 赋值运算符 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">运算符 · 08:59</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>复合赋值：<code class="mono">+= -= *= /= //= %= **=</code></li>
+          <li>链式赋值：<code class="mono">a = b = c = 10</code></li>
+          <li>解包赋值：<code class="mono">a, b = 1, 2</code></li>
+          <li><b>海象运算符</b>：<code class="mono">:=</code>（Python 3.8+）表达式内赋值</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 assign2.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>count = <span class="c-num">0</span>
+count += <span class="c-num">1</span>          <span class="c-com"># count = 1</span>
+
+<span class="c-kw">if</span> (n := <span class="c-fn">len</span>(<span class="c-str">"hello"</span>)) > <span class="c-num">3</span>:
+    <span class="c-kw">print</span>(<span class="c-str">f"长度 {n} 大于 3"</span>)   <span class="c-com"># 长度 5 大于 3</span></pre>
+        </div>
+        <div class="tip"><div class="ico">💡</div><div><b>速记</b>：<code class="mono">x = x + 1</code> 写法陈旧，<code class="mono">x += 1</code> 是规范写法。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>/</b> 是真除（结果 float），<b>//</b> 是整除（向下取整），<b>%</b> 是取余。<code class="mono">-5 % 2</code> = 1，不是 -1。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:54</b></div><div class="quote-text">所以,如果你以后,在一些选择提当中,看到人家提到说,增强负质操作服务这么一段文字,那我自己立马上反应,其实说的是这么几个符号,OK。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:26</b></div><div class="quote-text">那看来说,首先来说一下这个负质预算服务,就这等会儿,那可能之前所用的,基本上也有声明一个变量,给它负质一个质,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:46</b></div><div class="quote-text">就是Print的语句,Print的这个韩数,我们从来没这么用,这第一次用,什么意思,就是加一个豆号意思,我先输出A变量党的内容,在输出B变量党的内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:52</b></div><div class="quote-text">然后呢假如说我现在就想做一个什么事,我想做一个自助连接,我想让A的职为冒号这样的一个自助串和变量,A进行一个连接可不可以了,还记得上一节课咱们学会怎么,自助串连接可以用加号,当然这里面可能就有一个问题,可能有什么问题,我不知道各位能不能立法想得到,咱们来執行一下你看,能不能想起来什么意思,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:41</b></div><div class="quote-text">咱们来看,闭到职还是,对吧,好,只行一下,怎么样,OK,没问题吧,好,就说在结合的这个复职,咱们又把这个尚鞋客学的这个自助串,直接在那里接,给大家做了一个小案例,接着咱们再来继续,看还有没有什么关于复职预算复好玩的这个玩法,比如我小X,豆浩外然后呢,我等于10块钱,对吧</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:44</b></div><div class="quote-text">哎,立马,爆错了,你可能会以为说,哎,这个X的值是SE3了,外的值也是SE3了,这一起复职了外,哎,其实不能这么来去操作的,所以如果你想,这个很方便的,把很多个变量都复成同一个值,那怎么来玩呢,哎,这里面你不能用豆浩,你可以选择这样来做,哎,包括这里面也是一样,哎,这也是拍纯当中的一种表特殊的一个娱法,在考试当中,大家可能会遇到过,啊,可能会遇见,啊,所以,哎,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:48</b></div><div class="quote-text">啊,我,这个,哎,给这10,先进行加依运算复职,之间是会有一些优先级的,对,你记得这复职,运算复,它的运级一定是最低的,好吧,相当于做了一个什么呢,哦,哎,先是加上一个一,那这个时候变成1了吗,然后再将1的只复职给这个,哎,看明白了吗,啊,就是做了,等于1之后,在复职会给这个,哎,所以呢,我们再来看一下,我如果是,哎,复职号,哎,加一这样的一个运算是什么的结果,是不是,还是1,哎,，哎,还是1没有问题,所以我说了,你这个,哎,加复职,以,其实就等加于,好,下面,哦,我在前面,谢啊,哦,行,当于,哦,这个操作,所以呢,你这个加复职都懂过的话,后面我这种不意见上了,其实原理还是一样的原理,大家感兴趣的话,可以自己去实验一下,OK,那基本上,这个,关于,副职院算所,以及,</div></div>
+
+    <!-- P11 · 2-3-3 关系运算符_逻辑运算符 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P11</b> · 2-3-3 关系运算符 & 逻辑运算符 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">运算符 · 12:27</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>关系：<code class="mono">&gt; &lt; == != &gt;= &lt;=</code>，结果始终是 <code class="mono">bool</code></li>
+          <li><b>比较级联</b>：<code class="mono">0 &lt; x &lt; 10</code>（Python 特有！）</li>
+          <li>逻辑：<code class="mono">not / and / or</code>，优先级 <b>not &gt; and &gt; or</b></li>
+          <li>短路求值：<code class="mono">and</code> 遇假停、<code class="mono">or</code> 遇真停</li>
+          <li><b>返回值非 bool</b>：<code class="mono">"a" and "b"</code> 返回 <code class="mono">"b"</code> 而不是 <code class="mono">True</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 logic.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>x = <span class="c-num">5</span>
+<span class="c-kw">print</span>(<span class="c-num">0</span> &lt; x &lt; <span class="c-num">10</span>)        <span class="c-com"># True —— 级联</span>
+<span class="c-kw">print</span>(<span class="c-str">"hello"</span> <span class="c-kw">and</span> <span class="c-str">"world"</span>) <span class="c-com"># "world"（不是 True）</span>
+<span class="c-kw">print</span>(<span class="c-str">""</span> <span class="c-kw">or</span> <span class="c-str">"default"</span>)     <span class="c-com"># "default" —— 短路技巧</span>
+<span class="c-kw">print</span>(<span class="c-kw">not</span> <span class="c-num">0</span>)            <span class="c-com"># True</span></pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>高频陷阱</b>：判断题常见"<code class="mono">a or b</code> 的结果是什么"，答案是 <b>最后一个被评估的值</b>，不是 <code class="mono">True/False</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：这时候其实经常可以用来做一些判断的</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：这个5的质负质给变量,接着再来写一个,后面我判断一下,我说A等鱼5嘛,这是什么意思,刚才我其实理解面出来,这实在判断,变量A的质是5嘛,或者变量A的质,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:44</b></div><div class="quote-text">但是在我们这个派上边程当中,用这两种形式来分别表示小鱼等鱼和大鱼等鱼,下面这个鱼等铃,我们在边程当中,一个等会应该叫什么,富池号的吧,或是你也可以说,这叫两个富池号,这两个东西放在一起,这个才真正的表示等鱼的意思,然后面咱们再来看,这个是什么意思,这是不等鱼的意思,这里面实际上,它都是在做一些判断的操作,既然是判断的操作,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:44</b></div><div class="quote-text">关于计算服务左右两次分别各方,一个变量或者放一个值,实际上就是在判断他们两个,是否跟运算服务成立,什么叫跟这运算服务成立,比如说你把这个孩子外放在这个两个的号,两边就问你说X,Y和X和Y,他们两星等嘛,X和Y,他们两步等嘛,X是不是小鱼等鱼外,X是不是大鱼等鱼外意思了一推,所以这里面也给来取一些例子,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:29</b></div><div class="quote-text">大鱼,等鱼,只行一下i5,当然大鱼等鱼5了,你记着,大鱼或者是等鱼,只要有任意一个满足,那么,这里面它的表达是呢,这表达是它反回的指就是处,因为嘛,它A等鱼5,大鱼5嘛,可能不赖有,但是没关系,大鱼等鱼,这两件事只要任意一件事满足,就可以,那同理小鱼等鱼也是一样的,咱们就这个在简单写一个,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:33</b></div><div class="quote-text">分支之后,学了这个衣服与句之后,可能用了就比较多了,目前可能用的相对来说还不是很多。这里面逻运算服在拍乘当中一共三个,当然这可能不是我们共当意乘想的,这个运算服的那样,我们加点成服,更多的,这里面就是用一些单词或者是自不错,自服我来进一表师的,一个叫NOT,其实就是一个曲非的意思,什么叫非真吉家非吉,即真,那笔,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:24</b></div><div class="quote-text">比如说你平时这个还是咱还拿做火车局里的例子</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:42</b></div><div class="quote-text">在后面咱们学习的那种当中都会对它进行更详细的一些讲解</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:46</b></div><div class="quote-text">当然不大约所以这边应该是一个什么FOS</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:51</b></div><div class="quote-text">如果NOT在NOT同时出现先算NOT在算NOT</div></div>
+
+    <!-- P12 · 2-3-4 input函数_练习题 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P12</b> · 2-3-4 input() 与运算符练习题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">运算符 · 13:08</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">input()</code> 一定返回 <b>字符串</b></li>
+          <li>数字输入：<code class="mono">x = eval(input())</code> 或 <code class="mono">x = int(input())</code></li>
+          <li><b>一行多值</b>：<code class="mono">a, b = map(int, input().split())</code></li>
+          <li><code class="mono">split()</code> 默认按空格分；多空格、换行符也能处理</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 multi_input.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># 输入 "10 20 30"</span>
+a, b, c = <span class="c-fn">map</span>(<span class="c-fn">int</span>, <span class="c-fn">input</span>().split())
+<span class="c-kw">print</span>(a + b + c)            <span class="c-com"># 60</span>
+
+<span class="c-com"># 输入列表</span>
+nums = <span class="c-fn">list</span>(<span class="c-fn">map</span>(<span class="c-fn">int</span>, <span class="c-fn">input</span>().split()))
+<span class="c-kw">print</span>(<span class="c-fn">sum</span>(nums))</pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：操作题第 1 题常考 input 多值，模板 <code class="mono">list(map(int, input().split()))</code> 写错减 5 分。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>/</b> 是真除（结果 float），<b>//</b> 是整除（向下取整），<b>%</b> 是取余。<code class="mono">-5 % 2</code> = 1，不是 -1。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>幂运算</b>用 <code class="mono">**</code>：<code class="mono">2**10</code> = 1024。比 pow() 简洁。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:13</b></div><div class="quote-text">然后这个年龄呢,不是我随便这个定义,比如我生了一个A值的变量,直接副一个15,这不想,不能说我随便定义的,那怎么知道呢,我需要有剑判接收一个年龄,金盘接收,年龄6,好,怎么来接收一个年龄,比如说我生了一个A值变量,然后面直接写一个NPU的寒数流黑了,不过别忘了在NPU的寒数中间要加一些内容,，这个内容是做什么用的,这个内容实际上是相当于其他的一个提示作用,比如说请您输入年龄,猫号,当然,这里面我回家了一个字服,加了一段双眼号,这是字服,不过这边,我这个在让大家注意一下,比如说我不知道各位同一平时写字服出来的时候会不会忽悦一点,不认拿一点,比如说你的双眼号是写成这样的,他们俩有啥不一样,这些绿缘色的,这是什么,这个是</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:49</b></div><div class="quote-text">什么数据就得行了,咱们来试一下,好了,说20,看到吗,STR没错吧,自负判,所以你记着,它虽然是接收到了20,但是它相当于接收了一个,这样的20,明白吗,这样的20有什么问题呢,有问题啊,如果你想要对这个年龄进行计算,你认为你能计算吗,当然不能吗,OK,然后呢,这个一会,咱们回计算一下,你看能不能计算,然后你在回来看一下,怎么困动片,能不能</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:26</b></div><div class="quote-text">出一段话,我说这个计算后的年龄位,来,试一下,这里面肯定有各种各样的问题啊,我这段态码肯定是不规犯的,从来看,只能结果啊,我首先来输入一个二十,看到了吗,这就爆错了啊,不能够计算了为什么,因为这个A值,他是什么数据的行的,是自负判内性,对吧,所以咱们这要加上,就这样的一个主事,然后解决,比如说,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:32</b></div><div class="quote-text">整数类型,所以ANT,加上这一块,这二块咱就转了,不过转完之后各一统也想一想,我这个就能够去进行预算了,刚才忘了,消写了一个,我转完之后,咱就能够进预算了吗,预算到是可以了,那你想这句话能出吗,肯定不能为什么,A值60,数据类型,而这个是自货,他们俩之前没发进行自负</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:03</b></div><div class="quote-text">这回来什么,这是整出运算,那十,整出四应该得起,那很明显,答应该选,比当二,对吧,整上次,它是上二,于二,对不对,好,接着再来看第二道题,说下面大门的输出结果是什么,X等约还被扭页,一个资贲,然后呢,这个printX成一二,什么意思,成一二,那就是两个,还被扭页,放在一起进行的自负出来,连接对不对,那这种连接你接的,莫人应该是不换好,而那对不对,所以这种连接你接的,莫人应该是不换好,而那对不对,所以这种连接的,莫人应该是不换好,而那对不对,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:03</b></div><div class="quote-text">这个,这么有内容,不信各位同学看,使用这道题,他相当于对你已经有一定的提示了,为什么已经有一定的提示了,你对于A和C的这两个答案,不觉得有重复吗,当你认为他有重复,然后你再仔細看,你看哦,原来一个养小写的一个大写,那他来表示这意思肯定不要,你会过来再看这个题,他的手字母的小写,但是前几还得是说你对于处和否则,这个非常清晰,你只要他们俩手字母应该大写的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:35</b></div><div class="quote-text">如果是这种效果,你把手字母变得大写,他研字都变了,都不然,表示这是一个关键字,还记得关键字保留字母,他还算自己留着用,是吧,所以这个时候输出,那是没问题的,所以这个要提是稍有一点现景啊,他要注意,OK,好了,那这个体验讲完了,音迫的韩述也说完了,整个咱们这一个张节就说了,基本上也就到这,下节开始,咱们来聊一聊这个拍森当中的一些条件控制流程控制问题,好了,那本次科就</div></div>
+
+    <!-- P13 · 更新补充：py文件双击闪屏 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P13</b> · 更新补充：py 文件双击闪屏 (2024.2.6) <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">补充 · 05:20</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul><li>Win10/11 双击 .py 文件窗口秒关</li><li>根本原因：脚本跑完没有停留，cmd 进程退出 → 窗口关闭</li></ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 way1_add_input.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-c-str">在脚本最末尾加：</span>
+<span class="c-fn">input</span>(<span class="c-str">"按回车退出..."</span>)</pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>考试机本身</b>实际不会闪屏——考场的 IDLE 直接 F5 跑不闪屏。准备环境的电脑才需要解决。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>关键点</b>：其实如果你遇到的这个问题 就说明 同学对计算机的操作还不认属性 大家能看到我已经打开了一个IDO 但我这个版本可能相对稍微有点高一些 没关系</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>关键点</b>：然后文块一件 可能叫N 咱们新创建一个文件 那创建一个文件了 回去有砍仇价S 我把他保存一下 保存在哪里就保存在桌面上给了几个名字就叫S 他保存</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">各位同学 大家好 今天是20-24年26号新加尔 今天给大家更新一起内容 更新什么呢?就很多公元反映 我们就说用IDO编辑完成的一个Python文件 但是说计之后就出现选评打过台的问题 怎么回事 咱们给大家来演示一下好了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:49</b></div><div class="quote-text">然后我就开始鞋内容 比如说我printer 简单一点就是Helo World 好</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:20</b></div><div class="quote-text">你说 显评是怎么回事 其实他显评是在相当于说 拍了一个命令床口 直醒运行 微向兴许而已</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:21</b></div><div class="quote-text">如果我们右机 我没有机来看一下 对取向 比如说我们右机来看一下打开方式 看到了吗</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:45</b></div><div class="quote-text">我也别Idle 你们看到就告诉你 他没有 没有怎么办 你可以点击在这台电脑上找其他应用</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:31</b></div><div class="quote-text">我就告诉你 你想当你关闭Idle 然后你想再次打开他怎么办</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:08</b></div><div class="quote-text">但我相信其实大部分同学应该都能够很妥善的去解决这个问题</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:41</b></div><div class="quote-text">然后去年上一期也是因为身体刚恢复一些</div></div>
+
+    <!-- P14 · 3-1-1 if -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P14</b> · 3-1-1 if 单分支 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">流程控制 · 15:58</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>语法：<code class="mono">if 条件: 语句块</code>（冒号 + 缩进）</li>
+          <li>条件真假判断：非零、非空为真</li>
+          <li><code class="mono">if 1:</code> 永远执行；<code class="mono">if 0:</code> 永远不执行</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 if_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>score = <span class="c-fn">int</span>(<span class="c-fn">input</span>(<span class="c-str">"分数："</span>))
+<span class="c-kw">if</span> score &gt;= <span class="c-num">60</span>:
+    <span class="c-kw">print</span>(<span class="c-str">"及格"</span>)
+    <span class="c-kw">print</span>(<span class="c-str">"恭喜！"</span>)
+<span class="c-kw">print</span>(<span class="c-str">"评分结束"</span>)</pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：<code class="mono">if</code> 后面忘了冒号 → <code class="mono">SyntaxError</code>；缩进不一致 → <code class="mono">IndentationError</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：基本上就是这三种,一个叫顺序结构,一个叫分之结构,一个叫循环结构,那循环结构以后,咱们在说,今天你只知道有这么一个叫循环结构的东西存在就可以了。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：那首先,我们来看一下程序控制的三种结构。这一个提,其实也经常会出现在一些选择提当中,问你说程序结构的三种结构都有什么样或者以下哪一项不是,类似的,所以你要记住。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 6 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:18</b></div><div class="quote-text">这张的内容非常重要的,同样们要重视一下。来看一下本节各我们学习的内容。本节各主要我们来将两方样,一个是给大家简单的介绍成熟控制的三种结构,就我们在写程区当中通常我们会以哪三种结构会形势来去写贷吗?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:33</b></div><div class="quote-text">来,你看,分之结构实际上它有三种形式,我们先给大家来介绍第一种,叫做单分之结构,这个单分之结构,这个词一定要记清楚,就是这个是拍算考试大刚当中,研究要求的,比如说它在选择替当中可能会问你说,单分之结构是怎么不是,双分之,或者多分之结构,那你也知道什么叫单分之结构,你这种概念性的东西,考试当中,一定是考,要会考,或者会设计到的,大家要记住,那这种单分之结构,它就展算这样子,，然后面有一个条件冒号,然后去要执行一部分内容,当然你现在看这个语远,我以后可能点,你别着急,以后我再给你去解释,当然了,这个很多同样在学习这种东西的时候,经常会认识老师,为什么要依服换个家的条件,还要写冒号呢,为什么不能不写冒号呢,这个,这是规子,你一定要这么去记,就好像你学英语,我问你说跟摩林是早上,那你反问我是老师为什么不叫摩林顾的呢,那这没法解释,这就是人家的一个规子语远规子,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:50</b></div><div class="quote-text">对不对,好,那写一个程序判断,假设呢,我现在有这么一个辩量,我先给一个这个默认的成绩分,好了,比如说是65分,那我就判断一下,想要去看一下这程序到底是不是几个,当然你可能说了老师,我一言我就看不来了,可是一个几个的分数,那对,没问题,没毛病,但是这里面我是想,希望让男人来写一个程序,让程序来判断这个辩量4个,它里面的只是否是大余等于60,所以,那我们怎么来去判断呢,对吧,怎么来判断,，那就一符,后面跟上一个空国,然后呢,我们就可以开始来去写这个条件了,你看一下,给大家展示了这个余法,规则当中,你看,也是在空国,然后对吧,一符空国,然后咱们再写这个条件,好,一符,不过我们发现这个score成绩,要是大余等于这个符号,还记得嘛,咱们之前学认算符则学过,等于60,那孟怎么办呢,我家一个毛号,那孟大余等于这个符号,还记得嘛,咱们之前学认算符则学过,等于60,那孟怎么办呢,我家一个毛号,那,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:20</b></div><div class="quote-text">那个看一下健盘主策,这个有这么一个叫TAB件,或者也有人管来叫TAB件,就是这个件的,你敲一下这个件,看到了吗,他自动就给你促进了这么多,所以在习艺术女句的时候别忘了,如果他是某一个艺术条件下面,这个需要執行的内容,一定记得写出这样的一个层次,要有这样的一个索尽,当然你说是没有这个索尽怎么办呢,没有这个索尽,那我告诉你这个评管,艺术条件里面的内容成立,而不成立,他都会執行,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:27</b></div><div class="quote-text">所以他苏记呢,这个里面的潑林的语是不会被执行,那他外面的这个呢,方然会执行,因为外面这个潑林可以去,他不属于一符这个结构里面的内容,能列着一下吧,所以苏记主要是为了区分开这个成绩的,对吧,就是主次关系,所以你看,这个成绩大约等约60,那就出来了,但是实际上我应该这么写,那话又说回来,咱们再把这个成绩给他稍微改进一下综绝了,现在我说给你指定一个59成绩,那你用着肯定不说,对不对,还记得,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:27</b></div><div class="quote-text">熟悉吗,同学吗,来,我来再来提示一下各位同学,还记得我在讲,音迫的按照的肉说,我说你输了所有内容,他都会被当成自辅刹,来去进行技术,也就是现在这个STR这个辩量,他其实应该是自辅刹,对吧,所以怎么办呢,还记得问我说,我们可以做一个强制转换,比如说这些一个NT,当然如果你这是NT的话,就意味着什么,意味着我输入的一定是一个整处成绩,那万一我输入一个戴小2份,那我考了85分,</div></div>
+
+    <!-- P15 · 3-1-2 if...else -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P15</b> · 3-1-2 if...else 二分支 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">流程控制 · 13:04</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>语法：<code class="mono">if 条件: 块1; else: 块2</code></li>
+          <li><b>条件表达式</b>（三元）：<code class="mono">A if 条件 else B</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 if_else.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>score = <span class="c-num">75</span>
+<span class="c-kw">if</span> score &gt;= <span class="c-num">60</span>:
+    <span class="c-kw">print</span>(<span class="c-str">"及格"</span>)
+<span class="c-kw">else</span>:
+    <span class="c-kw">print</span>(<span class="c-str">"不及格"</span>)
+
+<span class="c-com"># 三元写法（更紧凑）</span>
+status = <span class="c-str">"及格"</span> <span class="c-kw">if</span> score &gt;= <span class="c-num">60</span> <span class="c-kw">else</span> <span class="c-str">"不及格"</span>
+<span class="c-kw">print</span>(status)</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：上一次再多加一点,加点什么呢,比如说判断一个创计是否这个几个,那针对于不同的几个或不几个啊,几个或不几个啊,不几个都要,有对应的提示,信息,咱们就做这样的一个创计,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>if-elif-else</b> 写法：<code class="mono">if a: ... elif b: ... else: ...</code>，<b>不是</b> <code class="mono">else if</code>。</div></div><h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:50</b></div><div class="quote-text">再比如说我们平时去登陆一些AP平台,我们输入完用户名人密码之后,我点击登乱扭,点击完登乱扭之后,它马上就会有两种情况,一种马就是当你用我们一般说对,如果用户名正确,并且密码正确,那么跳转到主节面,否则,平时用户名或密码错误,其实这就是一个非常简单的二分之结构。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:42</b></div><div class="quote-text">那幅也给大家画这么一个流程图,首先是一个条件,看条件适合满足啊,如果满足的话,OK,那执行与举块一,否则的话,那就执行与举二,然后这个不过是还是否则,反正最后还得到后面,接着数学的去执行,后面其他一些内容,那了样子啊,这个光说不愿,那不行不愿,咱们得这个,继续再来写一个案例,那还记得在上一节课当中咱们写的那个判断程序,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:14</b></div><div class="quote-text">当然不可以,为什么,那至少你还去看这个约法规则呀,你看好我这约法规则,衣服和LZ是平行的,所以作为一个出学者,你再去写代码,这说也一定要注意到这一点啊,好LZ,就是你要推格退回去,LZ后面再做什么事呢,记着LZ后面也要进所进,如果你不说进在这儿写,那肯定不想,对吧,你这个,这里面说进表示什么,表示我现在写的代码是LZ里面才去才能进的去才会執行的这个内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:47</b></div><div class="quote-text">这样的,这就是一个一副爱好似的,一个非常简单,也非常经典的一个案例,包括这个例子,同样我们还可以在换,这是一个例子,是吧,一副爱好似,我再给大家举一个例子,咱们还可以在写一个简单案例,还记得我当时给大家举例子,我又说了一个,刚才举例子给大家说了一个关于习款级的事儿,对吧,这个,看着大家是保存一下,是它死,好,比如说就说,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:30</b></div><div class="quote-text">好,有了,来,写上出事,你一个非常好的一个写在码,习惯,好,有了,那既然咱们就来去接收一下,接收,去管金顾,有写货的,怎么来接收,来老规矩啊,对吧,这个金顾,怎么写,妈里吧,妈里将军,NPU的纳布写,对吧,你想一会儿,你肯定得强制转换,对吧,那个转换出去的写,所以有加一个印象,NPU的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:24</b></div><div class="quote-text">这个里面其实咱们还应该有一个前提,对不对,什么样的前提,就说我的这个书入的,那种一定是一个能备10整处的书吧,至少我们国家现在他没有说区款金能区50块钱的这个区款金对不对,所以那你说的金顿一定是能备10整处的,能够也这意思吧,咱们现在这程序其实也就算是一个,这个剪一万的一个小程序啊,只不过是为了给大家去讲这一句话,归作啊,咱谋理一下,好来,直到</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:24</b></div><div class="quote-text">肯定不能有两张转给你够了一个闭,对不对,OK,所以这两条件要多满足,所以我中间用一个暗的金顿一个连接,暗的就表示一个并且的意思,我的这个区款金顿要小预能于额,并且我区款的金顿一定是要10的贝数,这个时候我们说正在准备清朝后,那下面这个,那不能直接说于额不足正钱,就完了,万一我于额足,但是我只是没有数一百的整处费呢,所以呢,我给它提示于额不足,过,，这个没有输入啊,这个一百的整处费,钱数,当然我这还是一个测试,其实正常咱们金顿可以有很多这个条件判断的,我完全可以把这个预额不足和这个输入一百整处费也得去分开,那这里面,其实还是想让大家来再鼓一个支点,同时也加了一个逻辑,稍微加了这么一点,稍微有点烙,又比较来,提升一点难度,但是这个也不是于说有多难啊,咱们来试一下,</div></div>
+
+    <!-- P16 · 3-1-3 if...elif...else -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P16</b> · 3-1-3 if...elif...else 多分支 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">流程控制 · 15:31</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>语法：<code class="mono">if: ...; elif: ...; else: ...</code></li>
+          <li><b>elif 是 else if 的缩写</b>，区别于多重 if（elif 自动排除上层条件）</li>
+          <li>顺序很重要：从严到宽 / 从高分到低分</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 elif.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>score = <span class="c-num">85</span>
+<span class="c-kw">if</span> score &gt;= <span class="c-num">90</span>:
+    grade = <span class="c-str">"A"</span>
+<span class="c-kw">elif</span> score &gt;= <span class="c-num">80</span>:
+    grade = <span class="c-str">"B"</span>
+<span class="c-kw">elif</span> score &gt;= <span class="c-num">70</span>:
+    grade = <span class="c-str">"C"</span>
+<span class="c-kw">elif</span> score &gt;= <span class="c-num">60</span>:
+    grade = <span class="c-str">"D"</span>
+<span class="c-kw">else</span>:
+    grade = <span class="c-str">"F"</span>
+<span class="c-kw">print</span>(grade)   <span class="c-com"># B</span></pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>高频陷阱</b>：把 elif 写成 if 是错。多个独立 if 都会评估；elif 满足即停。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：优秀,接着再来,如果我这个成绩要是,怎么让大鱼等于60小鱼80,所以也别忘了,这不能俗进了,我认他一销回车是俗进的吧,得不...（后段循环，省略）</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：普通鸿鸿鸿,她继不是普通鸿,一上条件都不满足,说明就是小鸿,对不对,这就是不鸿鸿鸿,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:19</b></div><div class="quote-text">你看这其实就是一个主层,如果有这个,那某种这个,否则如果有这个,我就这个,一个一次的去进行一个判断直到有这么一个条件,满足,那么我们就可以去吃心里面的代码,其实相当于是这么一回事,OK,那这个鱼法规则,还是没得讲,就一定是要记下来,要背下来,这是规则,那结合这的鱼法规则,我们来看一下,这个应该怎么去寫代码去解决一些问题,好,那准备一个</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:49</b></div><div class="quote-text">大鱼等于60,并且小鱼80分,咱们就叫普通的一个几个,如果80分往上,咱们就稳定就有秀,可以吧,OK好,假设我们就定义这样的一个情况,那该怎么去判断这件事呢,你看,这回咱们就可以用这个一幅套衣服,刚咱们学的,这种女化规则,刚跟大家讲的一个,多分之结构的女化规则,咱们来用,再看一下吧,比如说,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:00</b></div><div class="quote-text">在变成,所以不能这么还去写,那变成怎么去写,你可以这样写,是高大鱼等于60,但得,是高小鱼80,还,这个条件,是可以的,我们可以来写一个,叫什么叫,普通游秀,好,接着再来,最后一个,一上条件,如果都不满足,那你就可以写一个鱼子,那鱼子是什么的,很明显啊,它既不普通游鸿,这些错,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:01</b></div><div class="quote-text">那就意味着什么,意味着一定是否定了上一个条件呢?能理解人一说,哦,一定是否定了你这个死构大余等于八十,才能进到下面这样的一个逻辑当来,也就说也喊着我这个死构一定是小余八十的,所以就一句话,你写还是不行,没有意义,所以,其实带起来,你看,其实带着没有什么大余等于啊,所以,那么这时候就输�</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:09</b></div><div class="quote-text">咱们就说了 所以到现在呢一副绿剧的这种单分之双分之多分之</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:26</b></div><div class="quote-text">但这个时候判断同一们 你看我这个艺术一句本身也是带我苏静的对不对</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:05</b></div><div class="quote-text">你先来想一下这个成群该怎么去执行</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:56</b></div><div class="quote-text">比输入25无法得到空击之量等几位</div></div>
+
+    <!-- P17 · 3-2-1 while循环 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P17</b> · 3-2-1 while 循环 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">流程控制 · 15:36</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>语法：<code class="mono">while 条件: 语句块</code></li>
+          <li><b>循环三要素</b>：循环变量初始化、判断、迭代（避免死循环）</li>
+          <li>常见错误：忘记更新循环变量 → 死循环</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 while.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>i = <span class="c-num">1</span>
+<span class="c-kw">while</span> i &lt;= <span class="c-num">5</span>:
+    <span class="c-kw">print</span>(i, <span class="c-fn">end</span>=<span class="c-str">" "</span>)
+    i += <span class="c-num">1</span>           <span class="c-com"># 别忘了！</span>
+<span class="c-kw">print</span>()                <span class="c-com"># 1 2 3 4 5</span>
+
+<span class="c-com"># 累加 1..100</span>
+total, i = <span class="c-num">0</span>, <span class="c-num">1</span>
+<span class="c-kw">while</span> i &lt;= <span class="c-num">100</span>:
+    total += i
+    i += <span class="c-num">1</span>
+<span class="c-kw">print</span>(total)           <span class="c-com"># 5050</span></pre>
+        </div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：分之结构之后,我们来学习程序控制结构当中的循环结构,循环也通常是在各种选额题、编程提当中都非经常出现,出现频率还是非常高的,所以大家还是要证实可以旁边的资源。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：那么还用的,你从名字其实也能名为循环网复,就是这个处一直重复的干一件事,这就叫循环,那我为什么要一直...（后段循环，省略）</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:48</b></div><div class="quote-text">便利循环怎么那么多,或者无限循环怎么那么多,你要知道他那里面说的是谁,但是说这个话说我们经常变成寫来码人,其实一般都会说,Folk寻关或者外有寻关,但是为了考试,这个无限循环和便利循环,你一定要知道,今天我们学习的这个外有寻关,他今天就是无限循环,咱们来看一下外有寻关,他的与法结构是什么样子的,外有黄默跟着一个条件,很像一个衣服,是吧,Folk寻关,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:50</b></div><div class="quote-text">这个大家都能看到,我这枝行,这个f5,或者点这个,我就霸出了,没有问题,那现在我有这样的一个需求和想法,我说我想输出两航海的味道,你说老师那简单,我再复制一个,我说呢,我要输出五航,你说老师也简单,我在复制那个五航,我说我输出十航,我说我是唯简单,也别再复制五次,我把它却全种,但我在这个,走一遍,算了十,算了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:21</b></div><div class="quote-text">循环现在娱法规则是说,他只要这个条件,这个位置我现在还没写东西呢</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:49</b></div><div class="quote-text">可能会在外面比如说循环一个变量帮助我们来去控制一下这个循环的刺处</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:55</b></div><div class="quote-text">你得给他一个能够退出循环的条件</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:06</b></div><div class="quote-text">我只爱领域值就能循环到时实际上</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:26</b></div><div class="quote-text">说国外有这么一名数学家</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:51</b></div><div class="quote-text">就是说只要你这外有寻环正常执行之后</div></div>
+
+    <!-- P18 · 3-2-2 continue_break -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P18</b> · 3-2-2 continue / break <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">流程控制 · 10:18</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">break</code>：跳出<b>整个</b>循环（包括嵌套只跳内层）</li>
+          <li><code class="mono">continue</code>：跳过<b>本次</b>剩余语句，进入下一轮判断</li>
+          <li>典型题：找质数、求最大公约数</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 break_continue.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># 只打印奇数</span>
+<span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">10</span>):
+    <span class="c-kw">if</span> i % <span class="c-num">2</span> == <span class="c-num">0</span>:
+        <span class="c-kw">continue</span>      <span class="c-com"># 偶数跳过</span>
+    <span class="c-kw">print</span>(i, <span class="c-fn">end</span>=<span class="c-str">" "</span>)  <span class="c-com"># 1 3 5 7 9</span>
+
+<span class="c-kw">print</span>()
+
+<span class="c-com"># 找到第一个被 7 整除的就停</span>
+<span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">100</span>):
+    <span class="c-kw">if</span> i % <span class="c-num">7</span> == <span class="c-num">0</span>:
+        <span class="c-kw">print</span>(<span class="c-str">"找到："</span>, i)
+        <span class="c-kw">break</span>          <span class="c-com"># 找到 7 整除的就停</span></pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>高频陷阱</b>：双层 for 里的 break 只跳出<b>内层</b>，需要标号跳跃才跳外层（考试不考这种）。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：同样,大家好。本次和我们来学习,像是宣防控制当中的两个关键字,第1个就是这个肯定流,比较保留字、关键字,咱们在第1个说过,保留字、关键字,其实都一会设。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">continue</code> 跳过本轮循环剩余代码，<code class="mono">break</code> 直接跳出整个循环。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:07</b></div><div class="quote-text">之间的所有欧数,这个怎么来说出,咱先不说这个肯定流,就说用我们现有的这个支脸怎么搞定的事,那很简单,这个欧要寻关门,对我寻关着每一次都拿到这个一个数,比如说我,这个还是说这一个变料,还当越,这个一,二,然后呢,这个欧要按小越,等一半,拿墨,我再认识呢,每一次,按。我可能要自庄加异,然后呢,这个里面我可能要进行 又或数书,但我直接</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:48</b></div><div class="quote-text">咱们来试验一下同学看他心还不行了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:31</b></div><div class="quote-text">那我最后都会扯行pring的这个衣服</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:29</b></div><div class="quote-text">这次循环后面的内容都不互而了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:22</b></div><div class="quote-text">输出来一到一百之间的前三个欧书</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:56</b></div><div class="quote-text">那我在这继续做这么一个盘队</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:39</b></div><div class="quote-text">你看过我运行之后的结果是什么样子的</div></div>
+
+    <!-- P19 · 3-2-3 while练习题 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P19</b> · 3-2-3 while 练习题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">练习 · 08:14</span></summary>
+        <h3>📌 考点回顾</h3>
+        <ul><li>累加 / 阶乘 / 找数 / 数字猜谜</li><li>死循环调试</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">OK,那打应该是比,在既然来下一道题,这里面说给出无下的代码,一等三,如果A大育里面罔默,A就自剑,自己剪一,然后先输出一个一个指,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错</b>：那么一下旋循中描述错误是什么呢?首先,A剪等2,1,这个可以由A等约剪,一时先,这没错,没问题,这在码的输出那种一次为210,</div></div>
+        <div class="tip"><div class="ico">💡</div><div>if/elif/else/while/break/continue 这 6 个全部覆盖，看完就不会在考场上写错。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：出来看DT,关于Python的无线宣伙伴,以下选项中描述错误,无线宣传说的人说的就是外偶宣传,对了。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:42</b></div><div class="quote-text">循环当中的语法就本身包括去确定宣传说,这个是不对的,当然了,你说这个老实也未必没关,也能咱们早就看了,来看说C无线宣传一直保持循环,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:35</b></div><div class="quote-text">这个你来想,第一次这个三件1等2,然后要,然后这个0,OK,这也没错,对吧?最后是这个0输出,然后再来看C,说条件A大育里,如果修改成A小育里,那么承许会进入死去处,当然不会,如果变成A小零箱,第一次A是三小零,三不小零,准备循环仰，这个很明显仰</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:32</b></div><div class="quote-text">我說我還是跟咱們剛才輸的那個</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:39</b></div><div class="quote-text">我們需要的一個爭取的案子</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:30</b></div><div class="quote-text">當然咱們現在沒交否循環</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:31</b></div><div class="quote-text">如果是這個S小一等於1的話</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:20</b></div><div class="quote-text">有兩個輔助循環控制的寶留字</div></div>
+
+    <!-- P20 · 3-3 异常处理 -->
+      </details>
+    </article>
+
+    <article class="skel">    <details>
+        <summary><b style="color:#3776AB">P20</b> · 3-3 异常处理 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">流程控制 · 11:13</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>语法：<code class="mono">try: ...; except 异常类型 as e: ...; finally: ...</code></li>
+          <li>常见异常：<code class="mono">ValueError, TypeError, ZeroDivisionError, IndexError, KeyError, FileNotFoundError</code></li>
+          <li><code class="mono">else</code> 子句：无异常时执行；<code class="mono">finally</code> 子句：无论是否异常都执行</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 try_except.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">try</span>:
+    n = <span class="c-fn">int</span>(<span class="c-fn">input</span>(<span class="c-str">"数："</span>))
+    result = <span class="c-num">100</span> / n
+<span class="c-kw">except</span> <span class="c-fn">ValueError</span>:
+    <span class="c-kw">print</span>(<span class="c-str">"不是合法数字"</span>)
+<span class="c-kw">except</span> <span class="c-fn">ZeroDivisionError</span>:
+    <span class="c-kw">print</span>(<span class="c-str">"不能除以零"</span>)
+<span class="c-kw">else</span>:
+    <span class="c-kw">print</span>(<span class="c-str">"结果是"</span>, result)
+<span class="c-kw">finally</span>:
+    <span class="c-kw">print</span>(<span class="c-str">"结束"</span>)</pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：操作题「简单应用」常要 try-except，记住 <b>except 顺序：子类异常先于父类异常</b>。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：不是这种错误,这种叫语法错误和异常不是一回事。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：但是在书写贷马的过程当中,又爆错了,这种错误我们通常称之为一场。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:07</b></div><div class="quote-text">它其实不属于说三种程序结构,数据结构分制结构,不属于这个。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:12</b></div><div class="quote-text">那另外也说一下,比如说我们在排散二级当中,一般不会设计当时说,需要一场处理的这种编成体,基本上就是一些选择体。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:02</b></div><div class="quote-text">所以肯定就会说问题,像这种错误,我本身写代马,过程登楼并没有任何余法错误,但是在程序執行过程登楼,就出现了问题。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:34</b></div><div class="quote-text">所以只有当串里面的代码出现问题的时候,才会執行这里面的代码否则,就当什么时候的微发生,然后串里面你记着,串里面放什么,放的时候可能会出现错的代码。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:14</b></div><div class="quote-text">什么意思来给大家举个例子,我再来新建一个,比较说我做这样一个简单的程序吧,给我生明一个A等约5,B等约0,然后我说出,A出一B,咱们来执政一下。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:05</b></div><div class="quote-text">那咱们回来看一下,那我在X后面去写,Zero,Devison,Aro,OK,然后,我再输出一段,我说这里不能处理,零,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:29</b></div><div class="quote-text">所以其实这个还是那句话,这种东西出来X的,你只需要熟悉知道了解这个娱法就可以了,你说你真正能有多零国的去使用吗,其实也不需要,如果你只为了考二级,那其实二级当中,在这些变成提当中,不会出现类似的这种戴了,只是在选择提当中,会出现,所以你做一个了解就可以了,OK,咱们再執行一下这个戴了,怎么样,说这里不能出现,就出现确的精准打击,到了这里。，OK,那说完了,咱们来到联系体吧,也是找了一些联系体,然后发现说,跟其他的一些支点都关联,但是咱们现在又没学那么多东西,所以简单的咱们就看这一道体就可以了,然后提起来还挺熟悉的,一下程広出学我是什么,那等于比能力,然后如果A大育零或者是B除以A大育二,A大育零二,然后二第二个,这个条件是什么,B除以A大育二,</div></div>
+
+    <!-- P21 · 4-1-1 函数基础1 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P21</b> · 4-1-1 函数基础 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">函数 · 11:43</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>语法：<code class="mono">def 函数名(参数): 函数体; return 返回值</code></li>
+          <li><b>函数不调用不执行</b>：定义只是登记，调用才执行</li>
+          <li>返回值可省略，无 return 时返回 <code class="mono">None</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 def_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">def</span> <span class="c-fn">greet</span>(name):
+    <span class="c-kw">return</span> <span class="c-str">"hello, "</span> + name
+
+s = <span class="c-fn">greet</span>(<span class="c-str">"张三"</span>)
+<span class="c-kw">print</span>(s)              <span class="c-com"># hello, 张三</span>
+
+<span class="c-kw">def</span> <span class="c-fn">noop</span>():
+    <span class="c-kw">pass</span>             <span class="c-com"># 占位符</span>
+
+<span class="c-kw">print</span>(<span class="c-fn">noop</span>())       <span class="c-com"># None</span></pre>
+        </div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：寒数,其实它基本上就是两个点,一个是可以帮助我们来降低边程难度。另外,可以帮我们增加代码的一个服用,它整体的一个声明结构,就是像下面,现在写的这样子,当然大家证明看,可能不太容易理解。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">def f(a, b):</code> 定义函数，<b>必须</b>先定义再调用（顺序敏感）。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:35</b></div><div class="quote-text">我先来给大家举权例子,回忆一下,比如说我们刚开始学训唤的时候,实际上我是给大家来举权一些例子告诉你,为什么会使我们需要用训唤的东西,所以当你在去学寒数的时候,其实灵应该先了解,我们为什么要学寒数,为什么我们要用寒数,给大家举一个例子,我现在创建了一个新的拍子的文件,还是保存到周面,叫</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:07</b></div><div class="quote-text">你想像一下,几个,如果说我现在有这样的一个训绝,我就说,可能我整个人一个程序,几百孩代码,突然之间,第一孩代码,我可能需要算一下,加到10的一个值,比如说过了一会儿,可能我这个隔了几十孩代码,之后我又需要去计算一下,一家到10的值,那是不是就意味着,我又要再去写,一遍这些代码,能列人意思吧,我该隔了一会儿,我又需要计算一下,一家到10的值,那是不是还得要去再写一次,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:07</b></div><div class="quote-text">写这么多代码,那怎么办呢,我可以用这样的一种形式,比如说写这么一个东西,然后把刚这也代码,全部给它复着过来,看一下,其实就是我现在声明一个寒树或者叫定义一个寒树,搭来的观察,地以 AF,然后我们跟着一个寒树名,这些我在寒树名,为什么上来一半,当时里面大家都看到了说,参树类表,就是当你在去调用一个寒树或者声明一个寒树的时候可以给它写一个寒树也凯,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:46</b></div><div class="quote-text">实际上它是一个程序当中的一种抽象的一个方式</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:00</b></div><div class="quote-text">咱们就给它困谋成一个喊数就可以了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:39</b></div><div class="quote-text">然后最终是怎么打开的这电视机吗</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:49</b></div><div class="quote-text">就是我当我看到一个什么样的东西</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:38</b></div><div class="quote-text">就像是你们家那电视的邀空器</div></div>
+
+    <!-- P22 · 4-1-2 函数基础2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P22</b> · 4-1-2 函数基础 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">函数 · 13:07</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>形参 vs 实参</li>
+          <li><b>函数是第一类对象</b>：可赋给变量、可作参数、可作返回值</li>
+          <li>嵌套定义函数（闭包基础）</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 first_class.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">def</span> <span class="c-fn">square</span>(x):
+    <span class="c-kw">return</span> x * x
+
+f = square          <span class="c-com"># 函数赋给变量</span>
+<span class="c-kw">print</span>(<span class="c-fn">f</span>(<span class="c-num">5</span>))       <span class="c-com"># 25</span>
+
+<span class="c-kw">def</span> <span class="c-fn">apply</span>(fn, val):
+    <span class="c-kw">return</span> <span class="c-fn">fn</span>(val)
+
+<span class="c-kw">print</span>(<span class="c-fn">apply</span>(square, <span class="c-num">4</span>))  <span class="c-com"># 16</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：这种还是出了一个生命,他自己内部肯定写着这些海术,只不过是我们可以很听风的调问过来就行了,这...（后段循环，省略）</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>递归</b>两个要点：① 有终止条件 ② 递归体调用自身。栈溢出风险大。</div></div><h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:28</b></div><div class="quote-text">然后在接下来,可能在整个好多这个程序的功能,这个后面的代码,大量的代码功能,都需要计算某两个数相加的一个值,那这个时候你就说要不然,我把这一堆内容给它整理成一个寒树,整合成一个寒树,这个多方便的算起来,对不对,OK,好,咱们就来生命一个寒树,上一次各位讲了DIF,这个保留字是必须写的,用这个来去生命一个寒树,后面跟上寒树名是什么呢,比如说我这就叫</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:28</b></div><div class="quote-text">你可以享有几个,就有几个,但是你说你这有一个眼形,你可以用豆号来去分隔,开多个寒树,至于它到底要写几个寒树呢,这还要根据你到底想解决什么问题来就看,比如说,现在我想要去解决的是两个数,相价的一个树的问题,比如说我生命一个寒树,来写一个寒树,实际上功能是说你够传两数价的,那么我就把这两数,相价的一个树给它输出来,OK,那咱们这个时候就</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:59</b></div><div class="quote-text">能力点这一,什么东西呢,那同样来,我再去执行一下这一段嘛,你看,还是一样的,看到了,没有任何的变化,所以这两东西,你这三树,你只要记得你起的这个名儿,事啥,然后到时候下不来,这个程序按照这个名儿来去写,就可以了,所以这三树,就是寒树生命当中这三树,现在就是这个名儿,然后呢,我们再去传递三树的时候,说会默认根据你,这个数据去传,比如说我传递三树四,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:59</b></div><div class="quote-text">当然你说老师,我就是为了练习,为了刺试,加一个餐树寄少一个餐树,那倒没关系,但是正常情况,我们去写成去一定是基于需,所以不要从小,所以我写这个寒树是需要几个餐树,那你看你到底想干什么事,对吧,OK,好,这时关于餐树,然后接着咱们再来聊一下这个反回指,我把这个关了,他死了,他在聊一下反回指,这个事,你看猎,反回指,刚才咱们写的寒树一直都没有猎,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:11</b></div><div class="quote-text">所以这个你看,其实明显还能想到一个问题,比如说咱们之前使握的这个海术,咱们之前不是学过太不好,还记得吧,判断某一个变量或某一个指他的数据类型,那这个海术是哪来的,这传说当然不是咱们自己生命写的,不过他肯定是也有会有类似的代码,这代码比如说就写成DIF,然后他也不好,然后里面加一些什么参数,然后再去写什么东西,OK,当然这一系列内容都是人家拍子给我们提供了,所以拍子自己肯定了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:43</b></div><div class="quote-text">这也认识一个什么其他的便量,便按等约,太把,但是然后再Princia安处,看一下这也是一样,那样提,所以就是你要知道反护一只如果你,这种带有反护一只的海术,如果你单独只是放来这儿了,那他可能函树里面的功能是走了,走完之后但是反护一回来的值,你得接收的,你不能单独,就给他量在这儿,你接收他,你做計算也应该或者你接收他,你只会给他叔也行,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:50</b></div><div class="quote-text">会判断它是什么样的书据的行程</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:52</b></div><div class="quote-text">所以你可以这么来去接这种有多个反归值的</div></div>
+
+    <!-- P23 · 4-1-3 函数基础练习题 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P23</b> · 4-1-3 函数基础练习题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">练习 · 04:26</span></summary>
+        <h3>📌 考点回顾</h3>
+        <ul><li>函数定义与调用</li><li>第一类对象的具体应用</li></ul>
+      
+      
+        <div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">首先来看DT,这以下选项中不属于寒数作用的事什么。不属于寒数的作用,提高代码執行速度,很明显就是,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">def f(a, b):</code> 定义函数，<b>必须</b>先定义再调用（顺序敏感）。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：函数可以返回多个值，实际是返回<b>元组</b>：<code class="mono">return a, b</code> 等价 <code class="mono">return (a, b)</code>。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:06</b></div><div class="quote-text">首先来看DT,这以下选项中不属于寒数作用的事什么。不属于寒数的作用,提高代码執行速度,很明显就是,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:01</b></div><div class="quote-text">按摄,那么我锐撑另外一个只。这样的话,你想,这一个寒数当中是不是多调味的,对吧。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:22</b></div><div class="quote-text">这个咱们在上一次,在最后的暗里当中给大家看了,可以寒语剧很多个只。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:04</b></div><div class="quote-text">你就知道啊,这个寒数,我传入这个东西,他能给我数内容,你能够反过那个东西。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:23</b></div><div class="quote-text">然后,进来看地,说寒数用地牙,要保留自己定义一个寒数,这很明显不得。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:03</b></div><div class="quote-text">A说寒数可以反归0个或多个结果,那意思是寒数可以有反归值,也可以没有反归值。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:21</b></div><div class="quote-text">寒数可没说用水分,只说寒数可以反归0个或多个结果。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:52</b></div><div class="quote-text">A成一B,A成一B的结果在FU-C-2-1-10,</div></div>
+
+
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P24</b> · 4-2-1 参数与返回值 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">函数 · 07:27</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>位置参数</b>：<code class="mono">def f(a, b): ...</code> 调用时 <code class="mono">f(1, 2)</code></li>
+          <li><b>关键字参数</b>：<code class="mono">f(b=2, a=1)</code>（顺序可换）</li>
+          <li><b>默认参数</b>：<code class="mono">def f(a, b=10): ...</code> 调用时 <code class="mono">f(1)</code>→<code class="mono">f(1, 10)</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 params1.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">def</span> <span class="c-fn">power</span>(x, n=<span class="c-num">2</span>):       <span class="c-com"># n 默认 2</span>
+    <span class="c-kw">return</span> x ** n
+
+<span class="c-kw">print</span>(<span class="c-fn">power</span>(<span class="c-num">3</span>))         <span class="c-com"># 9 — 默认平方</span>
+<span class="c-kw">print</span>(<span class="c-fn">power</span>(<span class="c-num">2</span>, n=<span class="c-num">3</span>))    <span class="c-com"># 8 — 用关键字指定</span></pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：默认参数必须是<b>不可变对象</b>。如果用 <code class="mono">def f(x, lst=[]): lst.append(x); return lst</code>，多次调用共享同一列表！</div></div>
+      
+              <div class="tip"><div class="ico">💡</div><div><b>速记</b>：位置参数必须按顺序传，关键字参数可以乱序。混合时位置参数必须在关键字参数之前。</div></div>
+        <div class="tip"><div class="ico">💡</div><div><b>关键</b>：<code class="mono">*args</code> 接收多余位置参数为元组，<code class="mono">**kwargs</code> 接收多余关键字参数为字典。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 5 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:30</b></div><div class="quote-text">说,什么时候用参数,什么时候用参回指,对吧,什么时候不用参数,不用参回指,对吧,OK,这些那种咱们会具体跟大家去讲,然后呢,包括还要再给大家讲一个,实际上在拍择当中,声音喊数的时候还有一种要可选参数,什么意思,具体,后面咱们就说,首先咱们来聊一下,关于参数的传递,第1个需要大家了解的是这样一个概念,说,我们的形式参数和实际参数,一个简直形态,，这种实际上,在一些选择体当中,经传会有一些类似的问题,要问你说,什么时候是形参,我们是实际参,这个时候你要知道啥就形参,实际参,那形参呢,就是喊数定义,或声明的时候是用了一个参数,就我们经常再去写一个声明一个喊数的时候,里面戴那个参数的名字,我们突然玩的就形参,然后实际参,就是你在调用喊数的时候,实际传入的这个内容,这种内容我们本来叫做实际参,咱们来写一个戴马来看,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:16</b></div><div class="quote-text">A和B,是形参,就是形式参数,就声明的时候,这个写的参数叫形参,看是否写的,喊数声明时或者定义时使用的这种参数,我给A和B叫形参,那啥叫实参的,比如说我去调用一下,多话6,那这5和6,就是实参,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:27</b></div><div class="quote-text">那就是形参,对吧,OK,这是实际参数和形势参数,这个需要大家要去分开,但是这个,你都写完了,就运行一下,了是,一个是5,没错,OK,好,然后同时你也要注意整个程庐运行的一个数据,这程庐其实还是数据之行的,只不过执行的,还说掉了所有进去走的一下,相当于什么意思呢,这个先执行一下,声明喊数,然后执行FWM5,东方6,然后5东方6,那就跳到，跳入到这个喊数的内部了,执行完成之后,好,又回来继续M17,很能一般,然后又执行FWM,然后里面传上M1,那就又进入到这个FWM的喊数里边,执行了这么一句话,然后这才算执向接触,OK,我这样的一个案例,让大家了解什么叫形参,什么叫实参,然后另外一个需要跟大家讲的是,就是喊数,这个在掉入过程当中,它整个一个值得传递是怎么样,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:05</b></div><div class="quote-text">大家看,我生命一个变量排名,是10,然后呢,我去掉用的一下,这个F用的喊数,将10传进去,将这个M传进去,接下来我在输出一下,大家想,这个它整个一个玉结果可,会是什么样子,你看我这个先讲一下这个喊数的一个生命,这喊数是说你传进来一个参数,传进来参数,符子给A了,然后A能有重新负质,然后就输出一下A的质,，那接在下面一个代碼,我这个,实行明了一个变量的M,给它负了一个质是好,那现在呢,我把这个M,这个质,放到喊数当中,给它放进去了,说完了,我将M的质负质给了A对不对,好,A呢,这个又重新了负质,然后再输出了一个A,然后整个这喊数掉完中之后,我输出一个M,那可能有同学会想,说到是这个A和M,他们俩现在是一回事吗,在输出的市会是一样的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:35</b></div><div class="quote-text">这个直传给A了,相当于做了这么一件事,能列着一个,然后A又这个变成5了,那就输出A的直,那在习下来,它是输出M的直,M直没有任何改变,当然,在后面咱们学到了一些负合的数据类型,他们在传递数据的时候,往可能就不是这种直传的,在传递功能可能就会出现另外一些问题,这个是咱们以后再聊的,所以我希望大家通过今天的一个课,就是你能知道,我们现在这种,</div></div>
+
+    <!-- P25 · 4-2-2 函数参数与返回值2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P25</b> · 4-2-2 参数与返回值 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">函数 · 08:39</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>*args</b>：可变位置参数，打包成元组</li>
+          <li><b>**kwargs</b>：可变关键字参数，打包成字典</li>
+          <li>顺序：<code class="mono">def f(a, b=10, *args, **kwargs): ...</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 params2.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">def</span> <span class="c-fn">intro</span>(name, *hobbies, **info):
+    <span class="c-kw">print</span>(<span class="c-str">f"姓名: {name}"</span>)
+    <span class="c-kw">print</span>(<span class="c-str">"爱好:"</span>, hobbies)
+    <span class="c-kw">print</span>(<span class="c-str">"信息:"</span>, info)
+
+<span class="c-fn">intro</span>(<span class="c-str">"张三"</span>, <span class="c-str">"篮球"</span>, <span class="c-str">"Python"</span>,
+       age=<span class="c-num">20</span>, city=<span class="c-str">"北京"</span>)</pre>
+        </div>
+        <div class="tip"><div class="ico">💡</div><div><b>速记</b>：调用时展开用 <code class="mono">*lst</code> 和 <code class="mono">**dict</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：那你为什么要写音韩数呢?肯定是想为了实现某些功能,那你就要根据这个韩数,他需要实现的功能,来去判断,该如何是选择,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:53</b></div><div class="quote-text">什么意态所三,咱们看来写,比如说先写一个没有参数,没有反会置,我就想实现这样一个需求,书一到这个一百,之间的说,很简单,这样一个什么那个吧,这叫无参数,无反为置,咱们写,来,第1个,，第1个,第</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:18</b></div><div class="quote-text">我现在就是想输出一道10之间的事</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:22</b></div><div class="quote-text">因为你直接写这么一个FU2</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:39</b></div><div class="quote-text">它都说传入一个成绩</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:38</b></div><div class="quote-text">我才战上一个功能就实现了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:39</b></div><div class="quote-text">那人家这个需求上也明确说了</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:14</b></div><div class="quote-text">咱们就把这四种不同的情况</div></div>
+
+    <!-- P26 · 4-2-3 函数参数与返回值3 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P26</b> · 4-2-3 多返回值 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">函数 · 08:00</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">return a, b</code> 返回<b>元组</b></li>
+          <li>解包：<code class="mono">x, y = func()</code></li>
+          <li>用 <code class="mono">_</code> 接收不需要的值</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 multi_return.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">def</span> <span class="c-fn">divide</span>(a, b):
+    q = a // b
+    r = a % b
+    <span class="c-kw">return</span> q, r
+
+q, r = <span class="c-fn">divide</span>(<span class="c-num">10</span>, <span class="c-num">3</span>)
+<span class="c-kw">print</span>(q, r)            <span class="c-com"># 3 1</span>
+
+<span class="c-com"># 只想用商</span>
+q, _ = <span class="c-fn">divide</span>(<span class="c-num">10</span>, <span class="c-num">3</span>)
+<span class="c-kw">print</span>(q)              <span class="c-com"># 3</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：函数没有 <code class="mono">return</code> 时<b>默认返回 None</b>，调用方拿到的就是 None。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">return</code> 后面的代码<b>不再执行</b>，可当作"提前退出"。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:24</b></div><div class="quote-text">第1个寒数面前面都是一样的,但是在寒数一点,原来咱们只是一个寒数类点,但是现在是说有飞可选,参数类点和可选,参数类点,当然正在做了一个问题,应该是,可选,参数,然后再加上一个默认值,这什么意思,就说,当我们再去生命一个寒数,是可以放一些默认的这种寒数的值,什么意思来,写一个代码来看一下,出现一个。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:32</b></div><div class="quote-text">参数改变,什么意思来,比如说,我生命一个寒数加了Pest4,然后里面的寒数A增后B,等于,看明白什么意思,就是当你在去,如果我们这样去生命一个寒数,那么就意味着什么呢,当我去调用这个寒数的时候,我就两个选,我要我们的传入一个值,传上一个值的话,相当于说把这个实负质给A,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:34</b></div><div class="quote-text">这个说,你看我传逆一个二十进去,那这样的话,这个B当右,对默认值就没有,相当于B的值是二十,那这样的话,这个应该是等于30了,咱们来执行一下看,怎么样,OK,没错吧,然后注意,再去做这种传逆的时候,一定注意他们之间,收写一个税去,就是比如说,你看,我如不吃,我</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:08</b></div><div class="quote-text">但是如果你在去做一些选择席的过程</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:31</b></div><div class="quote-text">所以这种他要输出A的内容</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:37</b></div><div class="quote-text">这个里面肯定不能太多号</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:15</b></div><div class="quote-text">寒树是一段纠特定功能的可重用的与劝度</div></div>
+
+    <!-- P27 · 4-3 函数变量作用域 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P27</b> · 4-3 变量作用域 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">函数 · 11:43</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>LEGB 规则</b>：Local → Enclosing → Global → Built-in</li>
+          <li><code class="mono">global x</code> 在函数内声明要修改的全局变量</li>
+          <li><code class="mono">nonlocal x</code> 声明要修改的嵌套外层变量</li>
+          <li>局部变量 vs 全局变量同名时，函数内优先局部</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 scope.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>count = <span class="c-num">0</span>
+
+<span class="c-kw">def</span> <span class="c-fn">inc</span>():
+    <span class="c-kw">global</span> count           <span class="c-com"># 必须声明才能改全局</span>
+    count += <span class="c-num">1</span>
+
+<span class="c-kw">def</span> <span class="c-fn">outer</span>():
+    x = <span class="c-str">"outer"</span>
+    <span class="c-kw">def</span> <span class="c-fn">inner</span>():
+        <span class="c-kw">nonlocal</span> x
+        x = <span class="c-str">"inner"</span>      <span class="c-com"># 改外层变量</span>
+    <span class="c-fn">inner</span>()
+    <span class="c-kw">print</span>(x)
+
+<span class="c-fn">inc</span>(); <span class="c-fn">inc</span>(); <span class="c-fn">inc</span>()
+<span class="c-kw">print</span>(count)            <span class="c-com"># 3</span>
+<span class="c-fn">outer</span>()                <span class="c-com"># inner</span></pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>高频陷阱</b>：函数里没 <code class="mono">global</code> 就直接 <code class="mono">count += 1</code>，抛出 <code class="mono">UnboundLocalError</code>。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：为什么,这是校长,全校同学都认识的,张三,但是这个,这里面的这个,之后它们班的同学认识,能认识一个,一个全局变量,一个就会量,对于全局变量来讲,任何一个寒数...（后段循环，省略）</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：函数内变量是<b>局部变量</b>，函数外不访问。修改全局变量需 <code class="mono">global x</code>。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:00</b></div><div class="quote-text">函定义的变量,在成立之中过程中的效,在函数之外定义的这种变量就会,它叫做全局变量,另外,假设受我们的想在函数内部使用这种全局变量,需要用一个叫格伯的那个薄达字,来去进行生命,那这个先来写一段程序,咱们先认识一下,啥叫全局变量,啥叫局伯变量,然后咱们在来说那个格伯那个薄达字怎么回事,創建一新的,生命一开始的一,据一个</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:30</b></div><div class="quote-text">局伯变量,因为是在寒数内生命的,所以你记着,就是在寒数内生命的,我们叫局伯变量,就是因为有没有考试,所以你一定要就知道,能够去分都开,啥叫局伯变量,啥叫全局变量,那你就记着在寒数里面生命的这边量,就叫局伯变量,那我们直接这个,调用一下这个寒数,对不对,我传入随便传入五进去,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:36</b></div><div class="quote-text">寒数当中管用,所以啥叫作用语,这个变量A变量B他在哪能被用啊,这叫作用语,那其实你也不用记得那么复杂,说什么出了寒数,不认识寒等,你就记着,这变料在哪生命的就在哪管用,什么意思,我这变量A和B,我都是在这FU问这寒数当中生命的,所以那我就在FU问这个寒数里面,我又出了这FU问寒数,不认识我,对吧,上三同学是一般的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:18</b></div><div class="quote-text">为什么,这是校长,全校同学都认识的,张三,但是这个,这里面的这个,之后它们班的同学认识,能认识一个全局变量,一个就会量,对于全局变量来讲,任何一个寒数的都可以用,都认识,当然对于局务变量来讲,只有在自己本身生命的那一母三,他才认识,好,这是第一个要跟大家讲,那既然来咱们在劳一枪,那个樓谷的困境字,出现新的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:04</b></div><div class="quote-text">那怎么能够去院整这事,其实很简单,你先掉用一下这寒数,输出它人,你看个市场,然后同时掉了寒数,然后你再输出一下N的这个值,你看N这值变得变,对吧,如果说,我输出这两次N他的值都是相同的,那就意味着什么,意味着我,这里面实际上相当于说在对全局变量,进行负质对的,我看,当然如果他俩值不一样,说明什么,说明我,这是又重新生命了一个全局的,生命了一个局务变量,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:05</b></div><div class="quote-text">那你可以加这么一个,格伙,就表示,高尔陪似,说我下面,将要用到的实际上是全局变量的,这样的话,当我A成立比五六三十的质负质跟N是谁,N是全局变量,那咱们这回再来执行一次,你看,出了两个三十,对吧,没错,一个是在寒数当中出的,一个是在外面出的,只要是说,这时间是影响到了外面的全局变量,对吧,好,这个是关于这个格罗伯,你也可以来看一下,说,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:07</b></div><div class="quote-text">简单数据类行程在寒数内部用这个Global寒则生员后退出,寒数的退出后保留改变量,没错了,你刚才咱们就是,确实是这样,退出这个寒数之后,我一个恩的指示会被保留下来了,是,没错了,全局变量只在寒数之外定你的变量,在程序,只行全过程有效,也没错了,对吧,简单数据类行变量仅在寒数内部创建和使用寒数的退出后变量被释放,在说的不就是这个,，刚才咱们太子一当中写的,所以说的简单数据类行变量,你不用问讲面,但都是怎么回事的,就是说的都是局务变量,只过关了一个说法,想回销单还是听了,再来看,第三题就是周一题,外面全局变量的了,然后生命了一下全局变量,然后随天,X成以外成以恩的指,那咱们看X和Y分明是谁的,调用寒数的时候,X创的是9Y,呢,创的,</div></div>
+
+    <!-- P28 · 4-4 print不换行 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#3776AB">P28</b> · 4-4 print() 输出不换行 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">函数 · 05:01</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">print()</code> 默认 <code class="mono">end="\n"</code></li>
+          <li>不换行：<code class="mono">print(x, end="")</code></li>
+          <li>分隔符：<code class="mono">print(1, 2, 3, sep=", ")</code> → <code class="mono">"1, 2, 3"</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 no_newline.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-c-str"># 打印直角三角形</span>
+<span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">6</span>):
+    <span class="c-kw">print</span>(<span class="c-str">"*"</span> * i)
+<span class="c-com"># *
+# **
+# ***
+# ****
+# *****</span>
+
+<span class="c-c-str"># 同行的</span>
+<span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">6</span>):
+    <span class="c-kw">print</span>(<span class="c-str">"*"</span> * i, <span class="c-fn">end</span>=<span class="c-str">" | "</span>)
+<span class="c-kw">print</span>()</pre>
+        </div>
+        <div class="tip"><div class="ico">💡</div><div><b>速记</b>：<code class="mono">end=""</code>(字符串) → 不换行；<code class="mono">sep=", "</code>(分隔符) → 控制多项之间的间隔。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<b>易错</b>：<code class="mono">print("hi", end="")</code> 不换行，但<strong>下一行 print 不受影响</strong>（每个 print 自己决定 end）。</div></div><h3>🎤 真实字幕节选（Whisper 听写 · 3 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:30</b></div><div class="quote-text">什么的一个控制,莫委的一些东西,这个时候该怎么办,这时候大家看,Python词其实还有一个参数,这个参数,莫认识什么都没有,所以他肯定说,莫认参数了个,我们也可以给它传入这个参数是什么呢,就是按的,那我们就是在这个进行调整的过程当中,是可以传入这个按的参数,那咱们来看一下具体该怎么去传入被按的参数,哪些都是戴马来看的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:41</b></div><div class="quote-text">你看,怎么样,看到了吗,没错吧,所以我后面写,是这个是发展写的,必等于15,等于20,但是它在去刷,那时候它知道,你这个B才说是谁,A才说是谁,也就是说,在我们去调用一个海处的说,实际上是可以使用这种形式,本确进行调用了,你写名卖了,你先给哪一个参数副一个什么样的主,那其实你看那个,大概能猜的话,陪你陪我陪，我们来看,首先说我朋友就输出之后的内容如国想,无话好,那目,比如说我前面收拾什么东西,那一本于26,我输出一下,那一,后面再跟着一个按的参数,然后里面什么都不行,咱们再看,我再输出一下这个,咱们来试一下,看一下,看到了吗,哀着的没有话好,当然输出完第二个,，然后再进来看,然后面摆,后面这个参数是什么,跟那一百分,你看,就质象了一条,看到了,那这个时候就是说我在输出之后,莫许又跟了一个是没有东西,比如说你想在莫许之后跟什么,你就在这个按参数这,显然有东西,当然可能我同时就会好写了,老师说,还是输出再去,调用的时候还能这么去进行显参数,当然可以了,，这里面这个稍微再给大家補充一个关于海处的内容,好,咱们来看,再创建一个,就如果我们都知道,在这个写这个海处的时候,你看,我生命的海处的时候还比我问,豆话笔等于,这叫戴莫认参数的豆话,这个非科选,参数是科选参数,然后我陪你陪你陪我陪你陪我�，很简单的一个调整,但是很简单一个海处说明,但是你在进海处调用的时候,你可以这张形,可以写,等于10,必等于20,那意思就是说我将10的直床的AB的直床20,和你这个张上去写,其实一会是,在或者说你还可以这么写,还可以,你可以直接写B,必等于15,等于20,你看一下,能不能想三次调用相当于,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:12</b></div><div class="quote-text">在调的时候,首先,一并是要有一个,什么东西,就是你输出的那个,它里面可不还会有一个科学,才说,有个默认,可能有一个什么样的内容,这个按照这个才说,默认,等于一个什么,默认,这个之前咱们学,是没有那个按照里面穿参,所以默认它就会好,但是一旦的默认,那个按照里面穿参了,你就可以试一下不怕,如果是一个空子之后,那就是直接就说,输出,但不管好,对吧,OK。好,那基于本联客,那希望大家能够掌握我说,，如果想要去输出不换,把它给准备,那另外呢,也希望大家能够了解,到就是关于寒树这种,寒树的,就是拍森档楼传对参树的让一种形式,就可以指定我传的到底是哪一个参树,OK,那基本上本次各场就将接到这里了,感谢大家。</div></div>
+
+  
+</section>
+
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><span class="nav-current">📖 第 1-4 章 完整笔记</span><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch2-深度章节.html">← 🎯 重头戏深度笔记</a>
+    <span class="bnav-mid">第 3 / 7 章</span>
+    <a class="bnav next" href="ch4-第5章.html">📖 第 5 章 字符串 →</a>
+  </div>
+
+
+<footer>
+  <p>📖 第 1-4 章 完整笔记 · 二级 Python 上岸笔记</p>
+  <p>原视频：<a href="https://www.bilibili.com/video/BV1Ys4y1D72T" target="_blank">B 站原视频</a> · 笔记整理：WorkBuddy</p>
+</footer>
+</body>
+      </details>
+    </article>
+
+</html>

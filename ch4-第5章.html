@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>第 5 章字符串 · 二级 Python 上岸指南</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+📖 第 5 章 字符串 · 二级 Python
+<style>
+  :root {
+    --py-blue: #3776AB;
+    --py-yellow: #FFD43B;
+    --py-deep: #1E3A5F;
+    --code-bg: #0F172A;
+    --code-fg: #E2E8F0;
+    --kw: #FF79C6;
+    --str: #F1FA8C;
+    --num: #BD93F9;
+    --func: #50FA7B;
+    --comment: #6272A4;
+    --warn: #FF6B6B;
+    --go: #06D6A0;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Source Code Pro", monospace; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    padding: 64px 32px 56px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(255, 212, 59, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 110% 10%, rgba(6, 214, 160, 0.25), transparent 60%),
+      linear-gradient(135deg, #1E3A5F 0%, #2563EB 50%, #3776AB 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-wrap { max-width: 1180px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 212, 59, 0.18);
+    color: var(--py-yellow);
+    border: 1px solid rgba(255, 212, 59, 0.4);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot { width: 8px; height: 8px; background: var(--py-yellow); border-radius: 50%; box-shadow: 0 0 12px var(--py-yellow); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 20px 0 16px; line-height: 1.15; font-weight: 800; letter-spacing: -1px;
+  }
+  .hero h1 .y { color: var(--py-yellow); }
+  .hero .sub {
+    font-size: 19px; max-width: 800px; opacity: 0.92;
+  }
+  .hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 36px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat .v { font-size: 30px; font-weight: 800; color: var(--py-yellow); }
+  .stat .l { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  @media (max-width: 720px) { .hero .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ===== Layout ===== */
+  main { max-width: 1180px; margin: -28px auto 0; padding: 0 32px 80px; position: relative; }
+  section { margin-top: 56px; }
+
+  /* ===== Notice ===== */
+  .notice {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #FFF7E6 0%, #FFEFC5 100%);
+    border-left: 5px solid #FAAD14;
+    color: #614700;
+    box-shadow: var(--shadow);
+    display: flex; gap: 16px;
+  }
+  .notice .ico { font-size: 28px; flex: none; }
+  .notice strong { color: #874D00; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .notice a { color: #1E3A5F; font-weight: 600; }
+
+  /* ===== Roadmap ===== */
+  .section-title {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 28px; font-weight: 800; margin: 0 0 8px; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .section-title .num {
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .section-desc { color: var(--ink-soft); margin: 0 0 24px; font-size: 15px; }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .chap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c, var(--py-blue));
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chap:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .chap h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .chap .meta { font-size: 13px; color: var(--ink-soft); }
+  .chap .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    margin-right: 4px; margin-top: 8px;
+    background: var(--tag-bg, #EFF6FF); color: var(--tag-c, var(--py-blue));
+    font-weight: 600;
+  }
+  .chap .done {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--go); color: white;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .chap .pending {
+    position: absolute; top: 14px; right: 14px;
+    background: #F1F5F9; color: #94A3B8;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* ===== Chapter blocks (深度章节) ===== */
+  .chapter {
+    background: white; border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); margin-top: 28px;
+  }
+  .chapter h2 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink);
+  }
+  .chapter h2 .id {
+    background: var(--py-yellow); color: var(--ink);
+    padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .chapter .video-link {
+    margin-top: 8px; font-size: 14px; color: var(--ink-soft);
+  }
+  .chapter .video-link a {
+    color: var(--py-blue); text-decoration: none; font-weight: 600;
+  }
+  .chapter .video-link a:hover { text-decoration: underline; }
+  .chapter h3 {
+    font-size: 20px; margin: 36px 0 12px; font-weight: 700; color: var(--py-deep);
+    border-left: 4px solid var(--py-yellow); padding-left: 12px;
+  }
+  .chapter p, .chapter li { font-size: 15px; color: #1F2937; }
+  .chapter ul, .chapter ol { padding-left: 22px; }
+  .chapter li { margin: 4px 0; }
+
+  /* ===== Callout boxes ===== */
+  .tip, .warn, .must, .rush {
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    margin: 16px 0; font-size: 14.5px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip { background: #ECFEFF; border-left: 4px solid #06B6D4; color: #155E75; }
+  .warn { background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; }
+  .must { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; }
+  .rush { background: #FFF7ED; border-left: 4px solid #F97316; color: #9A3412; }
+  .tip .ico, .warn .ico, .must .ico, .rush .ico { font-size: 20px; flex: none; }
+  .tip b, .warn b, .must b, .rush b { font-weight: 800; }
+
+  /* ===== Code cards ===== */
+
+  .code-card {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+    margin: 16px 0;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px; line-height: 1.65;
+    overflow-x: auto;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    position: relative;
+  }
+  .code-card .head {
+    display: flex; justify-content: space-between; align-items: center;
+    color: #94A3B8; font-size: 12px; font-family: inherit;
+    margin: -4px 0 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+  .code-card .head .file { color: var(--py-yellow); font-weight: 700; }
+  .code-card .copy {
+    cursor: pointer; user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .code-card .copy:hover { background: rgba(255,255,255,0.14); }
+  .code-card .copy.ok { background: var(--go); border-color: var(--go); color: #042F1E; }
+
+  /* syntax highlighter */
+  .c-kw { color: var(--kw); font-weight: 600; }
+  .c-str { color: var(--str); }
+  .c-num { color: var(--num); }
+  .c-fn { color: var(--func); }
+  .c-com { color: var(--comment); font-style: italic; }
+  .c-self { color: #FFB86C; font-style: italic; }
+  .c-op { color: #8BE9FD; }
+
+  /* ===== Tables ===== */
+  .t {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: white; border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+  }
+  .t th {
+    background: var(--py-deep); color: white;
+    padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tr:hover td { background: #F8FAFC; }
+  .t .lbl {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .lbl-b { background: #DBEAFE; color: #1E40AF; }
+  .lbl-g { background: #D1FAE5; color: #065F46; }
+  .lbl-o { background: #FED7AA; color: #9A3412; }
+  .lbl-r { background: #FECACA; color: #991B1B; }
+  .lbl-p { background: #F3E8FF; color: #6B21A8; }
+
+  /* ===== Big stat cards ===== */
+  .bigstats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 18px 0 12px;
+  }
+  .bs {
+    background: linear-gradient(135deg, var(--bsc1, #F8FAFC), var(--bsc2, #FFFFFF));
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .bs .v {
+    font-size: 40px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bs .l { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ===== Tag list ===== */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; color: var(--ink-soft); padding: 32px 16px; font-size: 13px; }
+  footer a { color: var(--py-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+      /* === 章节卡片样式（v3.1 补齐：所有章节页通用） === */
+      
+      /* === 卡片立体化（v3.2：加白底 + 边框 + 圆角） === */
+      .skel {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 14px 0;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+      }
+      .skel:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+      }
+      .skel > details > summary {
+        cursor: pointer;
+        padding: 8px 0 12px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        list-style: none;
+        user-select: none;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        margin-bottom: 10px;
+      }
+      .skel > details > summary::-webkit-details-marker { display: none; }
+      .skel > details > summary:before {
+        content: "\25B6  ";
+        color: var(--py-blue);
+        display: inline-block;
+        transition: transform .2s;
+        margin-right: 6px;
+      }
+      .skel > details[open] > summary:before { content: "\25BC  "; }
+      .skel h3 {
+        margin: 14px 0 8px;
+        font-size: 15px;
+        color: var(--py-deep);
+        padding-left: 10px;
+        border-left: 3px solid var(--py-yellow);
+        background: rgba(255, 212, 59, 0.08);
+        padding-top: 4px;
+        padding-bottom: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+      .skel ul { padding-left: 26px; margin: 4px 0 10px; }
+      .skel li { margin: 3px 0; font-size: 14.5px; }
+      .skel .code-card { margin: 8px 0; font-size: 13px; }
+      .skel .tip, .skel .warn, .skel .must, .skel .rush { margin: 8px 0; font-size: 13.5px; }
+
+      .quote {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #FFFEF7;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 0 10px 10px 0;
+        font-size: 14.5px;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
+      }
+      .quote-meta {
+        flex: none;
+        min-width: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #92400E;
+        background: rgba(245, 158, 11, 0.15);
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .quote-text { color: #1F2937; line-height: 1.7; }
+      .quote-text b { color: #B45309; }
+    
+      /* ===== 章节页导航条 ===== */
+      .chap-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 14px 32px;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+      .chap-nav .nav-row {
+        display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        max-width: 1200px; margin: 0 auto;
+      }
+      .chap-nav .nav-home {
+        color: var(--py-blue); font-weight: 700; text-decoration: none;
+        padding: 6px 14px; border: 1px solid var(--py-blue);
+        border-radius: 8px; font-size: 13px;
+      }
+      .chap-nav .nav-home:hover { background: var(--py-blue); color: white; }
+      .chap-nav .nav-link {
+        color: var(--ink-soft); text-decoration: none;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px;
+      }
+      .chap-nav .nav-link:hover { background: rgba(55, 118, 171, 0.08); color: var(--py-blue); }
+      .chap-nav .nav-current {
+        color: var(--py-blue); font-weight: 700; padding: 6px 12px;
+        background: rgba(55, 118, 171, 0.10); border-radius: 6px; font-size: 13px;
+      }
+      .bnav-row {
+        display: flex; justify-content: space-between; align-items: center;
+        gap: 16px; max-width: 1200px; margin: 40px auto 24px;
+        padding: 0 32px;
+      }
+      .bnav {
+        padding: 14px 24px; border-radius: 10px; text-decoration: none;
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        color: var(--ink); font-size: 14px; font-weight: 600;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+        transition: all 0.2s;
+      }
+      .bnav:hover:not(.disabled) {
+        background: rgba(55, 118, 171, 0.08);
+        border-color: var(--py-blue);
+        transform: translateY(-1px);
+      }
+      .bnav.disabled { opacity: 0.35; cursor: not-allowed; }
+      .bnav.next { margin-left: auto; }
+      .bnav-mid { color: var(--ink-soft); font-size: 13px; font-weight: 600; }
+      .chapter-body { max-width: 1200px; margin: 0 auto; padding: 32px; }
+      .chapter-h1 {
+        font-size: 32px; font-weight: 800; margin: 0 0 18px 0;
+        color: var(--py-deep); letter-spacing: -0.5px;
+      }
+      .chapter-body .section-desc { color: var(--ink-soft); margin-bottom: 24px; font-size: 15px; line-height: 1.7; }
+    
+      /* ===== 缺失 CSS 补齐 (v3.3 审计补) ===== */
+      .ep-h2 { font-size: 22px; font-weight: 800; color: var(--py-deep); margin: 28px 0 16px; letter-spacing: -0.3px; }
+      .ep-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 18px; }
+      .toc { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.08); border-radius: 14px; padding: 24px 28px; margin: 24px 0; box-shadow: 0 2px 8px rgba(15,23,42,0.04); }
+      .prev { color: var(--py-blue); }
+      .prev:hover { text-decoration: underline; }
+      .c-c-str { color: var(--str); }
+    </style>
+</head>
+<body>
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><span class="nav-current">📖 第 5 章 字符串</span><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch3-第1-4章.html">← 📖 第 1-4 章 完整笔记</a>
+    <span class="bnav-mid">第 4 / 7 章</span>
+    <a class="bnav next" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件 →</a>
+  </div>
+
+
+<section class="chapter-body">
+  
+    <h1 class="chapter-h1"><span class="num">4</span>📖 第 5 章：字符串 笔记（10 集）</h1>
+    <p class="section-desc">
+      字符串是 Python 操作题的「核心题眼」，每年考试必考大题。<b>操作题第 1 题</b>几乎全是字符串处理。
+    </p>
+
+    <!-- P29 · 5-1 字符串操作符 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P29</b> · 5-1 字符串操作符 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 05:33</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">in / not in</code>：子串判断</li>
+          <li><code class="mono">+ *</code>：连接 + 重复</li>
+          <li><code class="mono">== &lt; &gt; &lt;= &gt;=</code>：ASCII 顺序比较字符串</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 str_op.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-str">"ab"</span> <span class="c-kw">in</span> <span class="c-str">"abcde"</span>)        <span class="c-com"># True</span>
+<span class="c-kw">print</span>(<span class="c-str">"y"</span> <span class="c-kw">not in</span> <span class="c-str">"xyz"</span>)      <span class="c-com"># False</span>
+<span class="c-kw">print</span>(<span class="c-str">"hi"</span> * <span class="c-num">3</span>)               <span class="c-com"># "hihihi"</span>
+<span class="c-kw">print</span>(<span class="c-str">"apple"</span> &lt; <span class="c-str">"banana"</span>)     <span class="c-com"># True — 字母顺序</span></pre>
+        </div>
+        <div class="rush"><div class="ico">⚡</div><div><b>陷阱</b>：字符串比较是按 <b>字符编码逐位</b> 比，所以 "<code class="mono">Apple</code>" &lt; "<code class="mono">apple</code>"（大写字母编码小）。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：字符串是<b>不可变对象</b>，<code class="mono">s[0]="x"</code> 会报错，必须用 <code class="mono">s = s[:i]+"x"+s[i+1:]</code> 或 <code class="mono">replace()</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：字符串拼接用 <code class="mono">+</code> 或 <code class="mono">join()</code>，<b>不要</b>在循环里反复 <code class="mono">+</code>（性能差）。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 3 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:37</b></div><div class="quote-text">这三个操作符其实在之前的课上浪中,前两个,就是这个字符创联系符的加号,还有字符创的这个符创用的这么一个橙号,其实咱们之间都学过,这个印,实际上是各个东西之前没有接触过了,解决说今天重点,我们会来聊一聊这个印,这个预算符创,怎么来使用的。，那话不多说,咱们直接来写程序,来进行一些验证了。我把这个哀到打开,看着我创建一个新的,放在中面上叫Test 1,那咱们来开始来测试一下,首先来说一下,这个关于字符创的一个联系,IC等于,哈喽,S2等于,握手子,好,那我如果这个时候输触,，C加 S2,只要这字符创左右两遍,只要这个加号,左右两遍,它都是字符创,那就意味着我现在做的是一个字符创来联接度的,那我来执行一下,那你还在握手子,把它联接起来了,那接着咱们再来,我再输触一个,比如说IC成一误,好,再执行,怎么样,输触了五个还浓,没有问题,好,那接着咱们再来看,今天重点聊的这个印,这个符创,表示什么意思,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:41</b></div><div class="quote-text">比如说,我这儿来声明一个IC叫做Hero-U-Doing,好,然后接着我再给一个这样,我直接输触了,好,咱们直接输触,我输触一什么呢,比如说我这些一个字符创,叫做ARE,印IC,那意思是说什么呀,说,而这个字符创,它有在这个IC当中出现过吗,这就是说X是这个Y的字符,所以，它是不是这一边,这一部分,实际上表示这个意思,咱们来直行一下,你看它是不是反归触,OK,所以你看,既于这个我们就可以来去判断,某一个字符创是否在另外一个字符创当中出现果对不对,这种判断可能经常会在一些变成体当中,有可能会出现类似的这种情况,所以这个符创还是比较这个长级,这个运算符创或者叫操作符,还是比较长,，另外大家现在是学到了字符创,所以你能用这个印来跟字符创已经操作符叫,但是在后期如果我们比如说学了像列表,好像原主,这种数据的想,到时其实也是可以用到这个印这个运算符,或者操作符,来去进运算的,当然那个后面咱们学了那些支点,那时候再说,那今天的话,你只需要理解这个印,对于字符创来操作来讲,它表示是一个什么样的意思,接着咱们再来写一个,我随便写一个,，就变写一个A,E,I,S,E嘛,来,只行看,反映只是负死,当然没有在这里面,对吧,好,接着我再写一个,比如我在生明一个变量,这个刺创败量,叫作什么呢,叫作YOW,然后呢,我在Print的一项YCOM,I,S,R,E,I,C,还能看到这一艺创,刚才是直接写的一个创,现在我是用了一个变量来进行,很多,YOW在这里面出现了嘛,当然出现了。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:26</b></div><div class="quote-text">那这个以上就是咱们等节课的那种关于自不错</div></div>
+
+    <!-- P30 · 5-2-1 字符串索引与切片 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P30</b> · 5-2-1 索引与切片 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 18:16</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>正索引</b>：从 0 开始；<b>负索引</b>：从 -1（最后一个）开始</li>
+          <li>切片语法：<code class="mono">s[start:end:step]</code>（含 start 不含 end）</li>
+          <li>越界不会报错，自动截到边界</li>
+          <li>典型用法：<code class="mono">s[::-1]</code> 反转；<code class="mono">s[::2]</code> 隔一个取一个</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 slice.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>s = <span class="c-str">"Python编程"</span>
+<span class="c-kw">print</span>(s[<span class="c-num">0</span>], s[-<span class="c-num">1</span>])          <span class="c-com"># P 编</span>
+<span class="c-kw">print</span>(s[<span class="c-num">0</span>:<span class="c-num">2</span>])                  <span class="c-com"># Py</span>
+<span class="c-kw">print</span>(s[::<span class="c-num">-1</span>])                  <span class="c-com"># 程编nohtyP —— 反转</span>
+<span class="c-kw">print</span>(s[<span class="c-num">6</span>:])                   <span class="c-com"># "编程"</span>
+
+<span class="c-com"># 经典考题：每两个字符分开</span>
+<span class="c-kw">print</span>(s[::<span class="c-num">2</span>])                  <span class="c-com"># Pto编</span></pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：<code class="mono">s[::2]</code> 是"<b>从 0 开始每 2 个取 1 个</b>"（step=2），不是相邻两个一组。考试必考。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：字符串/列表索引从 <code class="mono">0</code> 开始，<code class="mono">-1</code> 是最后一个。<b>越界</b>会报 IndexError。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：切片 <code class="mono">s[start:end:step]</code>，end <b>不包含</b>（左闭右开）。<code class="mono">s[:]</code> 复制整个序列。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:23</b></div><div class="quote-text">什么意思,这里面所说这意思是说所引的位置,它取得位置,实际上是从理人开始,并不是从1开始,第0个位置,第1个位置,第2个位置,一次了一推,当然可能这么说大家可能也不是很明白,如果你是一个触约惹的话,没关系,一会儿我去起来嘛,大家就相对来说,比较容易去理解了,那具体的所引怎么来用,下面给大家展示出来这个结构,就是自不出来或者自不出来变量,加一个中国好,然后加上这个相对于所引,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:04</b></div><div class="quote-text">能够位置的自服是什么,第0的位置是谁呢,就是这个位置,所以说了,如果一个自不出来,当中,有安个自服,那么这个,所以呢,取职,范围就是从零一直到安全艺,也是这个属受是从零人开始属的,如果你之前没有接触过类似的那种,这个时候我们的这种思维方式,可能稍微点变,你不要改一下啊,日常我们属受的从一开始属的一二三属之外就是实在吧,但是这回啊,这个你要再变成当中,看位置的话,一般都说,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:07</b></div><div class="quote-text">它有这么账的一个形势,就开始虽然结束所引,以及部场,当然这里们可能对于部场,大家稍微不太容易明白啊,别着急一会儿来解释。那一般情况下,我们通常使用这个期骗的时候,可能,就比较通常的情况,基本就是只有开始所引和结束所引,这个部场呢,不太常用,但是考试的时候呢,偶尔会考到这个那种,所以对于部场这事,你了解一下,那部场那种为他实骗是可以少略的,也就是当你在去写这个代码,你说啊,你如果不行,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:46</b></div><div class="quote-text">这种比较常见二六五二八一十上的都很容易明白</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:40</b></div><div class="quote-text">这是从S中取第0个位置到第八个位置的</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:33</b></div><div class="quote-text">想看1,0,1,2,3,4,6,7,8,9,10,1</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:32</b></div><div class="quote-text">所以这时候不成他的一个意思</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:18:06</b></div><div class="quote-text">这个就是关于欺骗与所有</div></div>
+
+    <!-- P31 · 5-2-2 for循环 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P31</b> · 5-2-2 for 循环 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 08:46</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">for c in s:</code> 遍历字符串每个字符</li>
+          <li><code class="mono">range(len(s))</code> 遍历下标</li>
+          <li><code class="mono">for i, c in enumerate(s):</code> 同时拿 i 和 c</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 for_str.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>s = <span class="c-str">"Hello"</span>
+<span class="c-kw">for</span> c <span class="c-kw">in</span> s:
+    <span class="c-kw">print</span>(c, <span class="c-fn">end</span>=<span class="c-str">" "</span>)
+<span class="c-kw">print</span>()                       <span class="c-com"># H e l l o</span>
+
+<span class="c-com"># 同时拿索引和字符</span>
+<span class="c-kw">for</span> i, c <span class="c-kw">in</span> <span class="c-fn">enumerate</span>(s):
+    <span class="c-kw">print</span>(<span class="c-str">f"{i}: {c}"</span>, <span class="c-fn">end</span>=<span class="c-str">" | "</span>)</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：Full循环这个名字大家应该不陌生啊。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：圆组啊,字点,这些内容其实也都可以用Full循环啊,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:08</b></div><div class="quote-text">之前在咱们讲到循环的时候有提到过,Python当中有两种循环,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:55</b></div><div class="quote-text">而不在Wel循环的时候直接就把Ful循环给讲了呢。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:45</b></div><div class="quote-text">那Ful循环它其实就可以帮助我们来去实现这件事,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:53</b></div><div class="quote-text">圆组啊,字点,这些内容其实也都可以用Ful循环啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:48</b></div><div class="quote-text">how are you doing,就是什么一个比较熟悉的例子,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:28</b></div><div class="quote-text">全部都是Ful循环体本身的一些内容,对吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:12</b></div><div class="quote-text">把这一行那个Hilary doing,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:47</b></div><div class="quote-text">让大家知道这个否循环到底是怎么来去使用的,</div></div>
+
+    <!-- P32 · 5-3-1 字符串常用函数1 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P32</b> · 5-3-1 字符串常用函数 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 09:24</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">len(s)</code>：长度</li>
+          <li><code class="mono">s.upper() / s.lower() / s.title() / s.capitalize()</code></li>
+          <li><code class="mono">s.strip() / lstrip() / rstrip()</code>：去首尾空白</li>
+          <li><code class="mono">s.find(sub) / s.index(sub) / s.count(sub)</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 str_m1.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>s = <span class="c-str">"  hello, World  "</span>
+<span class="c-kw">print</span>(<span class="c-fn">len</span>(s), s.strip())
+<span class="c-kw">print</span>(s.upper(), s.title())
+<span class="c-kw">print</span>(s.find(<span class="c-str">"World"</span>))      <span class="c-com"># 9 (第一次出现位置)</span>
+<span class="c-kw">print</span>(s.count(<span class="c-str">"l"</span>))          <span class="c-com"># 3</span></pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：<code class="mono">find</code> 找不到返回 <code class="mono">-1</code>；<code class="mono">index</code> 找不到抛 <code class="mono">ValueError</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：STR其实咱们应该已经用过了,做数据类型的一个转换。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：然后呢这个接着咱们也可以输出一下啊,实际上就是做的一个类型的强制转换,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:48</b></div><div class="quote-text">一般情况下可能,比如说我们的这个选择题当中偶尔可能会有类似这些函数内容的一些题目。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:52</b></div><div class="quote-text">然后其它组合数据类型,这个以后咱们说啊,这个LEN特别有用啊,不光是用在自幅串上,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:14</b></div><div class="quote-text">CHR呢,它说返回unicode的编码,X对应的单个字符,啥叫unicode的编码,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:30</b></div><div class="quote-text">说完了就是说计算机不认识你这些字母,那你这些字母在底层的这个0和1到底是表示啥样子,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:15</b></div><div class="quote-text">859-1,这都是这个一些字符编码格式,然后呢,咱们这里面用的一个叫做unicode的编码格式,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:46</b></div><div class="quote-text">能列这一个,ok,97就是一个unicode的编码,转换成实进制之后的一个形式,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:17</b></div><div class="quote-text">看,输出了一个97,对不对,没错,好,接着再来,HEX和OCT分别表示什么意思,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:07</b></div><div class="quote-text">OK,好了,那这个说到这儿,关于这个字不错的常用函数的第一部分就给大家讲完了,</div></div>
+
+    <!-- P33 · 5-3-2 字符串常用函数2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P33</b> · 5-3-2 字符串常用函数 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 14:38</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">s.replace(old, new, count)</code>：替换</li>
+          <li><code class="mono">s.split(sep, maxsplit)</code>：拆分为列表</li>
+          <li><code class="mono">sep.join(list)</code>：列表合成字符串</li>
+          <li><code class="mono">s.startswith(prefix) / s.endswith(suffix)</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 split_join.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>path = <span class="c-str">"a,b,,c,d"</span>
+parts = path.split(<span class="c-str">","</span>)
+<span class="c-kw">print</span>(parts)                 <span class="c-com"># ['a', 'b', '', 'c', 'd']</span>
+
+new = <span class="c-str">"|"</span>.<span class="c-fn">join</span>(<span class="c-fn">filter</span>(<span class="c-kw">None</span>, parts))
+<span class="c-kw">print</span>(new)                   <span class="c-com"># a|b|c|d —— 滤掉空串再拼接</span>
+
+<span class="c-kw">print</span>(<span class="c-str">"hello"</span>.startswith(<span class="c-str">"he"</span>))   <span class="c-com"># True</span>
+<span class="c-kw">print</span>(<span class="c-str">"test.py"</span>.endswith(<span class="c-str">".py"</span>))<span class="c-com"># True</span></pre>
+        </div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：当然了,大家应该能够注意到啊,我这一页混沌篇当中写的并不是处理函数,而是写的处理方法。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：这些方法一定得是先有一个字符创,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:06</b></div><div class="quote-text">当然了,大家应该能够注意到啊,我这一页混沌篇当中写的并不是处理函数,而是写的处理方法。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:31</b></div><div class="quote-text">跟之前咱们用这个How are you doing是一样的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:05</b></div><div class="quote-text">它把这个How are you doing,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:24</b></div><div class="quote-text">一会儿我给大家做一个例子,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:48</b></div><div class="quote-text">或者叫split的方法来去实现,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:54</b></div><div class="quote-text">相当于这参数在当前自幅创当中出现了多少次,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:21</b></div><div class="quote-text">比如说我现在写这样的一个字幅创s等于abc,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:54</b></div><div class="quote-text">然后我输出se是想让你看一下,</div></div>
+
+    <!-- P34 · 5-3-3 字符串常用函数3 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P34</b> · 5-3-3 字符串常用函数 3 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 17:07</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">chr(n) / ord(c)</code>：字符 ↔ 编码互转</li>
+          <li><code class="mono">str.maketrans() + s.translate()</code>：批量替换（密码题常用）</li>
+          <li><code class="mono">s.encode() / bytes.decode()</code>：编码转换</li>
+          <li>判断系列：<code class="mono">s.isdigit() / s.isalpha() / s.isalnum() / s.isspace()</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 transform.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-fn">chr</span>(<span class="c-num">65</span>), <span class="c-fn">ord</span>(<span class="c-str">'A'</span>))     <span class="c-com"># A 65</span>
+
+<span class="c-com"># Caesar 密码：所有字母 +3</span>
+tbl = <span class="c-fn">str</span>.maketrans(<span class="c-str">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>,
+                       <span class="c-str">"DEFGHIJKLMNOPQRSTUVWXYZABC"</span>)
+<span class="c-kw">print</span>(<span class="c-str">"HELLO"</span>.translate(tbl))  <span class="c-com"># KHOOR</span>
+
+<span class="c-kw">print</span>(<span class="c-str">"123"</span>.isdigit())            <span class="c-com"># True</span>
+<span class="c-kw">print</span>(<span class="c-str">"abc123"</span>.isalnum())         <span class="c-com"># True</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：字符串是<b>不可变对象</b>，<code class="mono">s[0]="x"</code> 会报错，必须用 <code class="mono">s = s[:i]+"x"+s[i+1:]</code> 或 <code class="mono">replace()</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：字符串拼接用 <code class="mono">+</code> 或 <code class="mono">join()</code>，<b>不要</b>在循环里反复 <code class="mono">+</code>（性能差）。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">朋友们 大家好 本节课咱们继续来学习关于字符创处理的常用的一些方法或者叫函数</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:40</b></div><div class="quote-text">这里面实际上所表示的意思是什么呢</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:25</b></div><div class="quote-text">就用field chart来去进行填冲</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:59</b></div><div class="quote-text">也就是自符创当中有10个这个自符吗</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:16</b></div><div class="quote-text">我这现在我要一个长度为10的自符创</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:48</b></div><div class="quote-text">所以咱们那个完全就是为了这个国家二级考试</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:11</b></div><div class="quote-text">是不是还有另外一种存在的问题啊</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:32</b></div><div class="quote-text">field chart这个参数</div></div>
+
+    <!-- P35 · 5-3-4 字符串练习题 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P35</b> · 5-3-4 字符串练习题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">练习 · 04:47</span></summary>
+        <h3>📌 考点回顾</h3>
+        <ul><li>邮箱 / 手机号格式校验</li><li>字符串反转 / 切割拼接</li></ul>
+      
+      
+        <div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">好,接着再来看下一题,说下面代码的输出结果是什么,说the passive language is a cursing platform,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：然后呢这个它只是调用了啊,然后接着来它又输出了一下SE,这里面是有一个陷阱啊,同学们注意,我在上课的时候其实很多次都强调了。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：SEreplace之后的内容返回给了SE2,那这样的话呢很明显,它输出的是SE2,我们就知道了啊,这一定是选弊的。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 6 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:15</b></div><div class="quote-text">这个Python的语言是一个招问语言,然后这里面调用了一下replace方法,说将这个scripting替换成general,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:05</b></div><div class="quote-text">好,接着再来看下一题,说下面代码的输出结果是什么,说the pasive language is a cursing platform,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:30</b></div><div class="quote-text">这个,那咱得数一下啦,0,1,2,3,4,5,6,7,8,9,10,12,13,14,15,17,18,19,20,21,23,24,25,26,27,28,29,30,，这30应该是这个dou号的位置,不是空格的这个位置是吧,那从p开始就是31了是吧,31,32,34,35,36,37,38,39,40,哎,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:22</b></div><div class="quote-text">读谋话的什么语案,然后用这个split,用这个空格把它控开了,还记得吗,之前咱们说了这个split的方法之后它实际上返回的是一个列表,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:21</b></div><div class="quote-text">什么sql server,postgreSQL啊,sdrsql,ncount等于s1.countsdr,count是什么意思啊,这个s说白了就是想看说s2在s1当中出现了多少次对不对,，出来了多少次呢,很明显是两次,第一个sql,第二个sql,然后有同学可能想老师那这第三个这个算吗,这个当然不错了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:16</b></div><div class="quote-text">0,1,2,3,4,5,6,7,8,9,10,也就是他看的从第10个啊,这个是R,他看的是这一段字母创当中出现了多少次sql,</div></div>
+
+    <!-- P36 · 5-4-1 format格式化输出1 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P36</b> · 5-4-1 format 格式化 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 09:02</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">"{} {}".format(a, b)</code>：默认顺序</li>
+          <li><code class="mono">"{1} {0}".format(a, b)</code>：索引</li>
+          <li><code class="mono">"{name} is {age}".format(name="X", age=20)</code>：关键字</li>
+          <li><code class="mono">f"... {a} ..."</code>：f-string 推荐（Python 3.6+）</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 fmt.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>name, age = <span class="c-str">"张三"</span>, <span class="c-num">20</span>
+<span class="c-kw">print</span>(<span class="c-str">"{} 今年 {} 岁"</span>.<span class="c-fn">format</span>(name, age))
+<span class="c-kw">print</span>(<span class="c-str">f"{name} 今年 {age} 岁"</span>)       <span class="c-com"># 推荐写法</span>
+<span class="c-kw">print</span>(<span class="c-str">f"π 约 {3.1415926:.2f}"</span>)        <span class="c-com"># π 约 3.14 —— 保留 2 位小数</span></pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：考试输出要求带格式（"result=xx"），用 f-string 写最简洁；老题用 <code class="mono">format()</code>。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">format()</code> 调用前必须有<b>字符串字面量</b>（有引号包着的）或字符串变量，否则报错。</div></div>
+        <div class="tip"><div class="ico">💡</div><div><b>速记</b>：<code class="mono">"{0} {1}"</code> 和 <code class="mono">"{1} {0}"</code> 顺序相反，索引是从 0 开始的。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:56</b></div><div class="quote-text">那前面是有一个模板的字符创,然后调用format里面可能会有一些参数。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:04</b></div><div class="quote-text">那咱们写点什么呢?比如说这样啊,我就是直接写一个输出语句里面,我就用一个字符创去调用这个format。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:10</b></div><div class="quote-text">说这模板字符创是由一个字符创和槽组成的字符创,那你看这是不是啊,这个大库号就是槽,然后这个就是字符创,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:44</b></div><div class="quote-text">也就是说啊,相当于说我用这个format当中的这个内容去替换什么,替换这个大库号位置这个内容,替换这个槽的内容。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:30</b></div><div class="quote-text">这个我能不能给它主动标记一下呢,什么叫主动标记来,我告诉大家槽这个里面你可以写数值啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:00</b></div><div class="quote-text">这个是format当中的第零的参数,而这个不好是format这个当中的第一个参数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:23</b></div><div class="quote-text">或者多少草,当然除非你说也可以试这样,能不能,这样能不能通过,来,再试,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:04</b></div><div class="quote-text">能列这个意思啊,这是这个format,按数最基本的,也是比较基础的一个用法,就是,</div></div>
+
+    <!-- P37 · 5-4-2 format格式化输出2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P37</b> · 5-4-2 format 格式化 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 13:52</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>对齐与填充：<code class="mono">{:&gt;10}</code> 右对齐，<code class="mono">{:&lt;10}</code> 左对齐，<code class="mono">{:^10}</code> 居中</li>
+          <li>填充字符：<code class="mono">{:*^10}</code></li>
+          <li>数字格式化：<code class="mono">{:d}</code>、<code class="mono">{:,}</code>、<code class="mono">{:b/o/x}</code>、<code class="mono">{:.2f}</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 fmt2.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">6</span>):
+    <span class="c-kw">print</span>(<span class="c-str">f"序号:{i:0&gt;2}, 平方:{i*i:4}, 立方:{i**3:4}"</span>)
+<span class="c-kw">print</span>(<span class="c-str">f"{1234567:,}"</span>)           <span class="c-com"># 1,234,567</span>
+<span class="c-kw">print</span>(<span class="c-str">f"{0.5:.0%}"</span>)             <span class="c-com"># 50%</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：那咱们这节课在学format当中稍微再复杂一点,不是反左一点的内容。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：写点什么的,先来一个简单的,比如说我声明一个字不错S。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">同学们,大家好。本节课咱们继续来学习字符创的格式化输出函数,或者叫格式化输出方法,叫format。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:54</b></div><div class="quote-text">然后呢你要能看明白那选择题上面写的这每样东西都表示啥意思。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:13</b></div><div class="quote-text">然后帽号,这帽号是必须要有的,表示说我要开始写一段格式的一个标记了。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:40</b></div><div class="quote-text">是跟咱们上一节课学的那个槽的那个顺序其实是一回事,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:33</b></div><div class="quote-text">这个符号应该是你那个键盘是数字六啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:56</b></div><div class="quote-text">这是又加了一个填充的点,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:01</b></div><div class="quote-text">就是你可以指定format里面的参数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:53</b></div><div class="quote-text">我这甚至还可以再做一个槽,</div></div>
+
+    <!-- P38 · 5-4-3 format格式化输出3 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#F59E0B">P38</b> · 5-4-3 format 格式化 3 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字符串 · 14:43</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>对齐 + 类型组合：例如 <code class="mono">{:*^10.2f}</code></li>
+          <li>进制转换：<code class="mono">255:b</code> = "<code class="mono">11111111</code>"，<code class="mono">255:#x</code> = "<code class="mono">0xff</code>"</li>
+          <li><code class="mono">str.format_map(dict)</code> 用字典映射</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 fmt3.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">print</span>(<span class="c-str">f"{0.5:*^10.2f}"</span>)             <span class="c-com"># ****0.50****</span>
+<span class="c-kw">print</span>(<span class="c-str">f"{255:#x}"</span>)                 <span class="c-com"># 0xff</span>
+<span class="c-kw">print</span>(<span class="c-str">f"{1024:#o}"</span>)                <span class="c-com"># 0o2000</span>
+
+d = <span class="c-fn">dict</span>(name=<span class="c-str">"李四"</span>, score=<span class="c-num">95</span>)
+<span class="c-kw">print</span>(<span class="c-str">"{name}: {score}"</span>.<span class="c-fn">format_map</span>(d))   <span class="c-com"># 李四: 95</span></pre>
+        </div>
+        <div class="tip"><div class="ico">💡</div><div><b>速记</b>：<code class="mono">f-string</code> 简写 <code class="mono">{var}</code>；占位符 <code class="mono">{var:&lt;10.2f}</code> = 【填充】【对齐】【宽度】【.精度】【类型】从左到右读。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：<code class="mono">f-string</code>（Python 3.6+）是最现代格式化：<code class="mono">f"Hello {name}, age={age+1}"</code>。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">大家好,本节课咱们继续来学习字幕刷当中的format方法,做格式划控制。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:23</b></div><div class="quote-text">居中,然后用横杆来填充整体25位,然后再加一豆号,看到了吗?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:44</b></div><div class="quote-text">我这边写一个,比如说234567896,这数够多了,差不多。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:50</b></div><div class="quote-text">一般情况下我们就是看辅点数小点后保留几位吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:22</b></div><div class="quote-text">我说一下print,带我号槽,好,点二f,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:11</b></div><div class="quote-text">它应该是对后面第三位进行了一个405路,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:10</b></div><div class="quote-text">那就意味着我们要指定这个自幅串的宽度,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:04</b></div><div class="quote-text">那么这里面它指的是小点后保留的这个精度,</div></div>
+
+  
+</section>
+
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><span class="nav-current">📖 第 5 章 字符串</span><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch3-第1-4章.html">← 📖 第 1-4 章 完整笔记</a>
+    <span class="bnav-mid">第 4 / 7 章</span>
+    <a class="bnav next" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件 →</a>
+  </div>
+
+
+<footer>
+  <p>📖 第 5 章 字符串 · 二级 Python 上岸笔记</p>
+  <p>原视频：<a href="https://www.bilibili.com/video/BV1Ys4y1D72T" target="_blank">B 站原视频</a> · 笔记整理：WorkBuddy</p>
+</footer>
+</body>
+      </details>
+    </article>
+
+</html>

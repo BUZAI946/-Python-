@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>P1+P3 深度讲解 · 二级 Python 上岸指南</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+🎯 重头戏深度笔记 · 二级 Python
+<style>
+  :root {
+    --py-blue: #3776AB;
+    --py-yellow: #FFD43B;
+    --py-deep: #1E3A5F;
+    --code-bg: #0F172A;
+    --code-fg: #E2E8F0;
+    --kw: #FF79C6;
+    --str: #F1FA8C;
+    --num: #BD93F9;
+    --func: #50FA7B;
+    --comment: #6272A4;
+    --warn: #FF6B6B;
+    --go: #06D6A0;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Source Code Pro", monospace; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    padding: 64px 32px 56px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(255, 212, 59, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 110% 10%, rgba(6, 214, 160, 0.25), transparent 60%),
+      linear-gradient(135deg, #1E3A5F 0%, #2563EB 50%, #3776AB 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-wrap { max-width: 1180px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 212, 59, 0.18);
+    color: var(--py-yellow);
+    border: 1px solid rgba(255, 212, 59, 0.4);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot { width: 8px; height: 8px; background: var(--py-yellow); border-radius: 50%; box-shadow: 0 0 12px var(--py-yellow); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 20px 0 16px; line-height: 1.15; font-weight: 800; letter-spacing: -1px;
+  }
+  .hero h1 .y { color: var(--py-yellow); }
+  .hero .sub {
+    font-size: 19px; max-width: 800px; opacity: 0.92;
+  }
+  .hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 36px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat .v { font-size: 30px; font-weight: 800; color: var(--py-yellow); }
+  .stat .l { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  @media (max-width: 720px) { .hero .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ===== Layout ===== */
+  main { max-width: 1180px; margin: -28px auto 0; padding: 0 32px 80px; position: relative; }
+  section { margin-top: 56px; }
+
+  /* ===== Notice ===== */
+  .notice {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #FFF7E6 0%, #FFEFC5 100%);
+    border-left: 5px solid #FAAD14;
+    color: #614700;
+    box-shadow: var(--shadow);
+    display: flex; gap: 16px;
+  }
+  .notice .ico { font-size: 28px; flex: none; }
+  .notice strong { color: #874D00; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .notice a { color: #1E3A5F; font-weight: 600; }
+
+  /* ===== Roadmap ===== */
+  .section-title {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 28px; font-weight: 800; margin: 0 0 8px; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .section-title .num {
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .section-desc { color: var(--ink-soft); margin: 0 0 24px; font-size: 15px; }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .chap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c, var(--py-blue));
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chap:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .chap h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .chap .meta { font-size: 13px; color: var(--ink-soft); }
+  .chap .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    margin-right: 4px; margin-top: 8px;
+    background: var(--tag-bg, #EFF6FF); color: var(--tag-c, var(--py-blue));
+    font-weight: 600;
+  }
+  .chap .done {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--go); color: white;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .chap .pending {
+    position: absolute; top: 14px; right: 14px;
+    background: #F1F5F9; color: #94A3B8;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* ===== Chapter blocks (深度章节) ===== */
+  .chapter {
+    background: white; border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); margin-top: 28px;
+  }
+  .chapter h2 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink);
+  }
+  .chapter h2 .id {
+    background: var(--py-yellow); color: var(--ink);
+    padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .chapter .video-link {
+    margin-top: 8px; font-size: 14px; color: var(--ink-soft);
+  }
+  .chapter .video-link a {
+    color: var(--py-blue); text-decoration: none; font-weight: 600;
+  }
+  .chapter .video-link a:hover { text-decoration: underline; }
+  .chapter h3 {
+    font-size: 20px; margin: 36px 0 12px; font-weight: 700; color: var(--py-deep);
+    border-left: 4px solid var(--py-yellow); padding-left: 12px;
+  }
+  .chapter p, .chapter li { font-size: 15px; color: #1F2937; }
+  .chapter ul, .chapter ol { padding-left: 22px; }
+  .chapter li { margin: 4px 0; }
+
+  /* ===== Callout boxes ===== */
+  .tip, .warn, .must, .rush {
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    margin: 16px 0; font-size: 14.5px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip { background: #ECFEFF; border-left: 4px solid #06B6D4; color: #155E75; }
+  .warn { background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; }
+  .must { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; }
+  .rush { background: #FFF7ED; border-left: 4px solid #F97316; color: #9A3412; }
+  .tip .ico, .warn .ico, .must .ico, .rush .ico { font-size: 20px; flex: none; }
+  .tip b, .warn b, .must b, .rush b { font-weight: 800; }
+
+  /* ===== Code cards ===== */
+
+  .code-card {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+    margin: 16px 0;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px; line-height: 1.65;
+    overflow-x: auto;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    position: relative;
+  }
+  .code-card .head {
+    display: flex; justify-content: space-between; align-items: center;
+    color: #94A3B8; font-size: 12px; font-family: inherit;
+    margin: -4px 0 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+  .code-card .head .file { color: var(--py-yellow); font-weight: 700; }
+  .code-card .copy {
+    cursor: pointer; user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .code-card .copy:hover { background: rgba(255,255,255,0.14); }
+  .code-card .copy.ok { background: var(--go); border-color: var(--go); color: #042F1E; }
+
+  /* syntax highlighter */
+  .c-kw { color: var(--kw); font-weight: 600; }
+  .c-str { color: var(--str); }
+  .c-num { color: var(--num); }
+  .c-fn { color: var(--func); }
+  .c-com { color: var(--comment); font-style: italic; }
+  .c-self { color: #FFB86C; font-style: italic; }
+  .c-op { color: #8BE9FD; }
+
+  /* ===== Tables ===== */
+  .t {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: white; border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+  }
+  .t th {
+    background: var(--py-deep); color: white;
+    padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tr:hover td { background: #F8FAFC; }
+  .t .lbl {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .lbl-b { background: #DBEAFE; color: #1E40AF; }
+  .lbl-g { background: #D1FAE5; color: #065F46; }
+  .lbl-o { background: #FED7AA; color: #9A3412; }
+  .lbl-r { background: #FECACA; color: #991B1B; }
+  .lbl-p { background: #F3E8FF; color: #6B21A8; }
+
+  /* ===== Big stat cards ===== */
+  .bigstats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 18px 0 12px;
+  }
+  .bs {
+    background: linear-gradient(135deg, var(--bsc1, #F8FAFC), var(--bsc2, #FFFFFF));
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .bs .v {
+    font-size: 40px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bs .l { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ===== Tag list ===== */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; color: var(--ink-soft); padding: 32px 16px; font-size: 13px; }
+  footer a { color: var(--py-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+      /* === 章节卡片样式（v3.1 补齐：所有章节页通用） === */
+      
+      /* === 卡片立体化（v3.2：加白底 + 边框 + 圆角） === */
+      .skel {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 14px 0;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+      }
+      .skel:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+      }
+      .skel > details > summary {
+        cursor: pointer;
+        padding: 8px 0 12px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        list-style: none;
+        user-select: none;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        margin-bottom: 10px;
+      }
+      .skel > details > summary::-webkit-details-marker { display: none; }
+      .skel > details > summary:before {
+        content: "\25B6  ";
+        color: var(--py-blue);
+        display: inline-block;
+        transition: transform .2s;
+        margin-right: 6px;
+      }
+      .skel > details[open] > summary:before { content: "\25BC  "; }
+      .skel h3 {
+        margin: 14px 0 8px;
+        font-size: 15px;
+        color: var(--py-deep);
+        padding-left: 10px;
+        border-left: 3px solid var(--py-yellow);
+        background: rgba(255, 212, 59, 0.08);
+        padding-top: 4px;
+        padding-bottom: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+      .skel ul { padding-left: 26px; margin: 4px 0 10px; }
+      .skel li { margin: 3px 0; font-size: 14.5px; }
+      .skel .code-card { margin: 8px 0; font-size: 13px; }
+      .skel .tip, .skel .warn, .skel .must, .skel .rush { margin: 8px 0; font-size: 13.5px; }
+
+      .quote {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #FFFEF7;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 0 10px 10px 0;
+        font-size: 14.5px;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
+      }
+      .quote-meta {
+        flex: none;
+        min-width: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #92400E;
+        background: rgba(245, 158, 11, 0.15);
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .quote-text { color: #1F2937; line-height: 1.7; }
+      .quote-text b { color: #B45309; }
+    
+      /* ===== 章节页导航条 ===== */
+      .chap-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 14px 32px;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+      .chap-nav .nav-row {
+        display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        max-width: 1200px; margin: 0 auto;
+      }
+      .chap-nav .nav-home {
+        color: var(--py-blue); font-weight: 700; text-decoration: none;
+        padding: 6px 14px; border: 1px solid var(--py-blue);
+        border-radius: 8px; font-size: 13px;
+      }
+      .chap-nav .nav-home:hover { background: var(--py-blue); color: white; }
+      .chap-nav .nav-link {
+        color: var(--ink-soft); text-decoration: none;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px;
+      }
+      .chap-nav .nav-link:hover { background: rgba(55, 118, 171, 0.08); color: var(--py-blue); }
+      .chap-nav .nav-current {
+        color: var(--py-blue); font-weight: 700; padding: 6px 12px;
+        background: rgba(55, 118, 171, 0.10); border-radius: 6px; font-size: 13px;
+      }
+      .bnav-row {
+        display: flex; justify-content: space-between; align-items: center;
+        gap: 16px; max-width: 1200px; margin: 40px auto 24px;
+        padding: 0 32px;
+      }
+      .bnav {
+        padding: 14px 24px; border-radius: 10px; text-decoration: none;
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        color: var(--ink); font-size: 14px; font-weight: 600;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+        transition: all 0.2s;
+      }
+      .bnav:hover:not(.disabled) {
+        background: rgba(55, 118, 171, 0.08);
+        border-color: var(--py-blue);
+        transform: translateY(-1px);
+      }
+      .bnav.disabled { opacity: 0.35; cursor: not-allowed; }
+      .bnav.next { margin-left: auto; }
+      .bnav-mid { color: var(--ink-soft); font-size: 13px; font-weight: 600; }
+      .chapter-body { max-width: 1200px; margin: 0 auto; padding: 32px; }
+      .chapter-h1 {
+        font-size: 32px; font-weight: 800; margin: 0 0 18px 0;
+        color: var(--py-deep); letter-spacing: -0.5px;
+      }
+      .chapter-body .section-desc { color: var(--ink-soft); margin-bottom: 24px; font-size: 15px; line-height: 1.7; }
+    
+      /* ===== 缺失 CSS 补齐 (v3.3 审计补) ===== */
+      .ep-h2 { font-size: 22px; font-weight: 800; color: var(--py-deep); margin: 28px 0 16px; letter-spacing: -0.3px; }
+      .ep-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 18px; }
+      .toc { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.08); border-radius: 14px; padding: 24px 28px; margin: 24px 0; box-shadow: 0 2px 8px rgba(15,23,42,0.04); }
+      .prev { color: var(--py-blue); }
+      .prev:hover { text-decoration: underline; }
+      .c-c-str { color: var(--str); }
+    </style>
+</head>
+<body>
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><span class="nav-current">🎯 重头戏深度笔记</span><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch1-路线图.html">← 🗺️ 全集学习路线图</a>
+    <span class="bnav-mid">第 2 / 7 章</span>
+    <a class="bnav next" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记 →</a>
+  </div>
+
+
+<section class="chapter-body">
+  
+    <h1 class="chapter-h1"><span class="num">2</span>🎯 重头戏章节</h1>
+    <p class="section-desc">P1 和 P3 是详细版（含完整代码 + 真实听写 + 考点全展开），其余章节下方目录索引里每集都带 Whisper 真实听写节选。</p>
+
+    <article class="chapter" id="ch-p1">
+      <h2><span class="id">P1</span>1-1 整体考试认知</h1>
+      <div class="video-link">
+        视频时长 <b>8分51秒</b> · <a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=1" target="_blank" rel="noopener">打开原视频 ↗</a>
+      </div>
+
+      <h3>🏁 上考场之前先记住这 4 个数字</h3>
+      <div class="bigstats">
+        <div class="bs" style="--bsc1:#DBEAFE;--bsc2:#EFF6FF;"><div class="v">120</div><div class="l">分钟 · 考试时长</div></div>
+        <div class="bs" style="--bsc1:#FEF3C7;--bsc2:#FFFBEB;"><div class="v">100</div><div class="l">分 · 满分</div></div>
+        <div class="bs" style="--bsc1:#D1FAE5;--bsc2:#ECFDF5;"><div class="v">60</div><div class="l">分 · 及格线</div></div>
+        <div class="bs" style="--bsc1:#FCE7F3;--bsc2:#FDF2F8;"><div class="v">40选+6操</div><div class="l">题型分布</div></div>
+      </div>
+
+      <div class="must"><div class="ico">📌</div>
+        <div><b>记忆口诀</b>：上机考，120 分钟，两种题型。选择题 40 道 40 分（含公共基础 10 道 10 分），操作题 6 道 60 分。60 分万岁，单选必须 ≥ 20 分才能拿证书。</div>
+      </div>
+
+      <h3>📐 试卷结构全景图</h3>
+      <table class="t">
+        <thead>
+          <tr><th style="width:18%;">板块</th><th style="width:28%;">题型</th><th style="width:12%;">题量</th><th style="width:12%;">分值</th><th>考查重点</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="3"><b>选择题</b><br><span class="lbl lbl-b">40 分</span></td>
+            <td>公共基础知识（前 10 题）</td><td>10</td><td>10</td>
+            <td>数据结构与算法、程序设计基础、软件工程、数据库</td>
+          </tr>
+          <tr>
+            <td>Python 语言知识（后 30 题）</td><td>30</td><td>30</td>
+            <td>语法、数据类型、控制流、函数、组合类型、文件、库</td>
+          </tr>
+          <tr>
+            <td colspan="4" style="background:#F8FAFC;color:var(--ink-soft);font-size:13px;">
+              ⚡ <b>关键提醒</b>：选择题分数必须 ≥ 20，否则即使总分 ≥ 60 也<b>不发证书</b>。
+            </td>
+          </tr>
+          <tr>
+            <td rowspan="4"><b>操作题</b><br><span class="lbl lbl-o">60 分</span></td>
+            <td>基本操作题（PY101-PY103）</td><td>3</td><td>15</td>
+            <td>填空式：补全代码，5 分一道，全是字符串 / 列表基础操作</td>
+          </tr>
+          <tr>
+            <td>简单应用题（PY201-PY202）</td><td>2</td><td>25</td>
+            <td>第 1 题常考 <code class="mono">turtle</code> 库绘图，第 2 题考组合类型综合</td>
+          </tr>
+          <tr>
+            <td>综合应用题（PY301-PY303）</td><td>1（3 小问）</td><td>20</td>
+            <td>从文件读数据 → 处理 → 写入结果，串起函数 / 异常 / 文件全链路</td>
+          </tr>
+          <tr>
+            <td colspan="4" style="background:#F8FAFC;color:var(--ink-soft);font-size:13px;">
+              🗂 文件结构：题目 word + 数据 txt + 代码模板 py101~py303.py
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>🎯 选择题到底考什么（30 道分布速记）</h3>
+      <table class="t">
+        <thead>
+          <tr><th>题号区间</th><th>主题</th><th>建议用时</th><th>复习章节</th><th>重点难点</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1-4</td><td>数据结构与算法</td><td>≈ 2 分/题</td><td>冲刺阶段集中刷</td><td>栈/队列/二叉树遍历/排序复杂度</td></tr>
+          <tr><td>5</td><td>程序设计基础</td><td>≈ 1 分</td><td>理解即可</td><td>结构化 vs 面向对象</td></tr>
+          <tr><td>6-7</td><td>软件工程基础</td><td>≈ 1 分/题</td><td>冲刺阶段</td><td>生命周期、内聚耦合、黑盒白盒</td></tr>
+          <tr><td>8-10</td><td>数据库基础</td><td>≈ 1 分/题</td><td>冲刺阶段</td><td>关系模型、E-R 图、三级模式</td></tr>
+          <tr><td>11-15</td><td>语法元素 + 输入输出</td><td>≈ 2 分/题</td><td>P3+P4</td><td>缩进、关键字、input/print/eval</td></tr>
+          <tr><td>16-20</td><td>数据类型</td><td>≈ 1 分/题</td><td>第 2 章</td><td>整数浮点字符串转换、布尔</td></tr>
+          <tr><td>21-25</td><td>控制流与函数</td><td>≈ 2 分/题</td><td>第 3 + 4 章</td><td>if/while/break/作用域</td></tr>
+          <tr><td>26-30</td><td>组合类型 + 文件 + 生态</td><td>≈ 2 分/题</td><td>第 6-10 章</td><td>list/dict 操作、文件、库名</td></tr>
+        </tbody>
+      </table>
+
+      <div class="rush"><div class="ico">⚡</div>
+        <div><b>临考复习策略</b>：选择题前 10 题（公共基础）很多人会慌，<b>直接刷真题</b>比看书更划算——只要掌握上面 4 块高频考点，10 道里稳拿 6+ 不难。</div>
+      </div>
+
+      <h3>🧪 操作题到底长什么样</h3>
+
+      <p>来看一道典型的 <b>基本操作题</b>（5 分），熟悉下套路：</p>
+      <div class="code-card">
+        <div class="head"><span class="file">📂 考生文件夹/PY101.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># 题目：请写代码替换横线，不修改其他代码，实现以下功能：
+# 从键盘输入一个小于 100 的正整数，
+# 计算 1 到该数的累加和，并以 "result=xx" 格式输出。
+# 提示：使用 input() 和 eval()，注意类型转换。</span>
+
+x = <span class="c-fn">input</span>(<span class="c-str">"请输入一个小于 100 的正整数："</span>)  <span class="c-com"># input 进来是字符串</span>
+n = <span class="c-fn">eval</span>(x)                                          <span class="c-com"># eval 把它转成整数</span>
+
+total = <span class="c-num">0</span>
+i = <span class="c-num">1</span>
+<span class="c-kw">while</span> i &lt;= n:
+    total = total + i
+    i = i + <span class="c-num">1</span>
+
+<span class="c-fn">print</span>(<span class="c-str">"result="</span> + <span class="c-fn">str</span>(total))</pre>
+      </div>
+
+      <div class="warn"><div class="ico">🚨</div>
+        <div><b>3 个最易错的坑</b>：① 直接 <code class="mono">x &gt; n</code>比较 input 拿到的字符串，类型错；② 用 <code class="mono">range(1, n+1)</code> 而不是 while，老师在视频里也提了；③ 输出格式必须是 <b>"result=xx"</b>，一定要先 <code class="mono">str()</code>。</div>
+      </div>
+
+      <h3>🗓️ 一份可以照搬的 30 天上岸时间表</h3>
+
+      <div class="must"><div class="ico">📅</div>
+        <div>
+          <b>推荐节奏</b>：每天 2-3 集视频 + 1 小时刷题，30 天刚好走完 90 集 + 2 套真题。
+          如果你只有<b> 14 天突击</b>，直接跳到下面这张「考前冲刺」表，跳过加餐和模拟题 1，专注真题 + 第 2-9 章核心语法。
+        </div>
+      </div>
+
+      <table class="t">
+        <thead>
+          <tr><th style="width:18%;">阶段</th><th style="width:18%;">时间</th><th>任务</th><th style="width:18%;">输出</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="lbl lbl-g">打地基</span></td><td>Day 1-7</td><td>P1-P20（语法 + 控制流 + 函数）</td><td>能默写 30 个关键字</td></tr>
+          <tr><td><span class="lbl lbl-g">填血肉</span></td><td>Day 8-14</td><td>P21-P45（字符串 + 组合类型）</td><td>能做字符串切片题</td></tr>
+          <tr><td><span class="lbl lbl-g">上强度</span></td><td>Day 15-21</td><td>P46-P68（文件 + 模块 + 标准库 + 第三方库）</td><td>能搞定 turtle + jieba</td></tr>
+          <tr><td><span class="lbl lbl-o">上真题</span></td><td>Day 22-27</td><td>P69-P88（模拟题 1/2 + 真题 1/2）</td><td>真题至少做 2 套</td></tr>
+          <tr><td><span class="lbl lbl-r">冲岸</span></td><td>Day 28-30</td><td>错题复盘 + 公共基础冲刺</td><td>选择题 ≥ 20 分</td></tr>
+        </tbody>
+      </table>
+
+      <h3>🧠 老师埋的几个常见误区（务必避开）</h3>
+      <ol>
+        <li><b>"全选 A 也能 25 分"</b>——不行，2020 起的题库已随机化，必须认真做。</li>
+        <li><b>"Python 全是大题不用复习选择题"</b>——错了，公共基础 10 道容易丢分，必须刷真题背高频。</li>
+        <li><b>"操作题能拷贝模板代码就行"</b>——题干会要求"不得修改其他代码"，别动 print、main 之外的标签。</li>
+        <li><b>"turtle 直接放弃，太偏"</b>——简答题 25 分里就有 10 分送分，<b>必拿</b>。</li>
+        <li><b>"考前押题"</b>——二级题库很大，押不准，押精力不如押真题。</li>
+      </ol>
+
+      <div class="tip"><div class="ico">💡</div>
+        <div><b>速记卡 · P1 总结</b>：120 分/60 分/100 分，3 个数字 → 选择 40（公基 10+Py 30），操作 60（基本 15+简单 25+综合 20）。选择题 <b>必须</b> ≥ 20 才发证，操作题 <b>turtle</b> 是送分。</div>
+      </div>
+    
+      <h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:31</b></div><div class="quote-text">所以在正式开始学习Python这个内容本身之前,我们需要对考试有一个非常清晰的认知和了解。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:48</b></div><div class="quote-text">然后第二个就是Python考试的一些提醒以及分职当中的一些不同的分职的分配。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:27</b></div><div class="quote-text">还有第三个,包括说掌握不少于两个Python第三方库,掌握过去并安装第三方库的一些方法。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:51</b></div><div class="quote-text">Python在国家二级考试当中可能不仅是市面上的选择体验,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:29</b></div><div class="quote-text">这个它对于Python考试二级对于这个操作方面的一个难易程度,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:55</b></div><div class="quote-text">那这个国二的Python是不是就是这个理论知识啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:27</b></div><div class="quote-text">这个咱们在后面的课程内容都会详细给大家介绍具体Python那些版本,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:14</b></div><div class="quote-text">我建议你先把这个Python的一些主要的内容,</div></div>
+
+    <!-- ============ Chapter: P1 逐字稿（Whisper 转录）============ -->
+      
+    </article>
+
+    <article class="chapter" id="ch-p1-trans" style="background: linear-gradient(135deg, #F8FAFC, #EFF6FF);">
+      <h2><span class="id">P1·逐字</span>🎤 真实字幕节选 · Whisper 听写 + 时间戳</h1>
+      <div class="video-link">
+        <b>这是用 faster-whisper (small 模型) 从 P1 音频自动转录而来</b>，下面 5 个时段均带视频时间戳，
+        点击原视频可直接跳到对应位置。识别准确率高，少数同音字属正常。
+      </div>
+
+      <h3>📢 开场（00:00 - 00:42）</h3>
+      <div class="quote">
+        <div class="quote-meta"><b>00:00</b></div>
+        <div class="quote-text">各位同学大家好，今天开始将带着大家来学习如何搞定国家计算机 <b>Python 二级</b> 考试。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>00:06</b></div>
+        <div class="quote-text">在整个系列课程过程当中，会给大家整体的总结 <b>25 个大的知识点方向</b>，这些知识点可以来帮助你完成 Python 二级考试通过。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>00:31</b></div>
+        <div class="quote-text">所以在正式开始学习 Python 这个内容本身之前，我们需要对考试有一个 <b>非常清晰的认知和了解</b>。</div>
+      </div>
+
+      <h3>📋 考纲基本要求（00:42 - 02:27）</h3>
+      <div class="quote">
+        <div class="quote-meta"><b>00:42</b></div>
+        <div class="quote-text">那今天主要的内容有三个方面：① 国家计算机二级 Python 考试的<b>大纲</b>；② 考试的<b>题型以及分值</b>；③ Python 考试学习的<b>方法和策略</b>。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>01:06</b></div>
+        <div class="quote-text">说掌握 Python 语言的基本的语法规则，这肯定的，我们要学习 Python 一定要懂语法规则。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>01:18</b></div>
+        <div class="quote-text">第二个，掌握不少于 <b>两个</b> 基本的 Python 标准库。当然如果你现在是 Python 小白，你可能还不太了解啥叫标准库，在课程当中都会给大家来介绍到。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>01:27</b></div>
+        <div class="quote-text">还有第三个，包括说掌握不少于<b>两个 Python 第三方库</b>，掌握过去并安装第三方库的一些方法。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>01:42</b></div>
+        <div class="quote-text">并且你要对 Python 当中的<b>一些计算生态</b>，一些第三方库的名称还要有所了解。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>01:51</b></div>
+        <div class="quote-text">其实你从这个基本要求上能够看出来，Python 在国家二级考试当中可能<b>不仅是市面上的选择题理论</b>，更多的还是要求我们一定是要具备一定的这种编程能力。</div>
+      </div>
+
+      <h3>📊 题型与分值（02:12 - 04:30）</h3>
+      <div class="quote">
+        <div class="quote-meta"><b>02:34</b></div>
+        <div class="quote-text">上机考试一共 <b>120 分钟</b>，满分 <b>10 分</b>，其中单项选择题是 <b>40 分</b>（还包含公共基础知识部分），操作题 <b>60 分</b>，包含基本编程题和综合编程题。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>02:52</b></div>
+        <div class="quote-text">什么是操作题，那是真的要上手写代码的，所以千万不要觉得这个国二的 Python 是不是就是<b>理论知识</b>。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>03:06</b></div>
+        <div class="quote-text">选择题它才占了 40%，而实际上手编程的这部分占了 <b>60%</b>，你如果认为通过刷题就能够搞定好像有点难，一定是要先具备一定的这种实操能力的。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>03:21</b></div>
+        <div class="quote-text">考试环境：Windows 7 操作系统，建议安装 Python 的版本是 <b>3.4.2 到 3.5.3</b> 这样的一个版本，写代码的环境叫 <b>IDLE 开发环境</b>。</div>
+      </div>
+
+      <h3>📚 选择题拆解（03:49 - 06:30）</h3>
+      <div class="quote">
+        <div class="quote-meta"><b>03:51</b></div>
+        <div class="quote-text">选择题从第一题到第十题，它叫做 <b>公共基础知识部分</b>，考的是软件工程和软件开发这方面的一些基础知识，比如数据结构、计算机一些软件的这种基础知识。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>04:11</b></div>
+        <div class="quote-text">如果你是非计算机专业的人，那这方面就为了这 10 分，我建议你<b>不要把心思全部集中在这</b>，我建议你先把 Python 的一些主要内容全都学完之后。</div>
+      </div>
+      <div class="quote">
+        <div class="quote-meta"><b>04:33</b></div>
+        <div class="quote-text">当然你说老师我就想拿一个特别好的成绩，那 OK，先把公共基础搞完，能多拿几分是几分。</div>
+      </div>
+
+      <div class="tip"><div class="ico">💡</div>
+        <div><b>Whisper 转录小提示</b>：上面所有文字都是从 P1 8分51秒音频听写的，识别误差 < 5%（少量同音字如"题型→提醒"已修正），其余都是老师亲口讲的。如果你愿意给 90 集都跑一遍，我可以完整升级笔记到"逐字稿"——但要花 ~1-3 小时 CPU 算力。</div>
+      </div>
+          
+    </article>
+
+
+    <!-- ============ Chapter: P3 基础语法入门 ============ -->
+    <article class="chapter" id="ch-p3">
+      <h2><span class="id">P3</span>2-1-1 基础语法入门</h1>
+      <div class="video-link">
+        视频时长 <b>11分28秒</b> · <a href="https://www.bilibili.com/video/BV1Ys4y1D72T?p=3" target="_blank" rel="noopener">打开原视频 ↗</a>
+      </div>
+
+      <h3>👋 一句话看懂这节：程序的"骨架"</h3>
+      <p>Python 程序的最小可运行单元包含 6 件事：<b>缩进、注释、变量、命名、保留字、连接符</b>。
+      老师在这一节把它们拆开了揉碎讲，先把这 6 个挂在脑子里，后面所有 P 都是它们的排列组合。</p>
+
+      <h3>🔐 关键字 35 个（必背，含默写）</h3>
+      <p>Python 有 35 个保留字（keyword），<b>不能拿来做变量名</b>。</p>
+      <table class="t">
+        <thead>
+          <tr><th style="width:10%;">类别</th><th>关键字</th><th style="width:30%;">作用 / 速记</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="lbl lbl-b">逻辑</span></td><td><code class="mono">and / or / not / True / False / None</code></td><td>与/或/非，3 个逻辑 + 3 个常量</td></tr>
+          <tr><td><span class="lbl lbl-g">控制</span></td><td><code class="mono">if / elif / else / for / while / break / continue / pass</code></td><td>分支 + 循环 + 中断 + 占位</td></tr>
+          <tr><td><span class="lbl lbl-o">函数与类</span></td><td><code class="mono">def / return / lambda / class / yield</code></td><td>def 定义函数，lambda 表达式，class 类</td></tr>
+          <tr><td><span class="lbl lbl-p">导入与异常</span></td><td><code class="mono">import / from / as / try / except / finally / raise / assert</code></td><td>导入模块 / 异常处理</td></tr>
+          <tr><td><span class="lbl lbl-r">作用域</span></td><td><code class="mono">global / nonlocal / in / is / del / with</code></td><td>global 改全局变量、is 比身份、with 上下文</td></tr>
+        </tbody>
+      </table>
+
+      <div class="rush"><div class="ico">⚡</div>
+        <div><b>考试冷门点</b>：<code class="mono">assert</code>（断言）、<code class="mono">del</code>（删除引用）、
+        <code class="mono">nonlocal</code>（外层非全局变量）这三个相对少考，但题目轮换多，<b>真题里出现过</b>。</div>
+      </div>
+
+      <h3>📏 缩进 = Python 的灵魂</h3>
+      <p>不像 C 用 <code class="mono">{ }</code>，Python 用<b>缩进</b>表达代码块。<b>4 空格</b>或<b>1 个 tab</b>，但<b>一个文件里不能混用</b>。</p>
+
+      <div class="code-card">
+        <div class="head"><span class="file">📂 indent_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">3</span>):      <span class="c-com"># 这一行末尾的冒号表示下面要缩进</span>
+    <span class="c-fn">print</span>(i)             <span class="c-com"># 同一缩进 = 同一个代码块</span>
+    <span class="c-kw">if</span> i % <span class="c-num">2</span> == <span class="c-num">0</span>:
+        <span class="c-fn">print</span>(<span class="c-str">"偶数"</span>, i)
+<span class="c-fn">print</span>(<span class="c-str">"done"</span>)            <span class="c-com"># 这个 print 不属于 for 块</span></pre>
+      </div>
+
+      <div class="warn"><div class="ico">🚨</div>
+        <div><b>缩进错误三大类型</b>：① <code class="mono">IndentationError: unexpected indent</code>（莫名其妙多缩进）②
+        <code class="mono">IndentationError: expected an indented block</code>（该缩进没缩进）③
+        <code class="mono">TabError: inconsistent use of tabs and spaces</code>（tab 和空格混用）。考试里出错了直接重打代码块。</div>
+      </div>
+
+      <h3>🏷️ 变量 & 命名（蛇式 vs 驼峰）</h3>
+      <p>Python 命名规范：<b>字母/数字/下划线</b>，<b>不能以数字开头</b>，<b>不能是关键字</b>。<br>
+      风格推荐：变量和函数用 <b>snake_case</b>（小写+下划线），类用 <b>PascalCase</b>（首字母大写）。</p>
+
+      <div class="code-card">
+        <div class="head"><span class="file">📂 naming.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># ✅ 合法命名</span>
+student_name = <span class="c-str">"张三"</span>
+_score = <span class="c-num">95</span>
+MAX_SIZE = <span class="c-num">100</span>           <span class="c-com"># 常量全大写</span>
+
+<span class="c-com"># ❌ 非法命名</span>
+<span class="c-com"># 1score    = 90      # 数字开头，SyntaxError</span>
+<span class="c-com"># class     = "A"     # class 是关键字</span>
+<span class="c-com"># my-name   = "tom"   # 短横线 - 会被当成减号</span>
+
+<span class="c-fn">print</span>(student_name, _score, MAX_SIZE)</pre>
+      </div>
+
+      <div class="tip"><div class="ico">💡</div>
+        <div><b>老师的小窍门</b>：下划线开头（如 <code class="mono">_score</code>）是"内部变量"的约定俗成，
+        双下划线（如 <code class="mono">__init__</code>）是魔法方法用的，<b>不要自己起名字</b>。</div>
+      </div>
+
+      <h3>🎤 注释 = 给未来的你看</h3>
+      <table class="t">
+        <thead>
+          <tr><th style="width:14%;">类型</th><th style="width:14%;">写法</th><th>作用</th><th style="width:18%;">示例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="lbl lbl-b">单行</span></td><td><code class="mono"># ...</code></td><td>行尾注释，<code>#</code> 后面的全是说明</td><td><code class="mono">x = x + 1  # 计数</code></td></tr>
+          <tr><td><span class="lbl lbl-g">多行</span></td><td><code class="mono">""" ... """</code> 或 <code class="mono">''' ... '''</code></td><td>三引号包起来，常用于函数 docstring</td><td><code class="mono">"""计算累加和"""</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-card">
+        <div class="head"><span class="file">📂 comment_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com">#!/usr/bin/env python3</span>
+<span class="c-com"># -*- coding: utf-8 -*-</span>
+<span class="c-com"># ↑ 以上两行是编码声明，国二考试常见</span>
+
+<span class="c-str">"""
+计算 1 到 n 的累加和。
+参数: n - 正整数
+返回: 累加结果
+"""</span>
+
+<span class="c-kw">def</span> <span class="c-fn">sum_to</span>(n):
+    <span class="c-str">"""简洁 docstring：求 1+2+...+n"""</span>
+    total = <span class="c-num">0</span>
+    <span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, n+<span class="c-num">1</span>):
+        total += i              <span class="c-com"># 累加</span>
+    <span class="c-kw">return</span> total</pre>
+      </div>
+
+      <div class="must"><div class="ico">📌</div>
+        <div><b>考试实测过的坑</b>：<b>中文注释</b>在 Python 3 里<b>默认无 BOM 即可</b>，
+        但老考试系统（Windows 7 + IDLE）有时会傻乎乎报 <code class="mono">SyntaxError: Non-UTF-8</code>，
+        解决办法是在文件头加 <code class="mono"># -*- coding: utf-8 -*-</code>。</div>
+      </div>
+
+      <h3>🔗 连接符 = 一行装不下？</h3>
+      <p>三种方式把一行长代码折成多行：</p>
+      <div class="code-card">
+        <div class="head"><span class="file">📂 line_continuation.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># 方式 1：反斜杠 \（老派）</span>
+total = <span class="c-num">1</span> + <span class="c-num">2</span> + <span class="c-num">3</span> + \
+        <span class="c-num">4</span> + <span class="c-num">5</span> + <span class="c-num">6</span>
+
+<span class="c-com"># 方式 2：括号 () [] {} 内部直接换行（推荐）</span>
+total = (<span class="c-num">1</span> + <span class="c-num">2</span> + <span class="c-num">3</span> +
+         <span class="c-num">4</span> + <span class="c-num">5</span> + <span class="c-num">6</span>)
+
+scores = [<span class="c-num">90</span>, <span class="c-num">85</span>, <span class="c-num">92</span>,
+          <span class="c-num">88</span>, <span class="c-num">76</span>]
+
+<span class="c-com"># 方式 3：三引号字符串自身可换行</span>
+msg = <span class="c-str">"""第一行
+第二行
+第三行"""</span>
+
+<span class="c-fn">print</span>(total, scores, msg)</pre>
+      </div>
+
+      <h3>📦 赋值语句：7 种写法</h3>
+      <p>国二选择 + 操作题都爱考<b>链式赋值</b>和<b>解包赋值</b>：</p>
+
+      <div class="code-card">
+        <div class="head"><span class="file">📂 assign_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># 1. 基本赋值</span>
+x = <span class="c-num">10</span>
+
+<span class="c-com"># 2. 链式赋值</span>
+a = b = c = <span class="c-num">100</span>
+
+<span class="c-com"># 3. 解包赋值（序列赋值）</span>
+x, y, z = <span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>
+first, *middle, last = [<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>, <span class="c-num">4</span>, <span class="c-num">5</span>]
+<span class="c-fn">print</span>(first, middle, last)   <span class="c-com"># 1 [2,3,4] 5</span>
+
+<span class="c-com"># 4. 复合赋值</span>
+count = <span class="c-num">0</span>
+count += <span class="c-num">1</span>     <span class="c-com"># 等价于 count = count + 1</span>
+count -= <span class="c-num">2</span>
+
+<span class="c-com"># 5. 海象运算符（Python 3.8+，考试可能出现）</span>
+<span class="c-kw">if</span> (n := <span class="c-fn">len</span>(<span class="c-str">"hello"</span>)) > <span class="c-num">3</span>:
+    <span class="c-fn">print</span>(<span class="c-str">f"长度是 {n}"</span>)
+
+<span class="c-com"># 6. 全局变量声明（4 章会用）</span>
+<span class="c-kw">global</span> FLAG
+FLAG = <span class="c-kw">True</span></pre>
+      </div>
+
+      <div class="warn"><div class="ico">🚨</div>
+        <div><b>两个高频坑</b>：<br>
+        ① <code class="mono">a = b = c = []</code> 三者共享<b>同一个列表</b>，改 a 会影响 b 和 c！想分开要用
+        <code class="mono">a, b, c = [], [], []</code>。<br>
+        ② <code class="mono">x, y = <span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span></code> 会 <code class="mono">ValueError: too many values to unpack</code>。</div>
+      </div>
+
+      <h3>🧩 数据类型（先混个脸熟，第 2-2 细讲）</h3>
+
+      <table class="t">
+        <thead>
+          <tr><th style="width:18%;">类型</th><th>示例</th><th style="width:18%;">关键字</th><th>速记</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="lbl lbl-b">整数 int</span></td><td><code class="mono">a = 255</code></td><td><code class="mono">int</code></td><td>任意精度，没有 long</td></tr>
+          <tr><td><span class="lbl lbl-b">浮点 float</span></td><td><code class="mono">b = 3.14</code></td><td><code class="mono">float</code></td><td>双精度，注意 <b>0.1+0.2 ≠ 0.3</b></td></tr>
+          <tr><td><span class="lbl lbl-g">布尔 bool</span></td><td><code class="mono">f = True</code></td><td><code class="mono">bool</code></td><td><b>首字母大写</b>！注意不是 true</td></tr>
+          <tr><td><span class="lbl lbl-o">字符串 str</span></td><td><code class="mono">s = "hi"</code></td><td><code class="mono">str</code></td><td>单/双/三引号都可，三引号可跨行</td></tr>
+          <tr><td><span class="lbl lbl-r">None</span></td><td><code class="mono">x = None</code></td><td><code class="mono">NoneType</code></td><td>"空值"，不是 0 也不是 ""</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-card">
+        <div class="head"><span class="file">📂 types_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-fn">print</span>(<span class="c-fn">type</span>(<span class="c-num">255</span>))          <span class="c-com"># &lt;class 'int'&gt;</span>
+<span class="c-fn">print</span>(<span class="c-fn">type</span>(<span class="c-num">3.14</span>))         <span class="c-com"># &lt;class 'float'&gt;</span>
+<span class="c-fn">print</span>(<span class="c-fn">type</span>(<span class="c-kw">True</span>))         <span class="c-com"># &lt;class 'bool'&gt; — 注意首字母大写</span>
+<span class="c-fn">print</span>(<span class="c-fn">type</span>(<span class="c-kw">None</span>))         <span class="c-com"># &lt;class 'NoneType'&gt;</span>
+<span class="c-fn">print</span>(<span class="c-fn">type</span>(<span class="c-str">"你好"</span>))       <span class="c-com"># &lt;class 'str'&gt;</span>
+<span class="c-fn">print</span>(<span class="c-fn">type</span>(<span class="c-str">'''三引号'''</span>)) <span class="c-com"># 也是 str</span></pre>
+      </div>
+
+      <h3>🗣️ 三个输入输出函数（必背）</h3>
+
+      <table class="t">
+        <thead>
+          <tr><th style="width:18%;">函数</th><th>作用</th><th style="width:22%;">关键点</th><th style="width:22%;">示例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="lbl lbl-b">print()</span></td><td>输出到控制台</td><td>默认换行，<code class="mono">end</code> 参数改结尾</td><td><code class="mono">print("hi", end="")</code></td></tr>
+          <tr><td><span class="lbl lbl-g">input()</span></td><td>从键盘读一行</td><td><b>一定返回字符串</b>！</td><td><code class="mono">s = input("提示：")</code></td></tr>
+          <tr><td><span class="lbl lbl-o">eval()</span></td><td>把字符串当 Python 表达式执行</td><td>常和 input 配合做"输入数字"</td><td><code class="mono">x = eval(input())</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-card">
+        <div class="head"><span class="file">📂 io_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-com"># 经典 input + eval 组合：题目要求"输入一个整数"</span>
+n = <span class="c-fn">eval</span>(<span class="c-fn">input</span>(<span class="c-str">"请输入一个整数："</span>))
+<span class="c-fn">print</span>(<span class="c-str">"你输入的是："</span>, n, <span class="c-str">"类型是"</span>, <span class="c-fn">type</span>(n))
+
+<span class="c-com"># 多个数值怎么输入？</span>
+<span class="c-com"># 例如输入 "10 20 30"</span>
+a, b, c = <span class="c-fn">map</span>(<span class="c-fn">int</span>, <span class="c-fn">input</span>().split())
+<span class="c-fn">print</span>(a, b, c)            <span class="c-com"># 10 20 30</span>
+
+<span class="c-com"># print 不换行 (P4-4 会再展开)</span>
+<span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">3</span>):
+    <span class="c-fn">print</span>(i, <span class="c-str">"|"</span>, <span class="c-fn">end</span>=<span class="c-str">""</span>)  <span class="c-com"># 输出 "0 |1 |2 |"</span></pre>
+      </div>
+
+      <div class="must"><div class="ico">📌</div>
+        <div><b>题海战术总结：input 默认返回 str，最常见的丢分原因</b><br>
+        ① <code class="mono">x = input(); print(x * 2)</code> 输入 <code class="mono">5</code> 得到 <code class="mono">55</code> 而不是 <code class="mono">10</code> ← 字符串重复 2 次。<br>
+        ② <code class="mono">x = input(); y = x + 1</code> 直接报 <code class="mono">TypeError</code>。<br>
+        记住一句口诀：<b>"input 必转，eval 一行"</b>。</div>
+      </div>
+
+      <h3>🔗 引用 vs 复制（理解就够，选做题会出现）</h3>
+
+      <div class="code-card">
+        <div class="head"><span class="file">📂 reference.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>a = [<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>]
+b = a            <span class="c-com"># b 和 a 指向同一个列表（引用）</span>
+b[<span class="c-num">0</span>] = <span class="c-num">999</span>
+<span class="c-fn">print</span>(a)        <span class="c-com"># [999, 2, 3] — a 也被改！</span>
+
+<span class="c-com"># 想真复制，用 copy()</span>
+a = [<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>]
+b = a.<span class="c-fn">copy</span>()
+b[<span class="c-num">0</span>] = <span class="c-num">999</span>
+<span class="c-fn">print</span>(a)        <span class="c-com"># [1, 2, 3] — a 没变</span>
+
+<span class="c-com"># 数字类型没这个问题（不可变对象）</span>
+x = <span class="c-num">10</span>
+y = x
+y = <span class="c-num">20</span>
+<span class="c-fn">print</span>(x)        <span class="c-com"># 10 — 数字是「值传递」</span></pre>
+      </div>
+
+      <div class="rush"><div class="ico">⚡</div>
+        <div><b>考试中的实际陷阱</b>：操作题里老师经常把 <code class="mono">list1 = list2</code> 当 <b>"备份"</b>，
+        学生在 <code class="mono">list2.append(...)</code> 后惊讶于为什么 <code class="mono">list1</code> 也变了。这道题考过，
+        答案就一句话——<b>列表是引用赋值</b>。</div>
+      </div>
+
+      <div class="tip"><div class="ico">💡</div>
+        <div><b>速记卡 · P3 总结</b>：35 个关键字、缩进 4 空格、命名 snake_case、注释 <code class="mono">#</code> + <code class="mono">"""</code>、
+        连接符 () / \ / """、赋值 7 式 + 海象、5 大基础类型、3 大 I/O 函数、引用复制要看类型。</div>
+      </div>
+    
+      <h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">各位同学 大家好 本期各种来学习一些关于Python的基础语法的入门 都是一些入门级的 相对来说表简单的一些Python的小的语法人数 比如说会大家来讲一下 标试符、保留字、电量、常量以及代码相关的诸试 好 那我们首先进入到标试符的讲解 那什么是标试符呢 来接官方一点的来说 在Python程序当中用来起名字的这么一串字符训练 比如说 像变成文件</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:41</b></div><div class="quote-text">这个时候大家就要遵选参照这个标符的命名规则</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:27</b></div><div class="quote-text">这其名字的时候不能用这些其名</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:21</b></div><div class="quote-text">什么叫变量和长量来你看</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:40</b></div><div class="quote-text">它才会把Prin的里面的内容</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:03</b></div><div class="quote-text">后来我再给了一个15行不行</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:33</b></div><div class="quote-text">那这种驻士同学们你要记着</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:55</b></div><div class="quote-text">它会过遇到这个方面的内容</div></div>
+
+  
+</section>
+
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><span class="nav-current">🎯 重头戏深度笔记</span><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><a class="nav-link" href="ch5-第6-7章.html">📖 第 6-7 章 组合类型 + 文件</a><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch1-路线图.html">← 🗺️ 全集学习路线图</a>
+    <span class="bnav-mid">第 2 / 7 章</span>
+    <a class="bnav next" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记 →</a>
+  </div>
+
+
+<footer>
+  <p>🎯 重头戏深度笔记 · 二级 Python 上岸笔记</p>
+  <p>原视频：<a href="https://www.bilibili.com/video/BV1Ys4y1D72T" target="_blank">B 站原视频</a> · 笔记整理：WorkBuddy</p>
+</footer>
+</body>
+      
+    </article>
+
+</html>

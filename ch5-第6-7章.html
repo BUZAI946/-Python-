@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>第 6-7 章组合类型+文件 · 二级 Python 上岸指南</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+📖 第 6-7 章 组合类型 + 文件 · 二级 Python
+<style>
+  :root {
+    --py-blue: #3776AB;
+    --py-yellow: #FFD43B;
+    --py-deep: #1E3A5F;
+    --code-bg: #0F172A;
+    --code-fg: #E2E8F0;
+    --kw: #FF79C6;
+    --str: #F1FA8C;
+    --num: #BD93F9;
+    --func: #50FA7B;
+    --comment: #6272A4;
+    --warn: #FF6B6B;
+    --go: #06D6A0;
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", "Fira Code", Consolas, Monaco,
+    "Source Code Pro", monospace; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    color: white;
+    padding: 64px 32px 56px;
+    background:
+      radial-gradient(900px 400px at 10% -10%, rgba(255, 212, 59, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 110% 10%, rgba(6, 214, 160, 0.25), transparent 60%),
+      linear-gradient(135deg, #1E3A5F 0%, #2563EB 50%, #3776AB 100%);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.08) 0, transparent 40%);
+    pointer-events: none;
+  }
+  .hero-wrap { max-width: 1180px; margin: 0 auto; position: relative; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255, 212, 59, 0.18);
+    color: var(--py-yellow);
+    border: 1px solid rgba(255, 212, 59, 0.4);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge .dot { width: 8px; height: 8px; background: var(--py-yellow); border-radius: 50%; box-shadow: 0 0 12px var(--py-yellow); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 20px 0 16px; line-height: 1.15; font-weight: 800; letter-spacing: -1px;
+  }
+  .hero h1 .y { color: var(--py-yellow); }
+  .hero .sub {
+    font-size: 19px; max-width: 800px; opacity: 0.92;
+  }
+  .hero .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; margin-top: 36px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .stat .v { font-size: 30px; font-weight: 800; color: var(--py-yellow); }
+  .stat .l { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  @media (max-width: 720px) { .hero .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ===== Layout ===== */
+  main { max-width: 1180px; margin: -28px auto 0; padding: 0 32px 80px; position: relative; }
+  section { margin-top: 56px; }
+
+  /* ===== Notice ===== */
+  .notice {
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #FFF7E6 0%, #FFEFC5 100%);
+    border-left: 5px solid #FAAD14;
+    color: #614700;
+    box-shadow: var(--shadow);
+    display: flex; gap: 16px;
+  }
+  .notice .ico { font-size: 28px; flex: none; }
+  .notice strong { color: #874D00; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .notice a { color: #1E3A5F; font-weight: 600; }
+
+  /* ===== Roadmap ===== */
+  .section-title {
+    display: flex; align-items: baseline; gap: 12px;
+    font-size: 28px; font-weight: 800; margin: 0 0 8px; color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .section-title .num {
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    color: white; font-size: 16px; padding: 2px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .section-desc { color: var(--ink-soft); margin: 0 0 24px; font-size: 15px; }
+
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .chap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c, var(--py-blue));
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .chap:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .chap h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink); }
+  .chap .meta { font-size: 13px; color: var(--ink-soft); }
+  .chap .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    margin-right: 4px; margin-top: 8px;
+    background: var(--tag-bg, #EFF6FF); color: var(--tag-c, var(--py-blue));
+    font-weight: 600;
+  }
+  .chap .done {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--go); color: white;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+  .chap .pending {
+    position: absolute; top: 14px; right: 14px;
+    background: #F1F5F9; color: #94A3B8;
+    font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    font-weight: 700;
+  }
+
+  /* ===== Chapter blocks (深度章节) ===== */
+  .chapter {
+    background: white; border-radius: var(--radius); padding: 36px;
+    box-shadow: var(--shadow); margin-top: 28px;
+  }
+  .chapter h2 {
+    font-size: 26px; margin: 0 0 6px; font-weight: 800;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink);
+  }
+  .chapter h2 .id {
+    background: var(--py-yellow); color: var(--ink);
+    padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 700;
+  }
+  .chapter .video-link {
+    margin-top: 8px; font-size: 14px; color: var(--ink-soft);
+  }
+  .chapter .video-link a {
+    color: var(--py-blue); text-decoration: none; font-weight: 600;
+  }
+  .chapter .video-link a:hover { text-decoration: underline; }
+  .chapter h3 {
+    font-size: 20px; margin: 36px 0 12px; font-weight: 700; color: var(--py-deep);
+    border-left: 4px solid var(--py-yellow); padding-left: 12px;
+  }
+  .chapter p, .chapter li { font-size: 15px; color: #1F2937; }
+  .chapter ul, .chapter ol { padding-left: 22px; }
+  .chapter li { margin: 4px 0; }
+
+  /* ===== Callout boxes ===== */
+  .tip, .warn, .must, .rush {
+    border-radius: var(--radius-sm); padding: 14px 18px;
+    margin: 16px 0; font-size: 14.5px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .tip { background: #ECFEFF; border-left: 4px solid #06B6D4; color: #155E75; }
+  .warn { background: #FEF2F2; border-left: 4px solid #EF4444; color: #991B1B; }
+  .must { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; }
+  .rush { background: #FFF7ED; border-left: 4px solid #F97316; color: #9A3412; }
+  .tip .ico, .warn .ico, .must .ico, .rush .ico { font-size: 20px; flex: none; }
+  .tip b, .warn b, .must b, .rush b { font-weight: 800; }
+
+  /* ===== Code cards ===== */
+
+  .code-card {
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+    margin: 16px 0;
+    font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+    font-size: 14px; line-height: 1.65;
+    overflow-x: auto;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+    position: relative;
+  }
+  .code-card .head {
+    display: flex; justify-content: space-between; align-items: center;
+    color: #94A3B8; font-size: 12px; font-family: inherit;
+    margin: -4px 0 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+  .code-card .head .file { color: var(--py-yellow); font-weight: 700; }
+  .code-card .copy {
+    cursor: pointer; user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; padding: 4px 10px;
+    transition: background 0.15s;
+  }
+  .code-card .copy:hover { background: rgba(255,255,255,0.14); }
+  .code-card .copy.ok { background: var(--go); border-color: var(--go); color: #042F1E; }
+
+  /* syntax highlighter */
+  .c-kw { color: var(--kw); font-weight: 600; }
+  .c-str { color: var(--str); }
+  .c-num { color: var(--num); }
+  .c-fn { color: var(--func); }
+  .c-com { color: var(--comment); font-style: italic; }
+  .c-self { color: #FFB86C; font-style: italic; }
+  .c-op { color: #8BE9FD; }
+
+  /* ===== Tables ===== */
+  .t {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+    background: white; border-radius: var(--radius-sm); overflow: hidden;
+    box-shadow: var(--shadow);
+    font-size: 14px;
+  }
+  .t th {
+    background: var(--py-deep); color: white;
+    padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+  .t td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tr:hover td { background: #F8FAFC; }
+  .t .lbl {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .lbl-b { background: #DBEAFE; color: #1E40AF; }
+  .lbl-g { background: #D1FAE5; color: #065F46; }
+  .lbl-o { background: #FED7AA; color: #9A3412; }
+  .lbl-r { background: #FECACA; color: #991B1B; }
+  .lbl-p { background: #F3E8FF; color: #6B21A8; }
+
+  /* ===== Big stat cards ===== */
+  .bigstats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin: 18px 0 12px;
+  }
+  .bs {
+    background: linear-gradient(135deg, var(--bsc1, #F8FAFC), var(--bsc2, #FFFFFF));
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .bs .v {
+    font-size: 40px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--py-blue), #2563EB);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .bs .l { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
+
+  /* ===== Tag list ===== */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+  /* ===== Footer ===== */
+  footer { text-align: center; color: var(--ink-soft); padding: 32px 16px; font-size: 13px; }
+  footer a { color: var(--py-blue); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+      /* === 章节卡片样式（v3.1 补齐：所有章节页通用） === */
+      
+      /* === 卡片立体化（v3.2：加白底 + 边框 + 圆角） === */
+      .skel {
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 14px;
+        padding: 18px 24px;
+        margin: 14px 0;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+      }
+      .skel:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+      }
+      .skel > details > summary {
+        cursor: pointer;
+        padding: 8px 0 12px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+        list-style: none;
+        user-select: none;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+        margin-bottom: 10px;
+      }
+      .skel > details > summary::-webkit-details-marker { display: none; }
+      .skel > details > summary:before {
+        content: "\25B6  ";
+        color: var(--py-blue);
+        display: inline-block;
+        transition: transform .2s;
+        margin-right: 6px;
+      }
+      .skel > details[open] > summary:before { content: "\25BC  "; }
+      .skel h3 {
+        margin: 14px 0 8px;
+        font-size: 15px;
+        color: var(--py-deep);
+        padding-left: 10px;
+        border-left: 3px solid var(--py-yellow);
+        background: rgba(255, 212, 59, 0.08);
+        padding-top: 4px;
+        padding-bottom: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+      .skel ul { padding-left: 26px; margin: 4px 0 10px; }
+      .skel li { margin: 3px 0; font-size: 14.5px; }
+      .skel .code-card { margin: 8px 0; font-size: 13px; }
+      .skel .tip, .skel .warn, .skel .must, .skel .rush { margin: 8px 0; font-size: 13.5px; }
+
+      .quote {
+        display: flex; gap: 12px; align-items: flex-start;
+        background: #FFFEF7;
+        border: 1px solid #FCD34D;
+        border-left: 4px solid #F59E0B;
+        padding: 12px 16px;
+        margin: 10px 0;
+        border-radius: 0 10px 10px 0;
+        font-size: 14.5px;
+        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
+      }
+      .quote-meta {
+        flex: none;
+        min-width: 64px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #92400E;
+        background: rgba(245, 158, 11, 0.15);
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .quote-text { color: #1F2937; line-height: 1.7; }
+      .quote-text b { color: #B45309; }
+    
+      /* ===== 章节页导航条 ===== */
+      .chap-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        padding: 14px 32px;
+        position: sticky; top: 0; z-index: 100;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      }
+      .chap-nav .nav-row {
+        display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+        max-width: 1200px; margin: 0 auto;
+      }
+      .chap-nav .nav-home {
+        color: var(--py-blue); font-weight: 700; text-decoration: none;
+        padding: 6px 14px; border: 1px solid var(--py-blue);
+        border-radius: 8px; font-size: 13px;
+      }
+      .chap-nav .nav-home:hover { background: var(--py-blue); color: white; }
+      .chap-nav .nav-link {
+        color: var(--ink-soft); text-decoration: none;
+        padding: 6px 12px; border-radius: 6px; font-size: 13px;
+      }
+      .chap-nav .nav-link:hover { background: rgba(55, 118, 171, 0.08); color: var(--py-blue); }
+      .chap-nav .nav-current {
+        color: var(--py-blue); font-weight: 700; padding: 6px 12px;
+        background: rgba(55, 118, 171, 0.10); border-radius: 6px; font-size: 13px;
+      }
+      .bnav-row {
+        display: flex; justify-content: space-between; align-items: center;
+        gap: 16px; max-width: 1200px; margin: 40px auto 24px;
+        padding: 0 32px;
+      }
+      .bnav {
+        padding: 14px 24px; border-radius: 10px; text-decoration: none;
+        background: #FFFFFF;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        color: var(--ink); font-size: 14px; font-weight: 600;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+        transition: all 0.2s;
+      }
+      .bnav:hover:not(.disabled) {
+        background: rgba(55, 118, 171, 0.08);
+        border-color: var(--py-blue);
+        transform: translateY(-1px);
+      }
+      .bnav.disabled { opacity: 0.35; cursor: not-allowed; }
+      .bnav.next { margin-left: auto; }
+      .bnav-mid { color: var(--ink-soft); font-size: 13px; font-weight: 600; }
+      .chapter-body { max-width: 1200px; margin: 0 auto; padding: 32px; }
+      .chapter-h1 {
+        font-size: 32px; font-weight: 800; margin: 0 0 18px 0;
+        color: var(--py-deep); letter-spacing: -0.5px;
+      }
+      .chapter-body .section-desc { color: var(--ink-soft); margin-bottom: 24px; font-size: 15px; line-height: 1.7; }
+    
+      /* ===== 缺失 CSS 补齐 (v3.3 审计补) ===== */
+      .ep-h2 { font-size: 22px; font-weight: 800; color: var(--py-deep); margin: 28px 0 16px; letter-spacing: -0.3px; }
+      .ep-desc { color: var(--ink-soft); font-size: 14.5px; line-height: 1.7; margin-bottom: 18px; }
+      .toc { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.08); border-radius: 14px; padding: 24px 28px; margin: 24px 0; box-shadow: 0 2px 8px rgba(15,23,42,0.04); }
+      .prev { color: var(--py-blue); }
+      .prev:hover { text-decoration: underline; }
+      .c-c-str { color: var(--str); }
+    </style>
+</head>
+<body>
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><span class="nav-current">📖 第 6-7 章 组合类型 + 文件</span><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch4-第5章.html">← 📖 第 5 章 字符串</a>
+    <span class="bnav-mid">第 5 / 7 章</span>
+    <a class="bnav next" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库 →</a>
+  </div>
+
+
+<section class="chapter-body">
+  
+    <h1 class="chapter-h1"><span class="num">5</span>📖 第 6-7 章：组合数据类型 + 文件 笔记（19 集）</h1>
+    <p class="section-desc">
+      <b>组合类型 + 文件 = 综合应用题的核心</b>。真题最后 1 道综合应用题几乎全是这个套路：读文本 → 处理（列表/字典/集合） → 写回文件。
+    </p>
+
+    <!-- P39 · 6-1-1 集合数据类型1 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P39</b> · 6-1-1 集合类型 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">集合 · 11:11</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">set()</code> 创建集合，自动去重</li>
+          <li><code class="mono">{1, 2, 3}</code> 字面量（注意空集合 <code class="mono">set()</code>，不是 <code class="mono">{}</code>）</li>
+          <li>元素必须 <b>可哈希</b>（数字、字符串、元组可以；列表、字典、集合不行）</li>
+          <li>无序、不可索引</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 set.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>s = {<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">2</span>, <span class="c-num">3</span>, <span class="c-num">3</span>, <span class="c-num">3</span>}
+<span class="c-kw">print</span>(s)                         <span class="c-com"># {1, 2, 3}</span>
+
+s.<span class="c-fn">add</span>(<span class="c-num">4</span>)
+<span class="c-kw">print</span>(<span class="c-num">3</span> <span class="c-kw">in</span> s)                     <span class="c-com"># True</span>
+<span class="c-kw">print</span>(<span class="c-fn">len</span>(s))                   <span class="c-com"># 4</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：就是不能重复,即便你在创建集合或者往里面去添加内容的时候,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：比如说哪下列哪一个不是Python当中的组合数据类型,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:15</b></div><div class="quote-text">所以,在开始讲列表之前,要给大家介绍一下组合数据类型是什么,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:29</b></div><div class="quote-text">那你得知道Python当中在考试当中它考察的是什么样的内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:09</b></div><div class="quote-text">比如说我在这里面创建一个叫S的这样的一个集合啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:19</b></div><div class="quote-text">指的是说它里面存放的顺序可以和你这个往里面放东西的顺序不太一样啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:38</b></div><div class="quote-text">然后另外呢,这个我们再来看一下Python当中对这个数据类型,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:12</b></div><div class="quote-text">所谓的这个s和t这两集合当中的非共同元素,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:07</b></div><div class="quote-text">咱们这个混同篇当中展示的这个顺序,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:47</b></div><div class="quote-text">一个叫差级,这样我先把这个s和这个t也分别输出一下,</div></div>
+
+    <!-- P40 · 6-1-2 集合数据类型2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P40</b> · 6-1-2 集合类型 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">集合 · 07:18</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>集合运算</b>：交集 <code class="mono">&amp;</code>、并集 <code class="mono">|</code>、差集 <code class="mono">-</code>、对称差 <code class="mono">^</code></li>
+          <li>方法：<code class="mono">s1.intersection(s2)</code>、<code class="mono">s1.union()</code>、<code class="mono">s1.difference()</code></li>
+          <li>不可变集合：<code class="mono">frozenset()</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 set_op.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>a = {<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>}
+b = {<span class="c-num">3</span>, <span class="c-num">4</span>, <span class="c-num">5</span>}
+<span class="c-kw">print</span>(a &amp; b)                     <span class="c-com"># {3}</span>
+<span class="c-kw">print</span>(a | b)                     <span class="c-com"># {1,2,3,4,5}</span>
+<span class="c-kw">print</span>(a - b)                     <span class="c-com"># {1,2}</span>
+<span class="c-kw">print</span>(a ^ b)                     <span class="c-com"># {1,2,4,5}</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：集合（set）是<b>无序、不重复</b>的。用 <code class="mono">{}</code> 或 <code class="mono">set()</code> 创建。<b>空集合</b>必须用 <code class="mono">set()</code>（<code class="mono">{}</code> 是空字典）。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：集合支持 <code class="mono">&</code> 交集、<code class="mono">|</code> 并集、<code class="mono">-</code> 差集，<b>不能</b>索引（无序）。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:00</b></div><div class="quote-text">同学们 大家好 上一节课咱们学习了到底什么是集合以及集合的声明方式还有集合的这四个操作服务</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:56</b></div><div class="quote-text">然后这个in其实大家也都很熟悉了 对吧 那咱就先来看这三个相对来说简单一点的吧</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:06</b></div><div class="quote-text">不管你是列表元组还是字点 还是咱现在这个集合就看你里面有多少元素</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:50</b></div><div class="quote-text">当然它有这么一句前提说如果数据像s不在集合s中</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:48</b></div><div class="quote-text">这个不在 那就产生key arow这样的一个异常</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:45</b></div><div class="quote-text">clear这单词本身就有清空的意思 对吧</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:06</b></div><div class="quote-text">因为集合它得是Site SET嘛</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:32</b></div><div class="quote-text">跟咱们刚才输出那个剩下的那个空的集合</div></div>
+
+    <!-- P41 · 6-1-3 列表1 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P41</b> · 6-1-3 列表 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">列表 · 09:36</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>有序、可变、可重复</li>
+          <li>创建：<code class="mono">[1, 2, 3]</code> / <code class="mono">list()</code> / <code class="mono">list(range(5))</code></li>
+          <li><b>索引/切片</b>（同字符串）</li>
+          <li>修改元素：<code class="mono">lst[0] = 99</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 list.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>lst = [<span class="c-num">10</span>, <span class="c-num">20</span>, <span class="c-num">30</span>, <span class="c-num">40</span>]
+<span class="c-kw">print</span>(lst[<span class="c-num">0</span>], lst[-<span class="c-num">1</span>])       <span class="c-com"># 10 40</span>
+<span class="c-kw">print</span>(lst[<span class="c-num">1</span>:<span class="c-num">3</span>])               <span class="c-com"># [20, 30]</span>
+lst[<span class="c-num">0</span>] = <span class="c-num">99</span>
+<span class="c-kw">print</span>(lst)                      <span class="c-com"># [99, 20, 30, 40]</span></pre>
+        </div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：回忆一下 集合这叫什么?叫无序并且不能重复</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：列表是<b>可变对象</b>，append/extend/sort 是<b>原地修改</b>，返回 None。<code class="mono">list2 = list1.sort()</code> 会变 None。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:12</b></div><div class="quote-text">这里面序列类型我都写着说 用来存储有序并且可以重复的数据</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:19</b></div><div class="quote-text">那这列表就是中货号 用中货号来去进行创建和定义</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:30</b></div><div class="quote-text">另外再来说一下 之前咱们在字符创当中不是学过锁引吗</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:41</b></div><div class="quote-text">因为之前咱们都学过字符创当中的锁引</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:15</b></div><div class="quote-text">也可以存放一个列表类型的元素</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:19</b></div><div class="quote-text">这个是l2当中的第012个元素</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:30</b></div><div class="quote-text">这个第2个位置的一个元素</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:15</b></div><div class="quote-text">你就能从这个列表当中往外取直</div></div>
+
+    <!-- P42 · 6-1-4 列表2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P42</b> · 6-1-4 列表 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">列表 · 11:15</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>增：<code class="mono">lst.append(x)</code> / <code class="mono">lst.insert(i, x)</code> / <code class="mono">lst.extend(seq)</code></li>
+          <li>删：<code class="mono">lst.pop(i)</code> / <code class="mono">lst.remove(x)</code> / <code class="mono">del lst[i]</code> / <code class="mono">lst.clear()</code></li>
+          <li>排：<code class="mono">lst.sort()</code>（升序）、<code class="mono">lst.sort(reverse=True)</code></li>
+          <li>反：<code class="mono">lst.reverse()</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 list2.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>lst = [<span class="c-num">3</span>, <span class="c-num">1</span>, <span class="c-num">4</span>, <span class="c-num">1</span>, <span class="c-num">5</span>, <span class="c-num">9</span>, <span class="c-num">2</span>, <span class="c-num">6</span>]
+lst.<span class="c-fn">append</span>(<span class="c-num">7</span>)
+<span class="c-kw">print</span>(lst.<span class="c-fn">count</span>(<span class="c-num">1</span>))         <span class="c-com"># 2（出现次数）</span>
+lst.<span class="c-fn">sort</span>()
+<span class="c-kw">print</span>(lst)                    <span class="c-com"># [1, 1, 2, 3, 4, 5, 6, 7, 9]</span>
+lst.<span class="c-fn">reverse</span>()
+<span class="c-kw">print</span>(lst)                    <span class="c-com"># [9, 7, 6, 5, 4, 3, 2, 1, 1]</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：那我能不能又通过这种形式创建一个空列表呢,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：OK,一共四个元素,123在,123不是不在,对吧?</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:28</b></div><div class="quote-text">反正就找这列表当中最小的吧,然后找这个列表当中最大的吧,最小的或最大的元素。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:41</b></div><div class="quote-text">OK,好,那另外再来说一下,那假如说我这列表当中是一堆字符串,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:15</b></div><div class="quote-text">好,那咱们来printmin,然后咱们再来max,来看一下,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:20</b></div><div class="quote-text">然后按照这个26个英文字母的一个顺序去进行这种比较,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:04</b></div><div class="quote-text">那我能不能又通过这种形式创建一个空列表呢,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:52</b></div><div class="quote-text">原来这个Helo,它本身是在第1个位置的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:11</b></div><div class="quote-text">当然你可以指定它这个位置的内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:19</b></div><div class="quote-text">那我srs.remove123,</div></div>
+
+    <!-- P43 · 6-1-5 列表3 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P43</b> · 6-1-5 列表 3 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">列表 · 13:54</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>列表生成式</b>（重要）：<code class="mono">[x*2 for x in range(10) if x%2==0]</code></li>
+          <li>操作符：<code class="mono">+ * == in</code></li>
+          <li>常用函数：<code class="mono">max / min / sum / len / sorted</code></li>
+          <li><b>复制陷阱</b>：<code class="mono">b = a</code> 是引用；<code class="mono">b = a.copy()</code> / <code class="mono">b = a[:]</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 list_comprehension.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>squares = [x*x <span class="c-kw">for</span> x <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">10</span>)]
+<span class="c-kw">print</span>(squares)
+<span class="c-com"># [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]</span>
+
+evens = [x <span class="c-kw">for</span> x <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">10</span>) <span class="c-kw">if</span> x % <span class="c-num">2</span> == <span class="c-num">0</span>]
+<span class="c-kw">print</span>(evens)          <span class="c-com"># [0, 2, 4, 6, 8]</span>
+
+<span class="c-com"># 二维列表</span>
+grid = [[i*<span class="c-num">3</span>+j <span class="c-kw">for</span> j <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">3</span>)] <span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">3</span>)]
+<span class="c-kw">print</span>(grid[<span class="c-num">1</span>][<span class="c-num">2</span>])            <span class="c-com"># 5</span></pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：列表生成式是操作题高频考点，<b>2018 起真题</b>几乎年年考。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：它会爆错,ok,所以这个大家要知道啊,有点类似于像字不刷当中那个index,对吧?</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：列表是<b>可变对象</b>，append/extend/sort 是<b>原地修改</b>，返回 None。<code class="mono">list2 = list1.sort()</code> 会变 None。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:13</b></div><div class="quote-text">Pata, Reverse, Index, Count, Copy, Clear,没演示,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:02</b></div><div class="quote-text">copy一会儿我单说,咱们先来聊这个clear,Rs.clear,清空列表当中所有的那种。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:52</b></div><div class="quote-text">可能跟着一些大量的那种编程体来鞏固大家对所学的知识点的一个掌握情况啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:34</b></div><div class="quote-text">我还可以根据这个列表当中的锁引去修改它这个值,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:29</b></div><div class="quote-text">尤其就是在我们编程过程当中,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:09</b></div><div class="quote-text">当然,我现在给大家讲的这些事,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:12</b></div><div class="quote-text">所以我们该怎么解决这个问题呢?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:47</b></div><div class="quote-text">它指向的内容都是完全不一样的嘛,</div></div>
+
+    <!-- P44 · 6-1-6 元组 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P44</b> · 6-1-6 元组 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">元组 · 11:53</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>不可变</b>有序序列；用 <code class="mono">()</code> 创建</li>
+          <li>单元素元组：<code class="mono">(1,)</code>（逗号不能省）</li>
+          <li>可作字典的 key、集合的元素（因为可哈希）</li>
+          <li>拆包：<code class="mono">a, b = (1, 2)</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 tuple.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>t = (<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>)
+<span class="c-kw">print</span>(t[<span class="c-num">0</span>], <span class="c-fn">len</span>(t))
+
+x, y, z = t
+<span class="c-kw">print</span>(x, y, z)               <span class="c-com"># 1 2 3</span>
+
+single = (<span class="c-num">42</span>,)               <span class="c-com"># 单元素元组</span>
+<span class="c-kw">print</span>(<span class="c-fn">type</span>(single))          <span class="c-com"># tuple</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：一点点不同在哪呢?一个是原组的函数能用的函数要比列表少很多。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：说完了,当我们定义好一个原组之后,我们不能再往里面添加东西了。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:56</b></div><div class="quote-text">所以你看到他这个课,你就想一想,编程当中出现或者遇到原组的那种场景。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:35</b></div><div class="quote-text">你像列表的那些什么Apend, Insert, Remove, Pop,这些它根本都用了。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:04</b></div><div class="quote-text">然后呢,咱们再来tap,Tap,这单词叫tap,原组的这个类型啊。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:31</b></div><div class="quote-text">序列类型当中的原组和列表啊,都削了,咱们就差一个硬设类型,就是那个字点,咱们没说了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:07</b></div><div class="quote-text">说这个序列s以下选项中对于maxs的描述正确得是,一定能够返回序列s的最大元素,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:50</b></div><div class="quote-text">第六题,说元组这个,然后这段代码声明了一位元组里面放一堆东西,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:27</b></div><div class="quote-text">01234,从purple一直取到tomato,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:16</b></div><div class="quote-text">然后里面的每一个元素中间用这个下滑线可以连一下,</div></div>
+
+    <!-- P45 · 6-1-7 for循环与列表元组 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P45</b> · 6-1-7 for 循环与列表/元组 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">组合类型 · 02:50</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul><li><code class="mono">for x in lst:</code> 遍历</li><li><code class="mono">for i, x in enumerate(lst):</code> 带下标</li><li>列表/元组都支持切片、+、*</li></ul>
+
+        <div class="code-card">
+          <div class="head"><span class="file">📂 代码示意</span><span class="copy">真实片段</span></div>
+<pre><span class="c-cmt">大家好,本集课呢,给大家来补充一下关于列表集合的一些使用啊。</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：LS123234abc,随便就写了一下啊,那你就可以fold循环,inLSmallprynt一下这个i,是meas.</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：因为之前咱们学过这个Full循环,然后当时跟大家怎么说的,我说Full循环其实它可以输出Python当中的所有的一些可谍代对象,对吧?</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 6 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:06</b></div><div class="quote-text">因为之前咱们学过这个Ful循环,然后当时跟大家怎么说的,我说Ful循环其实它可以输出Python当中的所有的一些可谍代对象,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:27</b></div><div class="quote-text">字符串,我可以把这字符串当中的每一个字符捞出来输出一遍,或者做一些什么其他的操作,反正能拿出来。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:51</b></div><div class="quote-text">LS1234abc,随便就写了一下啊,那你就可以fold循环,inLSmalprynt一下这个i,是meas.，这LS就是你要输出的这个列表是吧?那我会将列表当中的每一个元素拿出来,每一次循环,我就把这个一个元素复制给这个i,也就是i就表示,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:41</b></div><div class="quote-text">你能不能换一种写法这么写啊,这是一个元组了对吧,然后现在我要变例循环这个元组啥叫变例,我实际上说了,把这个一系列的这个数据i个拿出来,这就叫变例,对吧。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:02</b></div><div class="quote-text">ok,就是给大家这个稍微补充一下啊,他们跟循环之间的一个结合和使用啊,然后包括说实际上我们有的时候在用的时候,，更多的可能还要去做一些计算和处理啊,比如说这个我可能还得问一问啊,这EF啊说这个,哎啊,要是大约等约零啊纳木啊,我怎么办是吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:35</b></div><div class="quote-text">反正现在就是先把基本功,先把基础打好,是吧,把一些基本的招式先学会了,回头咱们再来看说实战的时候该怎么来去吧,</div></div>
+
+    <!-- P46 · 6-2-1 字典1 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P46</b> · 6-2-1 字典 1 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字典 · 13:48</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>键值对</b>：<code class="mono">{key: value}</code></li>
+          <li>key 必须<b>可哈希</b>且<b>唯一</b></li>
+          <li>创建：<code class="mono">{}</code> / <code class="mono">dict()</code> / <code class="mono">dict.fromkeys()</code></li>
+          <li>访问：<code class="mono">d[key]</code>（缺失抛 KeyError）/ <code class="mono">d.get(key, default)</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 dict.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>d = <span class="c-fn">dict</span>(name=<span class="c-str">"张三"</span>, age=<span class="c-num">20</span>)
+<span class="c-kw">print</span>(d[<span class="c-str">"name"</span>])               <span class="c-com"># 张三</span>
+<span class="c-kw">print</span>(d.<span class="c-fn">get</span>(<span class="c-str">"city"</span>, <span class="c-str">"未知"</span>))  <span class="c-com"># 未知（不抛错）</span>
+
+d[<span class="c-str">"email"</span>] = <span class="c-str">"a@b.com"</span>
+<span class="c-kw">print</span>(<span class="c-fn">len</span>(d))                 <span class="c-com"># 3</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：它是什么类型的呢?诶,DICT,看这个还熟吗,同学们?还记得有一会咱们想试一下说能不能创建一个空击盒,写了这么一把诶,然后看一下类型。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：诶,所以是从这来的,所以它为啥叫字典?实际上就是因为这个人家的英文就叫Dictionary,所以我们是翻译过来就叫字典了。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:57</b></div><div class="quote-text">就是它这个内容的实际上是一对出现的,所以我们管它叫做箭直对。具体定义的一个格式大家能够看到,一个大扩号熟吗?熟吧,应该集合当时咱们也用大扩号,只不过这大扩号里面的内容的形式不太一样,和集合不一样。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:05</b></div><div class="quote-text">你可以通过那个页数找到确定的那个汉字,那同样在这个数据存储的形式当中,我们是可以通过这个箭去找到对应的值,通过p找到这个value。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:49</b></div><div class="quote-text">但是这里面我为啥双眼号,是因为它是字窗嘛,对不对?你说你要是个页码,那你不加双眼号也一样,所以这个要根据实际情况,我这学号肯定是个字窗上。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:26</b></div><div class="quote-text">那这索引怎么写呢?跟你平时用列表啊,用这个字不错,用原组时候写索引一样,也是一个中过号,只不过呢,这回可不是根据它那个数啊,什么01234,那位置去取这个,去数这一所引了。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:30</b></div><div class="quote-text">然后我再来输出一下这个D,大家来看一下,什么意思?就是说啊,在这个字点当中我要找到202的这个key,然后呢,把它的这个值改成马超,我不管你原来是什么值,也就是说这个对于字点来讲,它只认识说最后一次复职的那个值,就是那个键啊,最后一次复的那个值才是它真正的一个值。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:40</b></div><div class="quote-text">好,另外接着再来说一件事,那假设我这儿写一个,20105,然后我给一位,这个叫什么,呃,别张俩了,不是一时代的,张刘,好,我写一张刘,张卫远,哎,那这个时候它这个,呃,字点,英,输出之后应该是什么样子,什么意思,同学们。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:43</b></div><div class="quote-text">也就是说我在跟这个给字点当中的某一个key进行复职的时候,如果这个key没有在当前的表,当前这个字点当中,那么它就相当于会自动创建一个key并给它相的这个值。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:33</b></div><div class="quote-text">in,或者notin,那咱们来试一下,你说这个in和notin,它指的是key还是value呢?那咱们来试一下吧,比如说这个201101,然后in,d,看一下能不能用啊。</div></div>
+
+    <!-- P47 · 6-2-2 字典2 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P47</b> · 6-2-2 字典 2 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字典 · 14:08</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>遍历：<code class="mono">for k in d:</code> / <code class="mono">for k, v in d.items():</code></li>
+          <li>常用方法：<code class="mono">keys() / values() / items() / update() / pop() / setdefault()</code></li>
+          <li>判断：<code class="mono">key in d</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 dict2.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>scores = <span class="c-fn">dict</span>(语文=<span class="c-num">85</span>, 数学=<span class="c-num">92</span>, 英语=<span class="c-num">88</span>)
+<span class="c-kw">for</span> k, v <span class="c-kw">in</span> scores.<span class="c-fn">items</span>():
+    <span class="c-kw">print</span>(<span class="c-str">f"{k}: {v}"</span>)
+
+<span class="c-c-str">统计字串里字符出现次数（高频考点）</span>
+text = <span class="c-str">"abracadabra"</span>
+cnt = {}
+<span class="c-kw">for</span> c <span class="c-kw">in</span> text:
+    cnt[c] = cnt.<span class="c-fn">get</span>(c, <span class="c-num">0</span>) + <span class="c-num">1</span>
+<span class="c-kw">print</span>(cnt)                        <span class="c-com"># {'a': 5, 'b': 2, 'r': 2, 'c': 1, 'd': 1}</span></pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：字符/词频统计是真题常客。模板：<code class="mono">cnt[c] = cnt.get(c, 0) + 1</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：哎,这是怎么还要报错了吗?d.values没加扩号, sorry,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：我再教你一个好的玩法啊,你这items返回不是俩值嘛,对不对?</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:06</b></div><div class="quote-text">首先,应用我们也连这三个,Kis,Values,Items这三个非常重要,尤其是经常会结合的FoxX魂一起来使用。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:21</b></div><div class="quote-text">所以KisValuesItems,它输出的这个分别就是这字典当中所有的key,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:10</b></div><div class="quote-text">就说你只有key的情况下,但我就想要value,那直接拿key当所引不就得了吗?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:55</b></div><div class="quote-text">然后我只想要这个value,那就是ie是不是就行了,来执行一下,你看,怎么样?没错吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:36</b></div><div class="quote-text">我来做这么一个输出地点guide,我那个你看一下,它这里面不是有default吗,p和default,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:18</b></div><div class="quote-text">所以这个guide的方法是帮助我们基于key去找里面的value,当然如果key在当前字典当中没有,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:44</b></div><div class="quote-text">好了,那这个是关于guide的方法,接着咱们再来看一个pop方法,pop是做什么事,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:28</b></div><div class="quote-text">来,看print,d.pop,item,有is吗,没有is,不是items,是item,来,执行一下看,</div></div>
+
+    <!-- P48 · 6-2-3 字典3 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#8B5CF6">P48</b> · 6-2-3 字典 3 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">字典 · 04:28</span></summary>
+        <h3>📌 考点回顾</h3>
+        <ul><li><code class="mono">dict.items()</code></li><li>排序：<code class="mono">sorted(d.items(), key=lambda x: x[1])</code></li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">写个代码试一下,拿Type看一下生成之后的东西,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：首先来看第一题,以下选项中不能生成一个空字典的事。</div></div>
+        <div class="tip"><div class="ico">💡</div><div>字典按值排序用 <code class="mono">sorted(d, key=d.get)</code> 或 <code class="mono">sorted(d.items(), key=lambda kv: kv[1])</code>。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:05</b></div><div class="quote-text">首先来看第一题,以下选项中不能生成一个空字典的事。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:51</b></div><div class="quote-text">所以很明显这里面应该是选D,就是排除法你都能够排除到D,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:07</b></div><div class="quote-text">第二题,说给定字典D,以下选项中对D.kis的描述正确的是,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:02</b></div><div class="quote-text">KisHI,Values789,然后问你说这个结果应该是啥?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:34</b></div><div class="quote-text">这个应该是对的,对吧?咱们也是上一课学的这个Gate的方法嘛,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:14</b></div><div class="quote-text">Python字典是包含0个或多个简直对,没有长度限制,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:23</b></div><div class="quote-text">Python原通过字典实现硬设,没错啊,咱们这字典类型应该叫,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:18</b></div><div class="quote-text">OK,好了,那这个以上,就是咱们整个对于字典的一个讲解了,</div></div>
+
+    <!-- P49 · 7-1-1 文件概述 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EC4899">P49</b> · 7-1-1 文件概述 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">文件 · 16:36</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>文本文件 vs 二进制文件</b>：.txt / .csv 是文本，.png/.jpg 是二进制</li>
+          <li>编码：默认 <code class="mono">utf-8</code>，读老 Windows 文件可能是 <code class="mono">gbk</code></li>
+          <li>逻辑换行 <code class="mono">\n</code> vs 物理回车 <code class="mono">\r\n</code></li>
+        </ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">接下来我就写一个代码来去读取这里面的内容,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：所以你看啊,内容容易统一展示和阅读,然后由于文件,文本文件存在这种编码可以看作是存储在磁盘上的长字符创,啥叫磁盘啊?</div></div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：中文文件读取乱码 → 加 <code class="mono">encoding="utf-8"</code> 或 <code class="mono">encoding="gbk"</code>。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：一个呢,叫文本文件,一个叫二进制文件,其实也是Python在读取文件时候的两种模式啊。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:59</b></div><div class="quote-text">那给大家来稍微解释一下啊,比如说一般由单一特定编码的这个字符组成,比如说UniCode编码,其实就是咱们现在看到的这个,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:28</b></div><div class="quote-text">这句话你可以记一下,当万一遇上类似这种选择题啊,我再稍微给大家解释一下,就是看这些文字,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:15</b></div><div class="quote-text">当然可能我这电脑打卡啊,这个显示图片稍微有点慢,没关系,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:24</b></div><div class="quote-text">每一个文件啊,计算机当中的任何一个文件,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:55</b></div><div class="quote-text">它都是按照这个文本文件的这种模式来去读取的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:41</b></div><div class="quote-text">你可能读取到的是这些东西在底层的unicodebmr,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:13:03</b></div><div class="quote-text">我把它存到刚才咱们的这个testfile这个里面了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:16:28</b></div><div class="quote-text">这个下一节课咱们再来聊一聊关于相对路径和绝对路径的问题,</div></div>
+
+    <!-- P50 · 7-1-2 相对路径与绝对路径 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EC4899">P50</b> · 7-1-2 路径：相对 vs 绝对 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">文件 · 12:42</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><b>绝对路径</b>：从盘符写起，<code class="mono">D:/test/data.txt</code>（考试里相对多）</li>
+          <li><b>相对路径</b>：相对于当前工作目录，<code class="mono">./data.txt</code> 或 <code class="mono">../data.txt</code></li>
+          <li>路径分隔符 Windows 用 <code class="mono">\\</code>（或 <code class="mono">/</code>，Python 都接受）</li>
+          <li>路径模块：<code class="mono">os.path</code> / <code class="mono">pathlib.Path</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 path.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> os
+<span class="c-kw">print</span>(os.<span class="c-fn">getcwd</span>())           <span class="c-com"># 当前工作目录</span>
+
+<span class="c-kw">import</span> pathlib
+p = pathlib.<span class="c-fn">Path</span>(<span class="c-str">"data"</span>) / <span class="c-str">"file.txt"</span>
+<span class="c-kw">print</span>(p)                       <span class="c-com"># data\file.txt（Win）</span>
+<span class="c-kw">print</span>(p.<span class="c-fn">exists</span>())</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：然后关于实际、关于操作文件、读取文件的带码也一定要贵,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：其实基本上都是以读写文件、存储文件的这种形式来去出题的。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:12</b></div><div class="quote-text">然后我们要对文件操作,基本上就是这么三件事儿,打开、读写,然后关闭。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:36</b></div><div class="quote-text">那咱们来说一下,这里面实际上是有一个相对路径和绝对路径的问题。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:28</b></div><div class="quote-text">Found out,放哪儿了,就找不着这文件,那确实找不着。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:31</b></div><div class="quote-text">下面有一个Path的点TXT,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:03</b></div><div class="quote-text">这绝对都已经要根据你自己实际写的那个,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:23</b></div><div class="quote-text">一定表示一个什么样的特殊意义,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:28</b></div><div class="quote-text">它可能把它当成UNA扣在边码的那个,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:02</b></div><div class="quote-text">当然如果你遇到了一些题目,</div></div>
+      </details>
+          
+    </article>
+
+
+    <!-- P51 · 7-1-3 文件读操作 -->
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EC4899">P51</b> · 7-1-3 文件读：read / readline / readlines <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">文件 · 10:39</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">f.read(n)</code>：读全部或 n 个字符</li>
+          <li><code class="mono">f.readline()</code>：读<b>一行</b>（含 <code class="mono">\n</code>）</li>
+          <li><code class="mono">f.readlines()</code>：读全部行，返回 list</li>
+          <li>遍历：<code class="mono">for line in f:</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 read.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"data.txt"</span>, <span class="c-str">"r"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    lines = f.<span class="c-fn">readlines</span>()         <span class="c-com"># list of str</span>
+    <span class="c-kw">for</span> line <span class="c-kw">in</span> lines:
+        <span class="c-kw">print</span>(line.<span class="c-fn">strip</span>())      <span class="c-com"># 去 \n</span></pre>
+        </div>
+        <div class="must"><div class="ico">📌</div><div><b>必背</b>：<code class="mono">with open() as f:</code> 自动关闭，<b>永远用 with</b>。</div></div>
+      
+      
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：有coding,utf-bar,就这段来把你记住就好了,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：你也可以,一定记得要关闭这个文件的,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:35</b></div><div class="quote-text">这几个参数而且都是可选的,对吧,前三个readline,readlines,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:22</b></div><div class="quote-text">这个已经有了test4,该写到4了,好,咱们开始来写一下。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:06</b></div><div class="quote-text">对吧,好,接着来,我给这个read里面加一个参数,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:27</b></div><div class="quote-text">当然输出实际上是以16进制形式输出的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:03</b></div><div class="quote-text">老师如果我再调用一次Raidline呢,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:46</b></div><div class="quote-text">对于咱们这个Python当中的Raidline,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:30</b></div><div class="quote-text">实际上相当于把它的混行服也给它读取到了,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:26</b></div><div class="quote-text">好了,那基本上,这个就是咱们这几个课的内容啊,</div></div>
+
+    <!-- P52 · 更新补充：文件读取找不到文件 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EC4899">P52</b> · 更新补充：文件读取找不到文件 (2024.2.26) <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">补充 · 04:35</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul><li><code class="mono">FileNotFoundError</code> 报错场景：相对路径计算错误、文件名写错</li><li>debug 思路：先 <code class="mono">print(os.getcwd())</code> 看当前路径</li></ul>
+      
+      
+        <div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">看到了吗?像我这种学习的基准业,或者说经常写代码的人,可能通常会把这个勾选项给他去掉。</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错</b>：那你可能会觉得说这个文件他的名字就叫test.txt,但其实不是这样的。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错</b>：我当时我说我拆操作系统,默认隐藏文件扩展名,所以文件名不是你看到的那样,然后他也回复我了,说是的,没错,我取消隐藏之后就好了。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 7 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:01</b></div><div class="quote-text">各位同学大家好,今天给大家补充一些内容。今天是2024年的26号。补充一些什么样的内容呢?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:35</b></div><div class="quote-text">他想读这个文件,但是过程当中就报了一个错,叫做no-certified auditory test.txt。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:24</b></div><div class="quote-text">那我相信大部分的同学,你们的计算机,你们的电脑应该是默认会隐藏文件的扩展名的。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:48</b></div><div class="quote-text">然后点击这个茶看,这里面就有一些箱子设置,大家能够看到这里面有一个什么样的设置默认情况下隐藏已知文件类型的扩展名。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:45</b></div><div class="quote-text">我当时我说我拆操作系统,默认隐藏文件扩展名,所以文件名不是你看到的那样,然后他也回复我了,说是的,没错,我取消隐藏之后就好了。，这样的话,这个问题就解决了,所以我今天还是特意录了这么一期视频来给大家正式的来去看一下这个问题,好吧。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:43</b></div><div class="quote-text">然后当时也是忘了去调整声音在剪视频的时候,所以这里面也跟大家说一声抱歉,反正也有字幕,大家忍一忍,也就那么两期三期好像是。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:00</b></div><div class="quote-text">因为我发现最近很多弹幕上的朋友们都不是粉丝,然后在互相的聊得也很High,然后提的问题也很有意思。</div></div>
+
+    <!-- P53 · 7-1-4 文件写入 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EC4899">P53</b> · 7-1-4 文件写入 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">文件 · 12:08</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li><code class="mono">open(path, "w")</code>：写入（覆盖）</li>
+          <li><code class="mono">open(path, "a")</code>：追加</li>
+          <li><code class="mono">open(path, "x")</code>：独占创建（文件存在则报错）</li>
+          <li><code class="mono">f.write(str)</code>：写一行（不自动换行）</li>
+          <li><code class="mono">f.writelines(list)</code>：一次性写多个</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 write.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"out.txt"</span>, <span class="c-str">"w"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    f.<span class="c-fn">write</span>(<span class="c-str">"hello\n"</span>)
+    f.<span class="c-fn">writelines</span>([<span class="c-str">"a\n"</span>, <span class="c-str">"b\n"</span>, <span class="c-str">"c\n"</span>])</pre>
+        </div>
+        <div class="warn"><div class="ico">🚨</div><div><b>易错</b>：<code class="mono">"w"</code> 会<b>清空</b>原文件。忘 <code class="mono">encoding</code>，Windows 写中文可能乱码。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：我说实际上这里面,我们用Python去读它的时候相当于有这么一个指针,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：是不是就可以调用一下那个ridlines,然后给大家来去看一下该怎么去用,对吧,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:10</b></div><div class="quote-text">首先,打开文件按照读的模式并且转碼,然后读取了文件当中所有的内容,我们输出一下。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:28</b></div><div class="quote-text">那我最好的办法就是说,那我在Rid读完之后,能不能把这个光标再给移动回到这个头部的这个位置呢,对不对?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:20</b></div><div class="quote-text">就是说我电话Red也是读全部,我电话RedLine也是想要读这个文本当中的内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:38</b></div><div class="quote-text">整体写入文件,相当于就是跟刚才那个RedLine是这样的想法,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:05</b></div><div class="quote-text">在码复制过来当中你就看,它会不会帮助我们自动的去创建这些内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:42</b></div><div class="quote-text">是不是就可以调用一下那个ridlines,然后给大家来去看一下该怎么去用,对吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:35</b></div><div class="quote-text">怎么样,OK吧,然后另外呢同学们也来看一下,假如说我现在把这些文件当中的内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:58</b></div><div class="quote-text">那下节课咱们来带着大家做几道关于读写操作文件的一些练习题,好吧,那本节课就到这里了,谢大家。</div></div>
+
+    <!-- P54 · 7-1-5 文件基本操作练习题 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EC4899">P54</b> · 7-1-5 文件操作练习题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">练习 · 12:27</span></summary>
+        <h3>📌 考点回顾</h3>
+        <ul><li>读 + 写 + 编码合一</li><li>经典题型：复制文件 / 统计行数 / 替换文本</li></ul>
+      
+      
+        <div class="code-card">
+          <div class="head"><span class="file">📂 示例</span><span class="copy">代码示意</span></div>
+<pre><span class="c-cmt">所以以下选项中描述错误的是,就是执行代码时从键盘输入,清明点txt和清明点txt被创建,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错</b>：第二题,说以下选项中不是Python对文件的读操作方法的是,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：首先来看第一题,说关于Python对文件的处理以下选项中描述错误的是什么。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:29</b></div><div class="quote-text">然后FalLineInRidLine,有点意思,能循环吗?当然能循环了,同学们,想一想,fi.ridLine是它返回的是一个列表,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:45</b></div><div class="quote-text">不光它能循环ridLine,直接fi.open的,fi也可以直接来循环了,一会可以看一下,好,然后那这个fi.close,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:48</b></div><div class="quote-text">我看它是啥样啊,就读这个new text,new.txt,先复制一下,past等于这个路径改一下,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:05:34</b></div><div class="quote-text">所以这里面它不存在转码的问题,那为啥之前那个,就咱们自己写的这个什么tast.txt就出现这种转码问题,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:00</b></div><div class="quote-text">就你看一下这个f它到底是个啥类型的东西,它是一个什么io.ticio wraper,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:06</b></div><div class="quote-text">所以呢先把这个纸针放到最开头的位置,0嘛,然后呢在出行的去进行这个读取,并且输出来,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:26</b></div><div class="quote-text">所以下选项中描述错误的是,就是执行代码时从键盘输入,清明点txt和清明点txt被创建,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:15</b></div><div class="quote-text">下一节课咱们好来聊一维数据,二维数据具体该怎么读,怎么写,怎么去处理,好,那本节课就到这里了,感谢大家。</div></div>
+
+    <!-- P55 · 7-2-1 一维数据 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EC4899">P55</b> · 7-2-1 一维数据读写 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">文件 · 16:45</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>一维数据 = 一行 / 一列的列表</li>
+          <li>存储格式：普通文本（空格/逗号分隔）或 .csv</li>
+          <li><b>join</b> + <b>split</b> 是一对操作</li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 one_dim.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre>data = [<span class="c-str">"苹果"</span>, <span class="c-str">"香蕉"</span>, <span class="c-str">"橘子"</span>, <span class="c-str">"葡萄"</span>]
+<span class="c-c-str">写出去</span>
+<span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"fruits.txt"</span>, <span class="c-str">"w"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    f.<span class="c-fn">write</span>(<span class="c-str">","</span>.<span class="c-fn">join</span>(data))
+
+<span class="c-c-str">读进来</span>
+<span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"fruits.txt"</span>, <span class="c-str">"r"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    items = f.<span class="c-fn">read</span>().<span class="c-fn">strip</span>().<span class="c-fn">split</span>(<span class="c-str">","</span>)
+<span class="c-kw">print</span>(items)                       <span class="c-com"># ['苹果', '香蕉', '橘子', '葡萄']</span></pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：哎,是这样的,但实际上呢,这里面所说的数据的读取与存储,是想让大家了解两件事。</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：然后怎么用一些字不错的操作办法,或者类表的操作办法给它拆开,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:01:11</b></div><div class="quote-text">它说什么的,就是一维数据就是一些像什么对等关系的有序或者无序的数据构成用采用什么线性方式组织,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:22</b></div><div class="quote-text">这个10102,103,104,好,然后呢,这个还是张三,李四,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:23</b></div><div class="quote-text">什么样的数据是高维的,什么样的数据是二维的,是这个一维的,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:08:08</b></div><div class="quote-text">还记得字幕创当中有一个叫split的这么一个方法吗,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:54</b></div><div class="quote-text">或者学习当中可能遇到过这种数据的一些文件啊,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:10:54</b></div><div class="quote-text">其实也经常会遇到这种读取csv文件的时候,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:14:16</b></div><div class="quote-text">但是我想把这里面拿过来的内容给它转换成列表,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:15:11</b></div><div class="quote-text">并且这里面每一个这个词都成为列表当中的一个元素,</div></div>
+
+    <!-- P56 · 7-2-2 二维数据 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+        <summary><b style="color:#EC4899">P56</b> · 7-2-2 二维数据读写 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">文件 · 13:57</span></summary>
+        <h3>📌 核心考点</h3>
+        <ul>
+          <li>二维数据 = 嵌套列表，每行一个 record</li>
+          <li>典型格式：<code class="mono">csv</code>（逗号分隔，含表头）</li>
+          <li>逐行处理：<code class="mono">for row in csv_reader:</code></li>
+        </ul>
+        <div class="code-card">
+          <div class="head"><span class="file">📂 csv_demo.py</span><span class="copy" onclick="copyCode(this)">复制</span></div>
+<pre><span class="c-kw">import</span> csv
+<span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"data.csv"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    reader = csv.<span class="c-fn">reader</span>(f)
+    headers = <span class="c-fn">next</span>(reader)              <span class="c-com"># 表头</span>
+    <span class="c-kw">for</span> row <span class="c-kw">in</span> reader:
+        <span class="c-kw">print</span>(<span class="c-fn">dict</span>(<span class="c-fn">zip</span>(headers, row)))</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：包括说你也可能会想老师说,这种列表我能循环它吗,</div></div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：其实二维数据来讲,它在Python当中有很多形式来表示,比如说最基本的,</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:36</b></div><div class="quote-text">好,咱们来看一下啊。比如说就是这样的一个列表吧,我叫Names,也别的叫Students。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:26</b></div><div class="quote-text">那它一样还是用切片,比如说我这写一个students这个别零了,零是表头,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:18</b></div><div class="quote-text">你现在循环的过程当中,每一次循环实际上获取的是它这个里面的一行的内容,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:06:28</b></div><div class="quote-text">所以相当于你把这一个列表放到这个jong函数里面去调用,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:07:34</b></div><div class="quote-text">好,所以那这个s我现在就可以把它写入到文件当中去,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:09:50</b></div><div class="quote-text">实际上是相当于获取这文件当中一行的内容,对吧,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:11:28</b></div><div class="quote-text">相当于说去除当前字符创左右两边的空格,对不对,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:12:58</b></div><div class="quote-text">我们得把这个temp塞到students里面,对不对,</div></div>
+
+    <!-- P57 · 7-2-3 文件读写练习题 -->
+      </details>
+    </article>
+
+    <article class="skel">
+      <details>
+   <summary><b style="color:#EC4899">P57</b> · 7-2-3 文件读写练习题 <span style="float:right;font-weight:400;font-size:13px;color:var(--ink-soft);">练习 · 04:34</span></summary>
+        <h3>📌 考点回顾</h3>
+        <ul><li>综合题：读文件 → 用字典统计 → 排序 → 写回</li></ul>
+
+<div class="code-card">
+          <div class="head"><span class="file">📂 代码示意</span><span class="copy">真实片段</span></div>
+<pre><span class="c-cmt">第一,关于CICV文件的描述以下选项中错误的是,</span>
+</pre>
+        </div>
+
+        <div class="tip"><div class="ico">💡</div><div><b>易错 / 要点</b>：第一,关于CICV文件的描述以下选项中错误的是,</div></div>    <div class="tip"><div class="ico">💡</div><div>真题综合应用题 90% 的骨架就是这个套路，练习透就能稳拿 15 分。</div></div>
+<h3>🎤 真实字幕节选（Whisper 听写 · 8 段）</h3>
+      <div class="quote"><div class="quote-meta"><b>00:00:29</b></div><div class="quote-text">CICV文件的每一行是一维数据,可以使用Python中的类型来表示。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:00:41</b></div><div class="quote-text">第,整个CICV文件是一个二维数据,倒是没错啊,整个CICV文件确实是一个二维数据。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:19</b></div><div class="quote-text">不可能说在一个文本当中出现了多种编码格式,所以这个肯定是有问题的。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:01:48</b></div><div class="quote-text">一维数据可以采用直接连成字符创,直接相连形成字符创方式来去存储。</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:02:29</b></div><div class="quote-text">RS12346789,然后以下选项中能够获取其中元素5的是哪一个?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:03</b></div><div class="quote-text">这里面正确答案,应该是选A,就是最起码,你C和D肯定就不可能了,对吧?</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:03:43</b></div><div class="quote-text">可以辅助用于从CSV文件中解析12维数据的是什么?说白了,从CSV文件里面读东西,</div></div>
+      <div class="quote"><div class="quote-meta"><b>00:04:03</b></div><div class="quote-text">应该是选一Strip,可以帮助我们去出左右两边的,比如说空卷,比如说换行服,咱们也刚用过,</div></div>
+
+  
+</section>
+
+
+  <nav class="chap-nav">
+    <div class="nav-row">
+      <a class="nav-home" href="index.html">← 主页</a>
+      <a class="nav-link" href="ch1-路线图.html">🗺️ 全集学习路线图</a><a class="nav-link" href="ch2-深度章节.html">🎯 重头戏深度笔记</a><a class="nav-link" href="ch3-第1-4章.html">📖 第 1-4 章 完整笔记</a><a class="nav-link" href="ch4-第5章.html">📖 第 5 章 字符串</a><span class="nav-current">📖 第 6-7 章 组合类型 + 文件</span><a class="nav-link" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库</a><a class="nav-link" href="ch7-真题模拟.html">📝 模拟题 + 真题 + 收尾 + 加餐</a>
+    </div>
+  </nav>
+  <div class="bnav-row">
+    <a class="bnav prev" href="ch4-第5章.html">← 📖 第 5 章 字符串</a>
+    <span class="bnav-mid">第 5 / 7 章</span>
+    <a class="bnav next" href="ch6-第8-10章.html">📖 第 8-10 章 模块/标准库/第三方库 →</a>
+  </div>
+
+
+<footer>
+  <p>📖 第 6-7 章 组合类型 + 文件 · 二级 Python 上岸笔记</p>
+  <p>原视频：<a href="https://www.bilibili.com/video/BV1Ys4y1D72T" target="_blank">B 站原视频</a> · 笔记整理：WorkBuddy</p>
+</footer>
+</body>
+      </details>
+    </article>
+
+</html>
